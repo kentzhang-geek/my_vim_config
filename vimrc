@@ -11,7 +11,7 @@ set autoindent
 set cindent
 
 "vim字体大小
-set guifont=Monospace\ 16
+set guifont=Courier_New:h12:cANSI
 
 set nocompatible " be iMproved
 set backspace=2 " be iMproved
