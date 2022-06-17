@@ -19,6 +19,9 @@ set backspace=2 " be iMproved
 " 设置Leader键
 let mapleader = ","
 
+" save easy
+nnoremap <leader>w :w<CR>
+
 
 " 使用GUI界面时的设置
 if  has("gui_running")
@@ -40,3 +43,12 @@ call plug#end()
 
 " configs for NERDTree
 nnoremap <leader>nt :NERDTree<CR>
+
+" configs for fzf
+let g:fzf_preview_window = 'right:50%'
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6  }  }
+nnoremap <leader>f :FZF<CR>
+
+" usage for nerd commenter
+" [count]<leader>c<space> |NERDCommenterToggle|
+
