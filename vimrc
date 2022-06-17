@@ -38,6 +38,7 @@ Plug 'frazrepo/vim-rainbow'
 Plug 'scrooloose/nerdcommenter'
 Plug 'lervag/vimtex'
 Plug 'tonsky/firacode'
+Plug 'easymotion/vim-easymotion'
 call plug#end()
 
 " configs for NERDTree
@@ -50,6 +51,9 @@ nnoremap <leader>f :FZF<CR>
 
 " usage for nerd commenter
 " [count]<leader>c<space> |NERDCommenterToggle|
+
+" usage for easy motion:
+" <leader><leader>w
 
 "vim字体大小
 set guifont=Consolas:h16
