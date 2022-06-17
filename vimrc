@@ -8,10 +8,6 @@ set noexpandtab
 set nu
 set autoindent 
 set cindent
-
-"vim字体大小
-set guifont=Courier_New:h12:cANSI
-
 set nocompatible " be iMproved
 set backspace=2 " be iMproved
 
@@ -32,13 +28,16 @@ endif
 " My Plugins
 call plug#begin()
 Plug 'scrooloose/nerdtree'
-Plug 'vim-airline/vim-airline'
+if  has("gui_running")
+	Plug 'bling/vim-airline'
+endif
 Plug 'rust-lang/rust.vim'
 Plug 'altercation/vim-colors-solarized'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'frazrepo/vim-rainbow'
 Plug 'scrooloose/nerdcommenter'
 Plug 'lervag/vimtex'
+Plug 'tonsky/firacode'
 call plug#end()
 
 " configs for NERDTree
@@ -52,3 +51,5 @@ nnoremap <leader>f :FZF<CR>
 " usage for nerd commenter
 " [count]<leader>c<space> |NERDCommenterToggle|
 
+"vim字体大小
+set guifont=Consolas:h16
