@@ -1,4 +1,3 @@
-set helplang=cn
 colorscheme gruvbox
 
 set nobackup
@@ -28,7 +27,16 @@ if  has("gui_running")
 endif
 
 " My Plugins
-" call plug#begin()
-" Plug 'scrooloose/nerdtree',
-" call plug#end()
+call plug#begin()
+Plug 'scrooloose/nerdtree'
+Plug 'vim-airline/vim-airline'
+Plug 'rust-lang/rust.vim'
+Plug 'altercation/vim-colors-solarized'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'frazrepo/vim-rainbow'
+Plug 'scrooloose/nerdcommenter'
+Plug 'lervag/vimtex'
+call plug#end()
 
+" configs for NERDTree
+nnoremap <leader>nt :NERDTree<CR>
