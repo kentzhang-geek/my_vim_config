@@ -1,0 +1,30 @@
+set nobackup
+set tabstop=4 
+set softtabstop=4 
+set shiftwidth=4 
+set noexpandtab 
+set nu
+set autoindent 
+set cindent
+set nocompatible " be iMproved
+set backspace=2 " be iMproved
+set cursorline           " 突出显示当前行
+
+
+Plug 'nerdtree'
+Plug 'vim-easymotion'
+
+" 设置Leader键
+let mapleader = ","
+
+" save easy
+nnoremap <leader>w :w<CR>
+
+" configs for NERDTree
+nnoremap <leader>nt :NERDTree<CR>
+
+" usage for easy motion:
+" <leader><leader>w
+
+"vim字体大小
+set guifont=Consolas:h16
