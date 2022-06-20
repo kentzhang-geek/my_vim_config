@@ -53,7 +53,7 @@ nnoremap <leader>f :FZF<CR>
 " [count]<leader>c<space> |NERDCommenterToggle|
 
 " usage for easy motion:
-" <leader><leader>w
+" <leader><leader>f
 
 "vim字体大小
 set guifont=Consolas:h16

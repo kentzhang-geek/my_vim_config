@@ -10,7 +10,6 @@ set nocompatible " be iMproved
 set backspace=2 " be iMproved
 set cursorline           " 突出显示当前行
 
-
 Plug 'nerdtree'
 Plug 'vim-easymotion'
 
@@ -24,7 +23,7 @@ nnoremap <leader>w :w<CR>
 nnoremap <leader>nt :NERDTree<CR>
 
 " usage for easy motion:
-" <leader><leader>w
+" <leader><leader>f
 
 "vim字体大小
 set guifont=Consolas:h16
