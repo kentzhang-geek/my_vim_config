@@ -53,7 +53,10 @@ nnoremap <leader>f :FZF<CR>
 " [count]<leader>c<space> |NERDCommenterToggle|
 
 " usage for easy motion:
-" <leader><leader>f
+" <leader><leader>s
+let g:EasyMotion_smartcase = 1
+" Now, all you need to remember is s and JK motions bindings, and it's good enough to boost your cursor speed!
+
 
 "vim字体大小
 set guifont=Consolas:h16
