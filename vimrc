@@ -1,4 +1,3 @@
-colorscheme gruvbox
 
 set nobackup
 set tabstop=4 
@@ -29,7 +28,8 @@ endif
 call plug#begin()
 Plug 'scrooloose/nerdtree'
 if  has("gui_running")
-	Plug 'bling/vim-airline'
+	Plug 'vim-airline/vim-airline'
+	Plug 'vim-airline/vim-airline-themes'
 endif
 Plug 'rust-lang/rust.vim'
 Plug 'altercation/vim-colors-solarized'
@@ -39,7 +39,14 @@ Plug 'scrooloose/nerdcommenter'
 Plug 'lervag/vimtex'
 Plug 'tonsky/firacode'
 Plug 'easymotion/vim-easymotion'
+Plug 'vim-denops/denops.vim'
+Plug 'altercation/solarized'
+Plug 'altercation/vim-colors-solarized'
 call plug#end()
+
+" for deoplete
+let g:deoplete#enable_at_startup = 1
+
 
 " configs for NERDTree
 nnoremap <leader>nt :NERDTree<CR>
@@ -60,3 +67,7 @@ let g:EasyMotion_smartcase = 1
 
 "vim字体大小
 set guifont=Consolas:h16
+colorscheme solarized
+set background=dark
+let g:airline_theme='solarized'
+let g:airline_solarized_bg='dark'
