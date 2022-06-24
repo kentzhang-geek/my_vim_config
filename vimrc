@@ -16,6 +16,7 @@ let mapleader = ","
 
 " save easy
 nnoremap <leader>w :w<CR>
+nnoremap <leader>q :q<CR>
 
 
 " 使用GUI界面时的设置
@@ -43,12 +44,12 @@ Plug 'tonsky/firacode'
 Plug 'easymotion/vim-easymotion'
 Plug 'vim-denops/denops.vim'
 Plug 'altercation/solarized'
+Plug 'tpope/vim-fugitive'
 Plug 'altercation/vim-colors-solarized'
 call plug#end()
 
 " for deoplete
 let g:deoplete#enable_at_startup = 1
-
 
 " configs for NERDTree
 nnoremap <leader>nt :NERDTree<CR>
@@ -65,7 +66,6 @@ nnoremap <leader>f :FZF<CR>
 " <leader><leader>s
 let g:EasyMotion_smartcase = 1
 " Now, all you need to remember is s and JK motions bindings, and it's good enough to boost your cursor speed!
-
 
 "vim字体大小
 set guifont=Consolas:h16
