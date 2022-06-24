@@ -31,6 +31,8 @@ if  has("gui_running")
 	Plug 'vim-airline/vim-airline'
 	Plug 'vim-airline/vim-airline-themes'
 endif
+Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
+Plug 'mhinz/vim-startify'
 Plug 'rust-lang/rust.vim'
 Plug 'altercation/vim-colors-solarized'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
