@@ -14,6 +14,10 @@ set backspace=2 " be iMproved
 " 设置Leader键
 let mapleader = ","
 
+" move easy
+nnoremap <leader>k <c-u>
+nnoremap <leader>j <c-d>
+
 " save easy
 nnoremap <leader>w :w<CR>
 nnoremap <leader>q :q<CR>
@@ -65,6 +69,8 @@ nnoremap <leader>f :FZF<CR>
 " usage for easy motion:
 " <leader><leader>s
 let g:EasyMotion_smartcase = 1
+" this is for n characters search
+nmap <Leader>s <Plug>(easymotion-sn)
 " Now, all you need to remember is s and JK motions bindings, and it's good enough to boost your cursor speed!
 
 "vim字体大小
