@@ -74,7 +74,14 @@ nmap <Leader>s <Plug>(easymotion-sn)
 " Now, all you need to remember is s and JK motions bindings, and it's good enough to boost your cursor speed!
 
 "vim字体大小
-set guifont=Consolas:h16
+" - font type and size setting.
+if has('win32')
+    set guifont=Consolas:h16   " Win32.
+elseif has('gui_macvim')
+    set guifont=Monaco:h16     " OSX.
+else
+    set guifont=Monospace\16  " Linux.
+endif
 colorscheme solarized
 set background=dark
 let g:airline_theme='solarized'
