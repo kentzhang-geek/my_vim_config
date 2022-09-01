@@ -50,6 +50,8 @@ Plug 'vim-denops/denops.vim'
 Plug 'altercation/solarized'
 Plug 'tpope/vim-fugitive'
 Plug 'altercation/vim-colors-solarized'
+Plug 'tikhomirov/vim-glsl'
+Plug 'beyondmarc/hlsl.vim'
 call plug#end()
 
 " for deoplete
