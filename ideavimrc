@@ -35,3 +35,5 @@ nmap <Leader>s <Plug>(easymotion-sn)
 
 "vim字体大小
 set guifont=Consolas:h16
+
+set clipboard=unnamed

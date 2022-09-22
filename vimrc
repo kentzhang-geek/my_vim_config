@@ -78,10 +78,13 @@ nmap <Leader>s <Plug>(easymotion-sn)
 "vim字体大小
 " - font type and size setting.
 if has('win32')
+    set clipboard=unnamed
     set guifont=Consolas:h16   " Win32.
 elseif has('gui_macvim')
+    set clipboard=unnamed
     set guifont=Monaco:h16     " OSX.
 else
+    set clipboard=unnamedplus
     set guifont=Monospace\16  " Linux.
 endif
 colorscheme solarized
