@@ -69,6 +69,7 @@ nnoremap <leader>f :FZF<CR>
 nnoremap <leader>l :BLines<CR>
 nnoremap <leader>gf :GFiles<CR>
 nnoremap <leader>m :Fzm<CR>
+nnoremap <leader>mm :Commands<CR>
 
 " usage for nerd commenter
 " [count]<leader>c<space> |NERDCommenterToggle|
