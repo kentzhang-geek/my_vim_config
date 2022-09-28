@@ -41,6 +41,8 @@ Plug 'mhinz/vim-startify'
 Plug 'rust-lang/rust.vim'
 Plug 'altercation/vim-colors-solarized'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'laher/fuzzymenu.vim'
 Plug 'frazrepo/vim-rainbow'
 Plug 'scrooloose/nerdcommenter'
 Plug 'lervag/vimtex'
@@ -64,6 +66,9 @@ nnoremap <leader>nt :NERDTree<CR>
 let g:fzf_preview_window = 'right:50%'
 let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6  }  }
 nnoremap <leader>f :FZF<CR>
+nnoremap <leader>l :BLines<CR>
+nnoremap <leader>gf :GFiles<CR>
+nnoremap <leader>m :Fzm<CR>
 
 " usage for nerd commenter
 " [count]<leader>c<space> |NERDCommenterToggle|
