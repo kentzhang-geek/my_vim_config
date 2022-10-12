@@ -100,7 +100,7 @@ let g:airline_theme='solarized'
 let g:airline_solarized_bg='dark'
 
 " Highlighter
-let HiSet   = '<leader><space>s'           " normal, visual
-let HiErase = '<leader><space>e'           " normal, visual
-let HiClear = '<leader><space>c'          " normal
-let HiFind  = '<leader><space>f'          " normal, visual
+let HiSet   = '<space>s'           " normal, visual
+let HiErase = '<space>e'           " normal, visual
+let HiClear = '<space>c'          " normal
+let HiFind  = '<space>f'          " normal, visual
