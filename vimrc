@@ -54,6 +54,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'altercation/vim-colors-solarized'
 Plug 'tikhomirov/vim-glsl'
 Plug 'beyondmarc/hlsl.vim'
+Plug 'azabiong/vim-highlighter'
 call plug#end()
 
 " for deoplete
@@ -97,3 +98,9 @@ colorscheme solarized
 set background=dark
 let g:airline_theme='solarized'
 let g:airline_solarized_bg='dark'
+
+" Highlighter
+let HiSet   = '<leader><space>s'           " normal, visual
+let HiErase = '<leader><space>e'           " normal, visual
+let HiClear = '<leader><space>c'          " normal
+let HiFind  = '<leader><space>f'          " normal, visual
