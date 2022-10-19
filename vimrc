@@ -121,6 +121,7 @@ highlight BookmarkLine ctermbg=194 ctermfg=NONE
 let g:bookmark_sign = '♥'
 let g:bookmark_highlight_lines = 1
 let g:bookmark_auto_close = 1
+let g:bookmark_show_toggle_warning = 0
 nnoremap <Leader>bb <Plug>BookmarkToggle
 nnoremap <Leader>ba <Plug>BookmarkAnnotate
 nnoremap <Leader>bs <Plug>BookmarkShowAll
