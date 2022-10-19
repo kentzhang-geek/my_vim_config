@@ -41,3 +41,11 @@ inoremap <Leader><leader>s <esc><Plug>(easymotion-sn)
 set guifont=Consolas:h16
 
 set clipboard+=unnamed
+
+" For bookmark
+nnoremap <Leader>bb :action ToggleBookmark<CR>
+nnoremap <Leader>ba :action ToggleBookmark<CR>:action EditBookmark<CR>
+nnoremap <Leader>bs :action ShowBookmarks<CR>
+inoremap <Leader><leader>bb <esc>:action ToggleBookmark<CR>
+inoremap <Leader><leader>ba <esc>:action ToggleBookmark<CR>:action EditBookmark<CR>
+inoremap <Leader><leader>bs <esc>:action ShowBookmarks<CR>
