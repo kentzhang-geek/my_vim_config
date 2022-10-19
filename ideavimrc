@@ -19,6 +19,8 @@ let mapleader = ","
 " move easy
 nnoremap <leader>k <c-u>
 nnoremap <leader>j <c-d>
+inoremap <leader><leader>k <c-o><c-u>
+inoremap <leader><leader>j <c-o><c-d>
 
 " save easy
 nnoremap <leader>w :w<CR>
@@ -26,11 +28,13 @@ nnoremap <leader>q :q<CR>
 
 " configs for NERDTree
 nnoremap <leader>nt :NERDTree<CR>
+inoremap <leader><leader>nt <esc>:NERDTree<CR>
 
 " usage for easy motion:
 " <leader><leader>s
 let g:EasyMotion_smartcase = 1
-nmap <Leader>s <Plug>(easymotion-sn)
+nnoremap <Leader>s <Plug>(easymotion-sn)
+inoremap <Leader><leader>s <esc><Plug>(easymotion-sn)
 " Now, all you need to remember is s and JK motions bindings, and it's good enough to boost your cursor speed!
 
 "vim字体大小
