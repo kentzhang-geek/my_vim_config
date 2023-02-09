@@ -32,9 +32,9 @@ inoremap <leader><leader>nt <esc>:NERDTree<CR>
 
 " usage for easy motion:
 " <leader><leader>s
+set easymotion
 let g:EasyMotion_smartcase = 1
-nnoremap <leader>s <Plug>(easymotion-sn)
-inoremap <leader><leader>s <esc><Plug>(easymotion-sn)
+map <Leader>s <Plug>(easymotion-sn)
 " Now, all you need to remember is s and JK motions bindings, and it's good enough to boost your cursor speed!
 
 "vim字体大小
