@@ -8,6 +8,7 @@ set autoindent
 set cindent
 set nocompatible " be iMproved
 set backspace=2 " be iMproved
+set encoding=UTF-8
 
 
 " 设置Leader键
