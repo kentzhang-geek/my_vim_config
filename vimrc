@@ -132,3 +132,22 @@ nnoremap <Leader>bs <Plug>BookmarkShowAll
 inoremap <Leader>bb <esc><Plug>BookmarkToggle
 inoremap <Leader>ba <esc><Plug>BookmarkAnnotate
 inoremap <Leader>bs <esc><Plug>BookmarkShowAll
+
+
+" Code Link
+function! CodeLink()
+	let lnum=line('.')
+	let fname=expand('%:p')
+	let lk = fname . ":" . lnum
+	echom lk
+	call setreg('+', lk)
+endfunction
+function! GotoFile()
+	let lk=getreg('+')
+	let lk=split(lk, ":")
+	let cmd = "tabnew " . "+" . lk[2] . " " . lk[0] . ":" . lk[1]
+	echom cmd
+	execute cmd
+endfunction
+nnoremap <leader>cl :call CodeLink()<CR>
+nnoremap <leader>gf :call GotoFile()<CR>
