@@ -8,16 +8,20 @@ set autoindent
 set cindent
 set nocompatible " be iMproved
 set backspace=2 " be iMproved
+set encoding=UTF-8
 
 
 " 设置Leader键
-let mapleader = ","
+let mapleader = "<c-a-f11><c-a-f9>"
+" Leader while insert to <alt-,>
+imap <a-,> <leader>
+nmap , <leader>
 
 " move easy
 nnoremap <leader>k <c-u>
 nnoremap <leader>j <c-d>
-" inoremap <leader><leader>k <c-o><c-u>
-" inoremap <leader><leader>j <c-o><c-d>
+inoremap <leader>k <c-o><c-u>
+inoremap <leader>j <c-o><c-d>
 
 " save easy
 nnoremap <leader>w :w<CR>
@@ -57,25 +61,14 @@ Plug 'tikhomirov/vim-glsl'
 Plug 'beyondmarc/hlsl.vim'
 Plug 'azabiong/vim-highlighter'
 Plug 'mattesgroeger/vim-bookmarks'
-Plug 'alpertuna/vim-header'
-Plug 'antoyo/vim-licenses'
 call plug#end()
-
-" for Vim-Header
-let g:header_field_author = 'Kent Zhang'
-let g:header_field_author_email = 'tyzhang108@gmail.com'
-map <leader>ah :AddHeader<CR>
-
-" for vim licenses
-let g:licenses_authors_name = 'Zhang, Kent <tyzhang108@gmail.com>'
-let g:licenses_copyright_holders_name = 'Zhang, Kent <tyzhang108@gmail.com>'
 
 " for deoplete
 let g:deoplete#enable_at_startup = 1
 
 " configs for NERDTree
 nnoremap <leader>nt :NERDTree<CR>
-" inoremap <leader><leader>nt <esc>:NERDTree<CR>
+inoremap <leader>nt <esc>:NERDTree<CR>
 
 " configs for fzf
 let g:fzf_preview_window = 'right:50%'
@@ -86,21 +79,21 @@ nnoremap <leader>gf :GFiles<CR>
 nnoremap <leader>m :Fzm<CR>
 nnoremap <leader>mm :Commands<CR>
 
-" inoremap <leader><leader>f  <esc>:FZF<CR>
-" inoremap <leader><leader>l  <esc>:BLines<CR>
-" inoremap <leader><leader>gf <esc>:GFiles<CR>
-" inoremap <leader><leader>m  <esc>:Fzm<CR>
-" inoremap <leader><leader>mm <esc>:Commands<CR>
+inoremap <leader>f  <esc>:FZF<CR>
+inoremap <leader>l  <esc>:BLines<CR>
+inoremap <leader>gf <esc>:GFiles<CR>
+inoremap <leader>m  <esc>:Fzm<CR>
+inoremap <leader>mm <esc>:Commands<CR>
 
 " usage for nerd commenter
 " [count]<leader>c<space> |NERDCommenterToggle|
 
 " usage for easy motion:
-" <leader><leader>s
+" <leader>s
 let g:EasyMotion_smartcase = 1
 " this is for n characters search
 nnoremap <Leader>s <Plug>(easymotion-sn)
-" inoremap <Leader><leader>s <esc><Plug>(easymotion-sn)
+inoremap <leader>s <esc><Plug>(easymotion-sn)
 " Now, all you need to remember is s and JK motions bindings, and it's good enough to boost your cursor speed!
 
 "vim字体大小
@@ -136,6 +129,6 @@ let g:bookmark_show_toggle_warning = 0
 nnoremap <Leader>bb <Plug>BookmarkToggle
 nnoremap <Leader>ba <Plug>BookmarkAnnotate
 nnoremap <Leader>bs <Plug>BookmarkShowAll
-" inoremap <Leader><leader>bb <esc><Plug>BookmarkToggle
-" inoremap <Leader><leader>ba <esc><Plug>BookmarkAnnotate
-" inoremap <Leader><leader>bs <esc><Plug>BookmarkShowAll
+inoremap <Leader>bb <esc><Plug>BookmarkToggle
+inoremap <Leader>ba <esc><Plug>BookmarkAnnotate
+inoremap <Leader>bs <esc><Plug>BookmarkShowAll

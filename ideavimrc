@@ -14,13 +14,16 @@ Plug 'nerdtree'
 Plug 'vim-easymotion'
 
 " 设置Leader键
-let mapleader = ","
+let mapleader = "<c-a-f11><c-a-f9>"
+" Leader while insert to <alt-,>
+imap <a-,> <leader>
+nmap , <leader>
 
 " move easy
 nnoremap <leader>k <c-u>
 nnoremap <leader>j <c-d>
-" inoremap <leader><leader>k <c-o><c-u>
-" inoremap <leader><leader>j <c-o><c-d>
+inoremap <leader>k <c-o><c-u>
+inoremap <leader>j <c-o><c-d>
 
 " save easy
 nnoremap <leader>w :w<CR>
@@ -28,10 +31,10 @@ nnoremap <leader>q :q<CR>
 
 " configs for NERDTree
 nnoremap <leader>nt :NERDTree<CR>
-" inoremap <leader><leader>nt <esc>:NERDTree<CR>
+inoremap <leader>nt <esc>:NERDTree<CR>
 
 " usage for easy motion:
-" <leader><leader>s
+" <leader>s
 set easymotion
 let g:EasyMotion_smartcase = 1
 map <Leader>s <Plug>(easymotion-sn)
@@ -42,15 +45,28 @@ set guifont=Consolas:h16
 
 set clipboard+=unnamed
 
+" NOTE: Could use :actionlist to browse actions
 " For bookmark
 nnoremap <leader>bb :action ToggleBookmark<CR>
 nnoremap <leader>ba :action ToggleBookmark<CR>:action EditBookmark<CR>
 nnoremap <leader>bs :action ShowBookmarks<CR>
-" inoremap <leader><leader>bb <esc>:action ToggleBookmark<CR>
-" inoremap <leader><leader>ba <esc>:action ToggleBookmark<CR>:action EditBookmark<CR>
-" inoremap <leader><leader>bs <esc>:action ShowBookmarks<CR>
+inoremap <leader>bb <esc>:action ToggleBookmark<CR>
+inoremap <leader>ba <esc>:action ToggleBookmark<CR>:action EditBookmark<CR>
+inoremap <leader>bs <esc>:action ShowBookmarks<CR>
 
 " Highlighter
 noremap <space>s :action MultiHighlight<CR>
 noremap <space>e :action MultiHighlight<CR>
 noremap <space>c :action MultiHighlight.ClearAction<CR>
+
+" Github Copilot
+"nnoremap <leader>rc :action copilot.requestCompletions<CR>
+"inoremap <leader>rc <esc>:action copilot.requestCompletions<CR>
+
+" Code Link
+function! CodeLink()
+	"action CopyReference
+	action CopyPathWithLineNumber
+endfunction
+nnoremap <leader>cl :call CodeLink()<CR>
+nnoremap <leader>gf :action GotoFile<CR>
