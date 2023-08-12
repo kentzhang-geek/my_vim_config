@@ -63,3 +63,10 @@ noremap <space>c :action MultiHighlight.ClearAction<CR>
 "nnoremap <leader>rc :action copilot.requestCompletions<CR>
 "inoremap <leader>rc <esc>:action copilot.requestCompletions<CR>
 
+" Code Link
+function! CodeLink()
+	"action CopyReference
+	action CopyPathWithLineNumber
+endfunction
+nnoremap <leader>cl :call CodeLink()<CR>
+nnoremap <leader>gf :action GotoFile<CR>
