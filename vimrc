@@ -141,4 +141,4 @@ function! CodeLink()
 	echom lk
 	call setreg('+', lk)
 endfunction
-nnoremap <leader>cl :call CodeLink()<CR>
+nnoremap <leader>url :call CodeLink()<CR>

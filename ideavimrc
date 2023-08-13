@@ -71,4 +71,4 @@ function! CodeLink()
 	let lnum=split(@+,':')[1]
 	let @+ = "codelink://" . file_name . ":" . lnum
 endfunction
-nnoremap <leader>cl :call CodeLink()<CR>
+nnoremap <leader>url :call CodeLink()<CR>
