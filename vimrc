@@ -138,12 +138,13 @@ inoremap <Leader>bs <esc><Plug>BookmarkShowAll
 function! CodeLink()
 	let lnum=line('.')
 	let fname=expand('%:p')
-	let lk = fname . ":" . lnum
+	let lk = "codelink://" . fname . ":" . lnum
 	echom lk
 	call setreg('+', lk)
 endfunction
 function! GotoFile()
 	let lk=getreg('+')
+	let lk=substitute(lk, "codelink://", "", "g")
 	let lk=split(lk, ":")
 	let cmd = "tabnew " . "+" . lk[2] . " " . lk[0] . ":" . lk[1]
 	echom cmd
