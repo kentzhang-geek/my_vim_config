@@ -46,7 +46,6 @@ Plug 'mhinz/vim-startify'
 Plug 'rust-lang/rust.vim'
 Plug 'altercation/vim-colors-solarized'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
 Plug 'laher/fuzzymenu.vim'
 Plug 'frazrepo/vim-rainbow'
 Plug 'scrooloose/nerdcommenter'
@@ -141,13 +140,5 @@ function! CodeLink()
 	let lk = "codelink://" . fname . ":" . lnum
 	echom lk
 	call setreg('+', lk)
-endfunction
-function! GotoFile() " NOTE: deprecated function
-	let lk=getreg('+')
-	let lk=substitute(lk, "codelink://", "", "g")
-	let lk=split(lk, ":")
-	let cmd = "tabnew " . "+" . lk[2] . " " . lk[0] . ":" . lk[1]
-	echom cmd
-	execute cmd
 endfunction
 nnoremap <leader>cl :call CodeLink()<CR>
