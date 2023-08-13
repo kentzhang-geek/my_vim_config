@@ -65,8 +65,10 @@ noremap <space>c :action MultiHighlight.ClearAction<CR>
 
 " Code Link
 function! CodeLink()
-	"action CopyReference
+	action CopyAbsolutePath
+	let file_name=@+
 	action CopyPathWithLineNumber
+	let lnum=split(@+,':')[1]
+	let @+ = "codelink://" . file_name . ":" . lnum
 endfunction
 nnoremap <leader>cl :call CodeLink()<CR>
-nnoremap <leader>gf :action GotoFile<CR>

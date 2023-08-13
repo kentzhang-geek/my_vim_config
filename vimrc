@@ -142,7 +142,7 @@ function! CodeLink()
 	echom lk
 	call setreg('+', lk)
 endfunction
-function! GotoFile()
+function! GotoFile() " NOTE: deprecated function
 	let lk=getreg('+')
 	let lk=substitute(lk, "codelink://", "", "g")
 	let lk=split(lk, ":")
@@ -151,4 +151,3 @@ function! GotoFile()
 	execute cmd
 endfunction
 nnoremap <leader>cl :call CodeLink()<CR>
-nnoremap <leader>gf :call GotoFile()<CR>
