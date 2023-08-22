@@ -68,7 +68,8 @@ function! CodeLink()
 	action CopyAbsolutePath
 	let file_name=@+
 	action CopyPathWithLineNumber
-	let lnum=split(@+,':')[1]
+	let parameters=split(@+,':')
+	let lnum=parameters[len(parameters) - 1]
 	let @+ = "codelink://" . file_name . ":" . lnum
 endfunction
 nnoremap <leader>url :call CodeLink()<CR>

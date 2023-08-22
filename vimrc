@@ -52,7 +52,7 @@ Plug 'scrooloose/nerdcommenter'
 Plug 'lervag/vimtex'
 Plug 'tonsky/firacode'
 Plug 'easymotion/vim-easymotion'
-Plug 'vim-denops/denops.vim'
+" Plug 'vim-denops/denops.vim'	" no deno for now
 Plug 'altercation/solarized'
 Plug 'tpope/vim-fugitive'
 Plug 'altercation/vim-colors-solarized'
@@ -64,6 +64,9 @@ call plug#end()
 
 " for deoplete
 let g:deoplete#enable_at_startup = 1
+
+" for deno version check
+" let g:denops_disable_version_check=1
 
 " configs for NERDTree
 nnoremap <leader>nt :NERDTree<CR>
