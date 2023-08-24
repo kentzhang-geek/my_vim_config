@@ -73,3 +73,6 @@ function! CodeLink()
 	let @+ = "codelink://" . file_name . ":" . lnum
 endfunction
 nnoremap <leader>url :call CodeLink()<CR>
+
+" for quick perforce reference
+nnoremap <leader>pt :action CopyAbsolutePath<CR>

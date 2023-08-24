@@ -65,6 +65,10 @@ call plug#end()
 " for deoplete
 let g:deoplete#enable_at_startup = 1
 
+" for startify
+let g:startify_bookmarks = [ '~/vimfiles/vimrc', '~/vimfiles/ideavimrc' ]
+let g:startify_skiplist = ['^\\\\*', '://']	" no remote server file
+
 " for deno version check
 " let g:denops_disable_version_check=1
 
