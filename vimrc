@@ -170,6 +170,8 @@ func! CscopeCmds(id, result)
 			execute '!python ' . $HOME . '\\vimfiles\\cscope_tools.py -mkroot'
 		elseif a:result == 3
 			:cs add C:\\cscope_db\\cscope.out
+		elseif a:result == 4
+			execute '!python ' . $HOME . '\\vimfiles\\cscope_tools.py -chroot'
 		endif
 	else
 		" TODO
@@ -177,7 +179,7 @@ func! CscopeCmds(id, result)
 endfunc
 
 func! CsPopup()
-	call popup_menu(['update', 'make as root', 'load'], 
+	call popup_menu(['update', 'make as root', 'load', 'choose root'], 
 				\ #{ title: "Cscope operations", callback: 'CscopeCmds', line: 25, col: 40, 
 				\ highlight: 'Question', border: [], close: 'click',  padding: [1,1,0,1]} )
 endfunction

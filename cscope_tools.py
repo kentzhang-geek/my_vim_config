@@ -1,4 +1,6 @@
 import os, json, sys
+import tkinter
+import tkinter.filedialog
 
 # detect and mkdir C:\cscope_db\ if not exist
 if not os.path.exists("C:\cscope_db"):
@@ -32,6 +34,14 @@ def CsMkRoot():
     # write to cs.conf
     json.dump(cs_conf, open("C:\cscope_db\cs.conf", "w"), indent=4)
 
+def CsChRoot():
+    # open a dialog to select the root directory
+    root = tkinter.Tk()
+    root.withdraw()
+    cs_conf["root"] = tkinter.filedialog.askdirectory()
+    # write to cs.conf
+    json.dump(cs_conf, open("C:\cscope_db\cs.conf", "w"), indent=4)
+
 # check arguments
 if not len(sys.argv) == 2:
     print("Please set the command, e.g. \"python cscope_tools.py -update\"")
@@ -43,4 +53,6 @@ if len(sys.argv) == 2:
         CsUpdate()
     elif sys.argv[1] == '-mkroot':
         CsMkRoot()
+    elif sys.argv[1] == '-chroot':
+        CsChRoot()
 
