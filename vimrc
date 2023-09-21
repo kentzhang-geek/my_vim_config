@@ -60,13 +60,14 @@ Plug 'tikhomirov/vim-glsl'
 Plug 'beyondmarc/hlsl.vim'
 Plug 'azabiong/vim-highlighter'
 Plug 'mattesgroeger/vim-bookmarks'
+Plug 'github/copilot.vim'
 call plug#end()
 
 " for deoplete
 let g:deoplete#enable_at_startup = 1
 
 " for startify
-let g:startify_bookmarks = [ '~/vimfiles/vimrc', '~/vimfiles/ideavimrc', 'C:\Tools\bin\config.ini']
+let g:startify_bookmarks = [ '~/vimfiles/vimrc', '~/vimfiles/ideavimrc' ]
 let g:startify_skiplist = ['^\\\\*', '://']	" no remote server file
 
 " for deno version check
@@ -156,3 +157,37 @@ function! CopyAbsolutePath()
 	call setreg('+', fname)
 endfunction
 nnoremap <leader>pt :call CopyAbsolutePath()<CR>
+
+" cscope config file C:\cscope_db\cs.conf, create if not exist
+set cscopetag cscopeverbose
+let cs_config = "C:\\cscope_db\\cs.conf"
+if filereadable(cs_config)
+else
+	echom "cs_config not exists, create it"
+	execute "silent !echo {\"root\": \"null\"} > " . cs_config
+endif
+
+" cscope update command, will call the python script
+" on windows or Linux
+func! CscopeCmds(id, result)
+	if has('win32')
+		if a:result == 1
+			execute '!python ' . $HOME . '\\vimfiles\\cscope_tools.py -update'
+		elseif a:result == 2
+			execute '!python ' . $HOME . '\\vimfiles\\cscope_tools.py -mkroot'
+		elseif a:result == 3
+			:cs add C:\\cscope_db\\cscope.out
+		elseif a:result == 4
+			execute '!python ' . $HOME . '\\vimfiles\\cscope_tools.py -chroot'
+		endif
+	else
+		" TODO
+	endif
+endfunc
+
+func! CsPopup()
+	call popup_menu(['update', 'make as root', 'load', 'choose root'], 
+				\ #{ title: "Cscope operations", callback: 'CscopeCmds', line: 25, col: 40, 
+				\ highlight: 'Question', border: [], close: 'click',  padding: [1,1,0,1]} )
+endfunction
+nnoremap <leader>db :call CsPopup()<CR>
