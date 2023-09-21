@@ -164,7 +164,7 @@ let cs_config = "C:\\cscope_db\\cs.conf"
 if filereadable(cs_config)
 else
 	echom "cs_config not exists, create it"
-	execute "silent !echo {\"root\": \"null\"} > " . cs_config
+	execute '!python ' . $HOME . '\\vimfiles\\cscope_tools.py -init'
 endif
 
 " cscope update command, will call the python script
@@ -179,6 +179,8 @@ func! CscopeCmds(id, result)
 			:cs add C:\\cscope_db\\cscope.out
 		elseif a:result == 4
 			execute '!python ' . $HOME . '\\vimfiles\\cscope_tools.py -chroot'
+		elseif a:result == 5
+			execute '!python ' . $HOME . '\\vimfiles\\cscope_tools.py -files'
 		endif
 	else
 		" TODO
@@ -186,7 +188,7 @@ func! CscopeCmds(id, result)
 endfunc
 
 func! CsPopup()
-	call popup_menu(['update', 'make as root', 'load', 'choose root'], 
+	call popup_menu(['update', 'make as root', 'load', 'choose root', 'select types'], 
 				\ #{ title: "Cscope operations", callback: 'CscopeCmds', line: 25, col: 40, 
 				\ highlight: 'Question', border: [], close: 'click',  padding: [1,1,0,1]} )
 endfunction
