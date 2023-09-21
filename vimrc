@@ -162,11 +162,23 @@ endif
 
 " cscope update command, will call the python script
 " on windows or Linux
-if has('win32')
-	command! -nargs=0 CscopeUpdate execute '!python ' . $HOME . '\\vimfiles\\cscope_tools.py -update'
-	command! -nargs=0 CscopeMakeCurrentAsRoot execute '!python ' . $HOME . '\\vimfiles\\cscope_tools.py -mkroot'
-	command! -nargs=0 CsLoad :cs add C:\\cscope_db\\cscope.out
-else
-	command! -nargs=0 CscopeUpdate :!python ~/vimfiles/cscope_update.py
-endif
+func! CscopeCmds(id, result)
+	if has('win32')
+		if a:result == 1
+			execute '!python ' . $HOME . '\\vimfiles\\cscope_tools.py -update'
+		elseif a:result == 2
+			execute '!python ' . $HOME . '\\vimfiles\\cscope_tools.py -mkroot'
+		elseif a:result == 3
+			:cs add C:\\cscope_db\\cscope.out
+		endif
+	else
+		" TODO
+	endif
+endfunc
 
+func! CsPopup()
+	call popup_menu(['update', 'make as root', 'load'], 
+				\ #{ title: "Cscope operations", callback: 'CscopeCmds', line: 25, col: 40, 
+				\ highlight: 'Question', border: [], close: 'click',  padding: [1,1,0,1]} )
+endfunction
+nnoremap <leader>db :call CsPopup()<CR>
