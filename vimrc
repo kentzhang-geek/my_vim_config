@@ -66,7 +66,7 @@ call plug#end()
 let g:deoplete#enable_at_startup = 1
 
 " for startify
-let g:startify_bookmarks = [ '~/vimfiles/vimrc', '~/vimfiles/ideavimrc' ]
+let g:startify_bookmarks = [ '~/vimfiles/vimrc', '~/vimfiles/ideavimrc', 'C:\Tools\bin\config.ini']
 let g:startify_skiplist = ['^\\\\*', '://']	" no remote server file
 
 " for deno version check
@@ -149,3 +149,10 @@ function! CodeLink()
 	call setreg('+', lk)
 endfunction
 nnoremap <leader>url :call CodeLink()<CR>
+
+" for quick perforce reference
+function! CopyAbsolutePath()
+	let fname=expand('%:p')
+	call setreg('+', fname)
+endfunction
+nnoremap <leader>pt :call CopyAbsolutePath()<CR>
