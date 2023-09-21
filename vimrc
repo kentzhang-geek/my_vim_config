@@ -60,6 +60,7 @@ Plug 'tikhomirov/vim-glsl'
 Plug 'beyondmarc/hlsl.vim'
 Plug 'azabiong/vim-highlighter'
 Plug 'mattesgroeger/vim-bookmarks'
+Plug 'github/copilot.vim'
 call plug#end()
 
 " for deoplete
@@ -149,3 +150,23 @@ function! CodeLink()
 	call setreg('+', lk)
 endfunction
 nnoremap <leader>url :call CodeLink()<CR>
+
+" cscope config file C:\cscope_db\cs.conf, create if not exist
+set cscopetag cscopeverbose
+let cs_config = "C:\\cscope_db\\cs.conf"
+if filereadable(cs_config)
+else
+	echom "cs_config not exists, create it"
+	execute "silent !echo {\"root\": \"null\"} > " . cs_config
+endif
+
+" cscope update command, will call the python script
+" on windows or Linux
+if has('win32')
+	command! -nargs=0 CscopeUpdate execute '!python ' . $HOME . '\\vimfiles\\cscope_tools.py -update'
+	command! -nargs=0 CscopeMakeCurrentAsRoot execute '!python ' . $HOME . '\\vimfiles\\cscope_tools.py -mkroot'
+	command! -nargs=0 CsLoad :cs add C:\\cscope_db\\cscope.out
+else
+	command! -nargs=0 CscopeUpdate :!python ~/vimfiles/cscope_update.py
+endif
+
