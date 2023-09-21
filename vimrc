@@ -22,6 +22,10 @@ nnoremap <leader>k <c-u>
 nnoremap <leader>j <c-d>
 inoremap <leader>k <c-o><c-u>
 inoremap <leader>j <c-o><c-d>
+nnoremap <A-Up> #
+nnoremap <A-Down> *
+nnoremap <C-p> #
+nnoremap <C-n> *
 
 " save easy
 nnoremap <leader>w :w<CR>
