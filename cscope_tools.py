@@ -23,7 +23,7 @@ def CsUpdate():
     for root, dirs, files in os.walk(cs_conf["root"]):
         for name in files:
             # only handle .c, .cpp, .h, .hpp, .java, .py
-            if name.endswith(cs_conf['files']):
+            if name.endswith(tuple(cs_conf['files'])):
                 # write the absolute path to cscope.files
                 cscope_files.write("\"" + os.path.join(root, name) + "\"\n")
     
