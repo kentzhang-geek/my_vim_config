@@ -175,16 +175,20 @@ endif
 " on windows or Linux
 func! CscopeCmds(id, result)
 	if has('win32')
-		if a:result == 1
+		if a:result == 5
 			execute '!python ' . $HOME . '\\vimfiles\\cscope_tools.py -update'
-		elseif a:result == 2
+		elseif a:result == 7
 			execute '!python ' . $HOME . '\\vimfiles\\cscope_tools.py -mkroot'
 		elseif a:result == 3
 			:cs add C:\\cscope_db\\cscope.out
-		elseif a:result == 4
+		elseif a:result == 6
 			execute '!python ' . $HOME . '\\vimfiles\\cscope_tools.py -chroot'
-		elseif a:result == 5
+		elseif a:result == 4
 			execute '!python ' . $HOME . '\\vimfiles\\cscope_tools.py -files'
+		elseif a:result == 1
+			:cs find s <cword>
+		elseif a:result == 2
+			:cs find t <cword>
 		endif
 	else
 		" TODO
@@ -192,8 +196,17 @@ func! CscopeCmds(id, result)
 endfunc
 
 func! CsPopup()
-	call popup_menu(['update', 'make as root', 'load', 'choose root', 'select types'], 
+	call popup_menu([
+				\ 'lookup symbol',
+				\ 'lookup text',
+				\ 'load', 
+				\ 'select types',
+				\ 'update',
+				\ 'choose root',
+				\ 'make as root', 
+				\ ], 
 				\ #{ title: "Cscope operations", callback: 'CscopeCmds', line: 25, col: 40, 
 				\ highlight: 'Question', border: [], close: 'click',  padding: [1,1,0,1]} )
 endfunction
+nnoremap <leader>mm :call CsPopup()<CR>
 nnoremap <leader>db :call CsPopup()<CR>
