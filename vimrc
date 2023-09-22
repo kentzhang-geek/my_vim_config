@@ -208,5 +208,5 @@ func! CsPopup()
 				\ #{ title: "Cscope operations", callback: 'CscopeCmds', line: 25, col: 40, 
 				\ highlight: 'Question', border: [], close: 'click',  padding: [1,1,0,1]} )
 endfunction
-nnoremap <leader>mm :call CsPopup()<CR>
+nnoremap <leader>mn :call CsPopup()<CR>
 nnoremap <leader>db :call CsPopup()<CR>
