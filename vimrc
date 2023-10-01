@@ -65,7 +65,14 @@ Plug 'beyondmarc/hlsl.vim'
 Plug 'azabiong/vim-highlighter'
 Plug 'mattesgroeger/vim-bookmarks'
 Plug 'github/copilot.vim'
+Plug 'octol/vim-cpp-enhanced-highlight'
 call plug#end()
+
+" for cpp highlight
+let g:cpp_class_scope_highlight = 1
+let g:cpp_member_variable_highlight = 1
+let g:cpp_class_decl_highlight = 1
+let g:cpp_posix_standard = 0
 
 " for deoplete
 let g:deoplete#enable_at_startup = 1
