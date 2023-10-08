@@ -66,7 +66,15 @@ Plug 'azabiong/vim-highlighter'
 Plug 'mattesgroeger/vim-bookmarks'
 Plug 'github/copilot.vim'
 Plug 'octol/vim-cpp-enhanced-highlight'
+Plug 'junegunn/vim-easy-align'
 call plug#end()
+
+" for easy align
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)<C-X>
+
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nnoremap <leader>ea vip<Plug>(EasyAlign)<C-X>
 
 " for cpp highlight
 let g:cpp_class_scope_highlight = 1
