@@ -1,14 +1,14 @@
 set nobackup
-set tabstop     = 4
-set softtabstop = 4
-set shiftwidth  = 4
+set tabstop=4 
+set softtabstop=4 
+set shiftwidth=4 
 set noexpandtab 
 set nu
 set autoindent 
 set cindent
 set nocompatible " be iMproved
-set backspace   = 2 " be iMproved
-set encoding    = UTF-8
+set backspace=2 " be iMproved
+set encoding=UTF-8
 
 
 " 设置Leader键
@@ -77,11 +77,11 @@ xmap ga <Plug>(EasyAlign)<C-X>
 nnoremap <leader>ea vip<Plug>(EasyAlign)<C-X>
 
 " for cpp highlight
-let g:cpp_class_scope_highlight     = 1
+let g:cpp_class_scope_highlight = 1
 let g:cpp_member_variable_highlight = 1
-let g:cpp_class_decl_highlight      = 1
+let g:cpp_class_decl_highlight = 1
 let g:cpp_member_function_highlight = 1
-let g:cpp_posix_standard            = 0
+let g:cpp_posix_standard = 0
 
 " for deoplete
 let g:deoplete#enable_at_startup = 1
@@ -126,20 +126,19 @@ inoremap <leader>s <esc><Plug>(easymotion-sn)
 "vim字体大小
 " - font type and size setting.
 if has('win32')
-    set clipboard = unnamed
-    set guifont   = Consolas:h16   " Win32.
+    set clipboard=unnamed
+    set guifont=Consolas:h16   " Win32.
 elseif has('gui_macvim')
-    set clipboard = unnamed
-    set guifont   = Monaco:h16     " OSX.
+    set clipboard=unnamed
+    set guifont=Monaco:h16     " OSX.
 else
-    set clipboard = unnamedplus
-    set guifont   = Monospace\16  " Linux.
+    set clipboard=unnamedplus
+    set guifont=Monospace\16  " Linux.
 endif
-
 colorscheme solarized
-set background             = dark
-let g:airline_theme        = 'solarized'
-let g:airline_solarized_bg = 'dark'
+set background=dark
+let g:airline_theme='solarized'
+let g:airline_solarized_bg='dark'
 
 " Highlighter
 let HiSet   = '<space>s'           " normal, visual
