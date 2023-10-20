@@ -150,7 +150,7 @@ require('lazy').setup({
     dependencies = { {'nvim-tree/nvim-web-devicons'}}
 },
 { 'stevearc/dressing.nvim' },
-'mattesgroeger/vim-bookmarks',
+-- 'mattesgroeger/vim-bookmarks',
 'azabiong/vim-highlighter',
 'tikhomirov/vim-glsl',
 'beyondmarc/hlsl.vim',
@@ -165,6 +165,32 @@ require('lazy').setup({
 },
 'williamboman/mason-lspconfig.nvim',
 'nvim-lua/plenary.nvim',
+{
+	'tomasky/bookmarks.nvim', -- after = "telescope.nvim",
+	event = "VimEnter",
+	config = function()
+		require('bookmarks').setup{
+			save_file = vim.fn.expand("$HOME/.bookmarks"), -- bookmarks save file path
+			keywords =  {
+				["@t"] = "☑️ ", -- mark annotation startswith @t ,signs this icon as `Todo`
+				["@w"] = "⚠️ ", -- mark annotation startswith @w ,signs this icon as `Warn`
+				["@f"] = "⛏ ", -- mark annotation startswith @f ,signs this icon as `Fix`
+				["@n"] = " ", -- mark annotation startswith @n ,signs this icon as `Note`
+			},
+			on_attach = function(bufnr)
+				local bm = require "bookmarks"
+				local leader = '<leader>'
+				local map = vim.keymap.set
+				map("n", leader .. "bb", bm.bookmark_toggle) -- add or remove bookmark at current line
+				map("n", leader .. "ba", bm.bookmark_ann) -- add or edit mark annotation at current line
+				map("n", leader .. "bc", bm.bookmark_clean) -- clean all marks in local buffer
+				map("n", leader .. "bn", bm.bookmark_next) -- jump to next mark in local buffer
+				map("n", leader .. "bp", bm.bookmark_prev) -- jump to previous mark in local buffer
+				map("n", leader .. "bs", bm.bookmark_list) -- show marked file list in quickfix window
+			end
+		}
+    end
+},
 })
 
 
@@ -246,19 +272,35 @@ vim.keymap.set(nimode, '<A-\\>', '<Plug>(copilot-suggest)')
 vim.keymap.set(nimode, '<A-n>', '<Plug>(copilot-next)')
 vim.keymap.set(nimode, '<A-p>', '<Plug>(copilot-prev)')
 
+-- For bookmark
+local bm = require "bookmarks"
+local map = vim.keymap.set
+map("n", nleader .. "bb", bm.bookmark_toggle) -- add or remove bookmark at current line
+map("n", nleader .. "ba", bm.bookmark_ann) -- add or edit mark annotation at current line
+map("n", nleader .. "bc", bm.bookmark_clean) -- clean all marks in local buffer
+map("n", nleader .. "bn", bm.bookmark_next) -- jump to next mark in local buffer
+map("n", nleader .. "bp", bm.bookmark_prev) -- jump to previous mark in local buffer
+map("n", nleader .. "bs", bm.bookmark_list) -- show marked file list in quickfix window
+map("i", ileader .. "bb", bm.bookmark_toggle) -- add or remove bookmark at current line
+map("i", ileader .. "ba", bm.bookmark_ann) -- add or edit mark annotation at current line
+map("i", ileader .. "bc", bm.bookmark_clean) -- clean all marks in local buffer
+map("i", ileader .. "bn", bm.bookmark_next) -- jump to next mark in local buffer
+map("i", ileader .. "bp", bm.bookmark_prev) -- jump to previous mark in local buffer
+map("i", ileader .. "bs", bm.bookmark_list) -- show marked file list in quickfix window
+
 -- Bookmark
-vim.cmd('highlight BookmarkSign ctermbg=NONE ctermfg=160')
-vim.cmd('highlight BookmarkLine ctermbg=194 ctermfg=NONE')
-vim.g.bookmark_sign = '♥'
-vim.g.bookmark_highlight_lines = 1
-vim.g.bookmark_auto_close = 1
-vim.g.bookmark_show_toggle_warning = 0
-vim.keymap.set('n', nleader .. 'bb', '<Plug>BookmarkToggle')
-vim.keymap.set('n', nleader .. 'ba', '<Plug>BookmarkAnnotate')
-vim.keymap.set('n', nleader .. 'bs', '<Plug>BookmarkShowAll')
-vim.keymap.set('i', ileader .. 'bb', '<Plug>BookmarkToggle')
-vim.keymap.set('i', ileader .. 'ba', '<Plug>BookmarkAnnotate')
-vim.keymap.set('i', ileader .. 'bs', '<Plug>BookmarkShowAll')
+-- vim.cmd('highlight BookmarkSign ctermbg=NONE ctermfg=160')
+-- vim.cmd('highlight BookmarkLine ctermbg=194 ctermfg=NONE')
+-- vim.g.bookmark_sign = '♥'
+-- vim.g.bookmark_highlight_lines = 1
+-- vim.g.bookmark_auto_close = 1
+-- vim.g.bookmark_show_toggle_warning = 0
+-- vim.keymap.set('n', nleader .. 'bb', '<Plug>BookmarkToggle')
+-- vim.keymap.set('n', nleader .. 'ba', '<Plug>BookmarkAnnotate')
+-- vim.keymap.set('n', nleader .. 'bs', '<Plug>BookmarkShowAll')
+-- vim.keymap.set('i', ileader .. 'bb', '<Plug>BookmarkToggle')
+-- vim.keymap.set('i', ileader .. 'ba', '<Plug>BookmarkAnnotate')
+-- vim.keymap.set('i', ileader .. 'bs', '<Plug>BookmarkShowAll')
 
 function CodeLink()
     local line = vim.fn.line('.')
