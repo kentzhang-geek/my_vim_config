@@ -166,6 +166,11 @@ require('lazy').setup({
 'williamboman/mason-lspconfig.nvim',
 'nvim-lua/plenary.nvim',
 {
+    'nvim-telescope/telescope.nvim', tag = '0.1.4',
+    -- or                              , branch = '0.1.x',
+    dependencies = { 'nvim-lua/plenary.nvim' }
+},
+{
 	'tomasky/bookmarks.nvim', -- after = "telescope.nvim",
 	event = "VimEnter",
 	config = function()
@@ -177,17 +182,6 @@ require('lazy').setup({
 				["@f"] = "⛏ ", -- mark annotation startswith @f ,signs this icon as `Fix`
 				["@n"] = " ", -- mark annotation startswith @n ,signs this icon as `Note`
 			},
-			on_attach = function(bufnr)
-				local bm = require "bookmarks"
-				local leader = '<leader>'
-				local map = vim.keymap.set
-				map("n", leader .. "bb", bm.bookmark_toggle) -- add or remove bookmark at current line
-				map("n", leader .. "ba", bm.bookmark_ann) -- add or edit mark annotation at current line
-				map("n", leader .. "bc", bm.bookmark_clean) -- clean all marks in local buffer
-				map("n", leader .. "bn", bm.bookmark_next) -- jump to next mark in local buffer
-				map("n", leader .. "bp", bm.bookmark_prev) -- jump to previous mark in local buffer
-				map("n", leader .. "bs", bm.bookmark_list) -- show marked file list in quickfix window
-			end
 		}
     end
 },
@@ -274,19 +268,23 @@ vim.keymap.set(nimode, '<A-p>', '<Plug>(copilot-prev)')
 
 -- For bookmark
 local bm = require "bookmarks"
+require('telescope').load_extension('bookmarks')
 local map = vim.keymap.set
+function bmlist()
+    vim.cmd(':Telescope bookmarks list')
+end
 map("n", nleader .. "bb", bm.bookmark_toggle) -- add or remove bookmark at current line
 map("n", nleader .. "ba", bm.bookmark_ann) -- add or edit mark annotation at current line
 map("n", nleader .. "bc", bm.bookmark_clean) -- clean all marks in local buffer
 map("n", nleader .. "bn", bm.bookmark_next) -- jump to next mark in local buffer
 map("n", nleader .. "bp", bm.bookmark_prev) -- jump to previous mark in local buffer
-map("n", nleader .. "bs", bm.bookmark_list) -- show marked file list in quickfix window
+map("n", nleader .. "bs", function() bmlist() end) -- show marked file list in quickfix window
 map("i", ileader .. "bb", bm.bookmark_toggle) -- add or remove bookmark at current line
 map("i", ileader .. "ba", bm.bookmark_ann) -- add or edit mark annotation at current line
 map("i", ileader .. "bc", bm.bookmark_clean) -- clean all marks in local buffer
 map("i", ileader .. "bn", bm.bookmark_next) -- jump to next mark in local buffer
 map("i", ileader .. "bp", bm.bookmark_prev) -- jump to previous mark in local buffer
-map("i", ileader .. "bs", bm.bookmark_list) -- show marked file list in quickfix window
+map("i", ileader .. "bs", function() bmlist() end) -- show marked file list in quickfix window
 
 -- Bookmark
 -- vim.cmd('highlight BookmarkSign ctermbg=NONE ctermfg=160')
