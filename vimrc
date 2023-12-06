@@ -223,6 +223,22 @@ func! CsPopup()
 				\ ], 
 				\ #{ title: "Cscope operations", callback: 'CscopeCmds', line: 25, col: 40, 
 				\ highlight: 'Question', border: [], close: 'click',  padding: [1,1,0,1]} )
-endfunction
+endfunc
 nnoremap <leader>mm :call CsPopup()<CR>
 nnoremap <leader>db :call CsPopup()<CR>
+
+" add start tag
+func! AddStartTag()
+	let line_content = "// FIFA_BEGIN | DIVERGENCE | kenzhang | " . strftime("%Y-%m-%d")  . " | Reason: TODO"
+	call append(line('.'), line_content)
+	return 
+endfunc
+nnoremap <leader>ts :call AddStartTag()<CR>
+
+" add end tag
+func! AddEndTag()
+	let line_content = "// FIFA_END"
+	call append(line('.'), line_content)
+	return 
+endfunc
+nnoremap <leader>te :call AddEndTag()<CR>

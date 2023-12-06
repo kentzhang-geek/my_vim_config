@@ -80,3 +80,19 @@ nnoremap <leader>url :call CodeLink()<CR>
 
 " for quick perforce reference
 nnoremap <leader>pt :action CopyAbsolutePath<CR>
+
+" add start tag
+func! AddStartTag()
+	let line_content = "// FIFA_BEGIN | DIVERGENCE | kenzhang | 2023-12-01 | Reason: TODO"
+	let @+ = line_content
+	return 
+endfunc
+nnoremap <leader>ts :call AddStartTag()<CR>
+
+" add end tag
+func! AddEndTag()
+	let line_content = "// FIFA_END"
+	let @+ = line_content
+	return 
+endfunc
+nnoremap <leader>te :call AddEndTag()<CR>
