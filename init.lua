@@ -190,6 +190,8 @@ require('lazy').setup({
 },
 })
 
+-- coc for Frostbite
+vim.g.coc_global_extensions = {'coc-clangd'}
 
 -- basic configs
 vim.opt.encoding='utf-8'
