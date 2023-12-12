@@ -160,7 +160,16 @@ require('lazy').setup({
 {
     'williamboman/mason.nvim',
     config = function ()
-        require("mason").setup()
+        require("mason").
+        setup({
+            ui = {
+                icons = {
+                    package_installed = "✓",
+                    package_pending = "->",
+                    package_uninstalled = "x"
+                }
+            }
+        })
     end
 },
 'williamboman/mason-lspconfig.nvim',
@@ -171,18 +180,18 @@ require('lazy').setup({
     dependencies = { 'nvim-lua/plenary.nvim' }
 },
 {
-	'tomasky/bookmarks.nvim', -- after = "telescope.nvim",
-	event = "VimEnter",
-	config = function()
-		require('bookmarks').setup{
-			save_file = vim.fn.expand("$HOME/.bookmarks"), -- bookmarks save file path
-			keywords =  {
-				["@t"] = "☑️ ", -- mark annotation startswith @t ,signs this icon as `Todo`
-				["@w"] = "⚠️ ", -- mark annotation startswith @w ,signs this icon as `Warn`
-				["@f"] = "⛏ ", -- mark annotation startswith @f ,signs this icon as `Fix`
-				["@n"] = " ", -- mark annotation startswith @n ,signs this icon as `Note`
-			},
-		}
+    'tomasky/bookmarks.nvim', -- after = "telescope.nvim",
+    event = "VimEnter",
+    config = function()
+        require('bookmarks').setup{
+            save_file = vim.fn.expand("$HOME/.bookmarks"), -- bookmarks save file path
+            keywords =  {
+                ["@t"] = "☑️ ", -- mark annotation startswith @t ,signs this icon as `Todo`
+                ["@w"] = "⚠️ ", -- mark annotation startswith @w ,signs this icon as `Warn`
+                ["@f"] = "⛏ ", -- mark annotation startswith @f ,signs this icon as `Fix`
+                ["@n"] = " ", -- mark annotation startswith @n ,signs this icon as `Note`
+            },
+        }
     end
 },
 {
