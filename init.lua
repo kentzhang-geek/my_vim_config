@@ -160,7 +160,16 @@ require('lazy').setup({
 {
     'williamboman/mason.nvim',
     config = function ()
-        require("mason").setup()
+        require("mason").
+        setup({
+            ui = {
+                icons = {
+                    package_installed = "✓",
+                    package_pending = "->",
+                    package_uninstalled = "x"
+                }
+            }
+        })
     end
 },
 'williamboman/mason-lspconfig.nvim',
@@ -171,25 +180,64 @@ require('lazy').setup({
     dependencies = { 'nvim-lua/plenary.nvim' }
 },
 {
-	'tomasky/bookmarks.nvim', -- after = "telescope.nvim",
-	event = "VimEnter",
-	config = function()
-		require('bookmarks').setup{
-			save_file = vim.fn.expand("$HOME/.bookmarks"), -- bookmarks save file path
-			keywords =  {
-				["@t"] = "☑️ ", -- mark annotation startswith @t ,signs this icon as `Todo`
-				["@w"] = "⚠️ ", -- mark annotation startswith @w ,signs this icon as `Warn`
-				["@f"] = "⛏ ", -- mark annotation startswith @f ,signs this icon as `Fix`
-				["@n"] = " ", -- mark annotation startswith @n ,signs this icon as `Note`
-			},
-		}
+    'tomasky/bookmarks.nvim', -- after = "telescope.nvim",
+    event = "VimEnter",
+    config = function()
+        require('bookmarks').setup{
+            save_file = vim.fn.expand("$HOME/.bookmarks"), -- bookmarks save file path
+            keywords =  {
+                ["@t"] = "☑️ ", -- mark annotation startswith @t ,signs this icon as `Todo`
+                ["@w"] = "⚠️ ", -- mark annotation startswith @w ,signs this icon as `Warn`
+                ["@f"] = "⛏ ", -- mark annotation startswith @f ,signs this icon as `Fix`
+                ["@n"] = " ", -- mark annotation startswith @n ,signs this icon as `Note`
+            },
+        }
     end
 },
 {
     'neoclide/coc.nvim', branch = 'release',
 },
+{
+  "dhananjaylatkar/cscope_maps.nvim",
+  dependencies = {
+    "folke/which-key.nvim", -- optional [for whichkey hints]
+    "nvim-telescope/telescope.nvim", -- optional [for picker="telescope"]
+    "nvim-tree/nvim-web-devicons", -- optional [for devicons in telescope or fzf]
+  },
+  opts = {
+      -- USE EMPTY FOR DEFAULT OPTIONS
+      -- DEFAULTS ARE LISTED BELOW
+
+      -- maps related defaults
+      disable_maps = true, -- "true" disables default keymaps
+      skip_input_prompt = false, -- "true" doesn't ask for input
+      prefix = "<leader>cs", -- prefix to trigger maps
+
+      -- cscope related defaults
+      cscope = {
+          -- location of cscope db file
+          db_file = "C:/cscope_db/cscope.out",
+          -- cscope executable
+          exec = "cscope", -- "cscope" or "gtags-cscope"
+          -- choose your fav picker
+          picker = "telescope", -- "telescope", "fzf-lua" or "quickfix"
+          -- size of quickfix window
+          qf_window_size = 5, -- any positive integer
+          -- position of quickfix window
+          qf_window_pos = "bottom", -- "bottom", "right", "left" or "top"
+          -- "true" does not open picker for single result, just JUMP
+          skip_picker_for_single_result = false, -- "false" or "true"
+          -- these args are directly passed to "cscope -f <db_file> <args>"
+          db_build_cmd_args = { "-bqkv" },
+          -- statusline indicator, default is cscope executable
+          statusline_indicator = nil,
+      }
+  },
+},
 })
 
+-- coc for Frostbite
+vim.g.coc_global_extensions = {'coc-clangd'}
 
 -- basic configs
 vim.opt.encoding='utf-8'
@@ -224,6 +272,9 @@ vim.keymap.set('n', nleader .. 'k', '<c-u>')
 vim.keymap.set('n', nleader .. 'j', '<c-d>')
 vim.keymap.set('n', ileader .. 'k', '<c-u>')
 vim.keymap.set('n', ileader .. 'j', '<c-d>')
+
+-- paste easy
+vim.keymap.set('c', '<S-Insert>', '<C-R>+')
 
 -- save easy
 vim.keymap.set('n', '<leader>w', ':w<CR>')
@@ -262,7 +313,6 @@ vim.keymap.set('n', nleader .. 'ea', 'vip<Plug>(EasyAlign)<C-X>')
 vim.g.EasyMotion_smartcase = 1
 vim.keymap.set('n', nleader .. 's', '<Plug>(easymotion-sn)')
 vim.keymap.set('i', ileader .. 's', '<Plug>(easymotion-sn)')
-
 
 -- For Copilot
 vim.keymap.set(nimode, '<A-\\>', '<Plug>(copilot-suggest)')
@@ -321,44 +371,7 @@ vim.keymap.set('n', nleader .. 'pt', function() CopyAbsolutePath() end)
 local lspconfig = require('lspconfig')
 lspconfig.clangd.setup{}
 
--- Global mappings.
--- See `:help vim.diagnostic.*` for documentation on any of the below functions
-vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
-vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
-
--- Use LspAttach autocommand to only map the following keys
--- after the language server attaches to the current buffer
-vim.api.nvim_create_autocmd('LspAttach', {
-  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
-  callback = function(ev)
-    -- Enable completion triggered by <c-x><c-o>
-    vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
-
-    -- Buffer local mappings.
-    -- See `:help vim.lsp.*` for documentation on any of the below functions
-    local opts = { buffer = ev.buf }
-    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
-    vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
-    vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
-    vim.keymap.set('n', '<space>wl', function()
-      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-    end, opts)
-    vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
-    vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
-    vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
-    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-    vim.keymap.set('n', '<space>f', function()
-      vim.lsp.buf.format { async = true }
-    end, opts)
-  end,
-})
-
+-- for mimic cscope menu items
 local popup = require("plenary.popup")
 local Win_id
 function ShowMenu(opts, cb)
@@ -386,7 +399,7 @@ function QuickMenu()
       'lookup symbol',
   }
   local cb = function(_, sel)
-    print("it works")
+    print("it works" .. sel)
   end
   ShowMenu(opts, cb)
 end
