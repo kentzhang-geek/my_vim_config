@@ -391,16 +391,51 @@ function ShowMenu(opts, cb)
   })
   local bufnr = vim.api.nvim_win_get_buf(Win_id)
   vim.api.nvim_buf_set_keymap(bufnr, "n", "q", "<cmd>lua CloseMenu()<CR>", { silent=false })
+  vim.api.nvim_buf_set_keymap(bufnr, "n", "<Esc>", "<cmd>lua CloseMenu()<CR>", { silent=false })
 end
 
--- TODO
+function CloseMenu()
+  vim.api.nvim_win_close(Win_id, true)
+end
+
+-- almost done
 function QuickMenu() 
-  local opts = {
-      'lookup symbol',
-  }
-  local cb = function(_, sel)
-    print("it works" .. sel)
-  end
-  ShowMenu(opts, cb)
+    local opts = {
+        'lookup symbol',
+        'lookup text',
+        'select types',
+        'update',
+        'choose root',
+        'make as root', 
+    }
+    local on_exit = function(obj)
+        print(obj.code)
+        print(obj.signal)
+        print(obj.stdout)
+        print(obj.stderr)
+    end
+    local cb = function(_, sel)
+        local NEOHOME = vim.fn.expand('$HOME') .. '\\Appdata\\Local\\nvim\\'
+        print(sel)
+        if sel == 'lookup symbol' then
+            vim.cmd('Cscope find s <cword>')
+        elseif sel == 'lookup text' then
+            vim.cmd('Cscope find t <cword>')
+        elseif sel == 'select types' then
+            os.execute('python ' .. NEOHOME .. 'cscope_tools.py -files')
+        elseif sel == 'update' then
+            os.execute('python ' .. NEOHOME .. 'cscope_tools.py -update')
+        elseif sel == 'choose root' then
+            os.execute('python ' .. NEOHOME .. 'cscope_tools.py -chroot')
+        elseif sel == 'make as root' then
+            os.execute('python ' .. NEOHOME .. 'cscope_tools.py -mkroot')
+        end
+    end
+    ShowMenu(opts, cb)
 end
 vim.keymap.set('n', nleader .. 'mm', function() QuickMenu() end)
+
+-- execute vim script to provide menu functions
+vim.cmd('source ~/Appdata/Local/nvim/neo_mm.vim')
+
+
