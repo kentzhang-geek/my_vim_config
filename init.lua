@@ -418,9 +418,9 @@ function QuickMenu()
         local NEOHOME = vim.fn.expand('$HOME') .. '\\Appdata\\Local\\nvim\\'
         print(sel)
         if sel == 'lookup symbol' then
-            vim.cmd('Cscope find s <cword>')
+            vim.cmd('Cscope find s ' .. vim.fn.expand('<cword>'))
         elseif sel == 'lookup text' then
-            vim.cmd('Cscope find t <cword>')
+            vim.cmd('Cscope find t ' .. vim.fn.expand('<cword>'))
         elseif sel == 'select types' then
             os.execute('python ' .. NEOHOME .. 'cscope_tools.py -files')
         elseif sel == 'update' then
