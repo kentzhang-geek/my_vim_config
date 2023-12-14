@@ -25,13 +25,13 @@ def CsUpdate():
             # only handle .c, .cpp, .h, .hpp, .java, .py
             if name.endswith(tuple(cs_conf['files'])):
                 # write the absolute path to cscope.files
-                cscope_files.write("\"" + os.path.join(root, name) + "\"\n")
+                cscope_files.write("" + os.path.join(root, name) + "\n")
     
     # close cscope.files
     cscope_files.close()
     
     # generate cscope.out to C:\cscope_db\
-    os.system("cscope -bqk -i C:\cscope_db\cscope.files -f C:\cscope_db\cscope.out")
+    os.system("cscope -cbqk -i C:\cscope_db\cscope.files -f C:\cscope_db\cscope.out")
 
 def CsMkRoot():
     #print current dir
