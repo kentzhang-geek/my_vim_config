@@ -33,7 +33,7 @@ require('lazy').setup({
       vim.cmd([[colorscheme tokyonight]])
     end,
   },
--- For NVim cmp
+-- For NVim completion
 'neovim/nvim-lspconfig',
 'hrsh7th/cmp-nvim-lsp',
 'hrsh7th/cmp-buffer',
@@ -234,6 +234,7 @@ require('lazy').setup({
       }
   },
 },
+'nvim-telescope/telescope-ui-select.nvim',
 })
 
 -- coc for Frostbite
@@ -319,6 +320,10 @@ vim.keymap.set(nimode, '<A-\\>', '<Plug>(copilot-suggest)')
 vim.keymap.set(nimode, '<A-n>', '<Plug>(copilot-next)')
 vim.keymap.set(nimode, '<A-p>', '<Plug>(copilot-prev)')
 
+-- For Telescope
+vim.keymap.set('n', nleader .. 't', ':Telescope<CR>')
+require("telescope").load_extension("ui-select")
+
 -- For bookmark
 local bm = require "bookmarks"
 require('telescope').load_extension('bookmarks')
@@ -371,56 +376,25 @@ vim.keymap.set('n', nleader .. 'pt', function() CopyAbsolutePath() end)
 local lspconfig = require('lspconfig')
 lspconfig.clangd.setup{}
 
--- for mimic cscope menu items
-local popup = require("plenary.popup")
-local Win_id
-function ShowMenu(opts, cb)
-  local height = 20
-  local width = 30
-  local borderchars = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" }
-
-  Win_id = popup.create(opts, {
-        title = "MyProjects",
-        highlight = "MyProjectWindow",
-        line = math.floor(((vim.o.lines - height) / 2) - 1),
-        col = math.floor((vim.o.columns - width) / 2),
-        minwidth = width,
-        minheight = height,
-        borderchars = borderchars,
-        callback = cb,
-  })
-  local bufnr = vim.api.nvim_win_get_buf(Win_id)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "q", "<cmd>lua CloseMenu()<CR>", { silent=false })
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "<Esc>", "<cmd>lua CloseMenu()<CR>", { silent=false })
-end
-
-function CloseMenu()
-  vim.api.nvim_win_close(Win_id, true)
-end
-
--- almost done
+-- cscope shortcuts
 function QuickMenu() 
-    local opts = {
+    local word = vim.fn.expand('<cword>')
+    print(word)
+    vim.ui.select({ 
         'lookup symbol',
         'lookup text',
         'select types',
         'update',
         'choose root',
         'make as root', 
-    }
-    local on_exit = function(obj)
-        print(obj.code)
-        print(obj.signal)
-        print(obj.stdout)
-        print(obj.stderr)
-    end
-    local cb = function(_, sel)
+    }, {
+        prompt = 'Cscope functions',
+    }, function(sel)
         local NEOHOME = vim.fn.expand('$HOME') .. '\\Appdata\\Local\\nvim\\'
-        print(sel)
         if sel == 'lookup symbol' then
-            vim.cmd('Cscope find s ' .. vim.fn.expand('<cword>'))
+            vim.cmd('Cscope find s ' .. word)
         elseif sel == 'lookup text' then
-            vim.cmd('Cscope find t ' .. vim.fn.expand('<cword>'))
+            vim.cmd('Cscope find t ' .. word)
         elseif sel == 'select types' then
             os.execute('python ' .. NEOHOME .. 'cscope_tools.py -files')
         elseif sel == 'update' then
@@ -430,12 +404,11 @@ function QuickMenu()
         elseif sel == 'make as root' then
             os.execute('python ' .. NEOHOME .. 'cscope_tools.py -mkroot')
         end
-    end
-    ShowMenu(opts, cb)
+        print(sel)
+    end)
 end
+
 vim.keymap.set('n', nleader .. 'mm', function() QuickMenu() end)
 
 -- execute vim script to provide menu functions
 vim.cmd('source ~/Appdata/Local/nvim/neo_mm.vim')
-
-
