@@ -25,7 +25,7 @@ def CsUpdate():
             # only handle .c, .cpp, .h, .hpp, .java, .py
             if name.endswith(tuple(cs_conf['files'])):
                 # write the absolute path to cscope.files
-                cscope_files.write("" + os.path.join(root, name) + "\n")
+                cscope_files.write("\"" + os.path.join(root, name) + "\"\n")
     
     # close cscope.files
     cscope_files.close()
