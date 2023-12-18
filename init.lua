@@ -315,11 +315,21 @@ vim.g.EasyMotion_smartcase = 1
 vim.keymap.set('n', nleader .. 's', '<Plug>(easymotion-sn)')
 vim.keymap.set('i', ileader .. 's', '<Plug>(easymotion-sn)')
 
+
 -- For Copilot
-vim.keymap.set(nimode, '<A-\\>', '<Plug>(copilot-suggest)')
-vim.keymap.set(nimode, '<A-r>', '<Plug>(copilot-suggest)')
-vim.keymap.set(nimode, '<A-n>', '<Plug>(copilot-next)')
-vim.keymap.set(nimode, '<A-p>', '<Plug>(copilot-prev)')
+local opts = {silent = true, noremap = true, expr = true, replace_keycodes = false}
+local Plug_opts = {silent = true, noremap = false}
+vim.keymap.set(nimode, '<M-\\>', '<Plug>(copilot-suggest)', Plug_opts)
+vim.keymap.set(nimode, '<M-r>', '<Plug>(copilot-suggest)', Plug_opts)
+vim.keymap.set(nimode, '<M-n>', '<Plug>(copilot-next)', Plug_opts)
+vim.keymap.set(nimode, '<M-p>', '<Plug>(copilot-prev)', Plug_opts)
+vim.keymap.set(nimode, '<M-c>', 'copilot#Accept()', opts)
+vim.cmd(':Copilot disable')
+
+-- For basic completion
+vim.keymap.set('i', '<M-e>', 'coc#pum#confirm()', opts)
+vim.keymap.set('i', '<Tab>', 'coc#pum#visible() ? coc#pum#next(1) : "<Tab>"', opts)
+vim.keymap.set('i', '<S-Tab>', 'coc#pum#visible() ? coc#pum#prev(1) : "<Tab>"', opts)
 
 -- For Telescope
 vim.keymap.set('n', nleader .. 't', ':Telescope<CR>')
