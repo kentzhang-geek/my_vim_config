@@ -317,6 +317,7 @@ vim.keymap.set('i', ileader .. 's', '<Plug>(easymotion-sn)')
 
 -- For Copilot
 vim.keymap.set(nimode, '<A-\\>', '<Plug>(copilot-suggest)')
+vim.keymap.set(nimode, '<A-r>', '<Plug>(copilot-suggest)')
 vim.keymap.set(nimode, '<A-n>', '<Plug>(copilot-next)')
 vim.keymap.set(nimode, '<A-p>', '<Plug>(copilot-prev)')
 
@@ -377,7 +378,7 @@ local lspconfig = require('lspconfig')
 lspconfig.clangd.setup{}
 
 -- cscope shortcuts
-function QuickMenu() 
+function CscopeMenu() 
     local word = vim.fn.expand('<cword>')
     print(word)
     vim.ui.select({ 
@@ -407,8 +408,8 @@ function QuickMenu()
         print(sel)
     end)
 end
-
-vim.keymap.set('n', nleader .. 'mm', function() QuickMenu() end)
+vim.keymap.set('n', nleader .. 'mm', function() CscopeMenu() end)
 
 -- execute vim script to provide menu functions
 vim.cmd('source ~/Appdata/Local/nvim/neo_mm.vim')
+
