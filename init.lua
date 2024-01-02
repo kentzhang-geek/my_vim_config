@@ -279,7 +279,8 @@ vim.keymap.set('c', '<S-Insert>', '<C-R>+')
 
 -- save easy
 vim.keymap.set('n', '<leader>w', ':w<CR>')
-vim.keymap.set('n', '<leader>q', ':q<CR>')
+vim.keymap.set('n', '<leader>q', ':bd<CR>')
+vim.keymap.set('n', '<leader>x', ':q<CR>')
 
 -- configs for NERDTree
 vim.keymap.set('n', nleader .. 'nt', ':NERDTree<CR>')
