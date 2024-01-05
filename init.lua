@@ -425,9 +425,9 @@ function UtilityMenu()
             os.execute('python ' .. NEOHOME .. 'cscope_tools.py -chroot')
         elseif sel == 'make as root' then
             os.execute('python ' .. NEOHOME .. 'cscope_tools.py -mkroot')
-        elseif sel == 'remove duplicate without sort' then
+        elseif sel == 'remove duplicate lines without sort' then
             vim.cmd('g/^\\(.*\\)$\\n\\1/d')
-        elseif sel == 'remove duplicate with sort' then
+        elseif sel == 'remove duplicate lines with sort' then
             vim.cmd('sort u')
         end
         print(sel)
