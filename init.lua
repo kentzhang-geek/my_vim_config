@@ -23,6 +23,11 @@ vim.cmd([[
   " let HiKeywords = '~/.vim/after/vim-highlighter'
 ]])
 
+-- configs
+vim.cmd([[
+  set backspace=indent,eol,start
+]])
+
 require('lazy').setup({
   {
     'folke/tokyonight.nvim',
@@ -241,15 +246,18 @@ require('lazy').setup({
 vim.g.coc_global_extensions = {'coc-clangd'}
 
 -- basic configs
-vim.opt.encoding='utf-8'
-vim.opt.nu=true
-vim.opt.autoindent=true
-vim.opt.cindent=true
-vim.o.shiftwidth=4
-vim.o.softtabstop=4
-vim.o.hlsearch=false
-vim.o.expandtab=true
-vim.o.cursorline=true
+vim.opt.encoding   = 'utf-8'
+vim.opt.nu         = true
+vim.opt.autoindent = true
+vim.opt.cindent    = true
+vim.opt.tabstop    = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab  = true
+vim.bo.softtabstop = 4
+vim.o.softtabstop  = 4
+vim.o.hlsearch     = false
+vim.o.expandtab    = true
+vim.o.cursorline   = true
 if vim.fn.has('gui_running') then
     vim.cmd('set guioptions+=c')
 end
@@ -388,8 +396,8 @@ vim.keymap.set('n', nleader .. 'pt', function() CopyAbsolutePath() end)
 local lspconfig = require('lspconfig')
 lspconfig.clangd.setup{}
 
--- cscope shortcuts
-function CscopeMenu() 
+-- Utilities shortcuts
+function UtilityMenu() 
     local word = vim.fn.expand('<cword>')
     print(word)
     vim.ui.select({ 
@@ -399,8 +407,10 @@ function CscopeMenu()
         'update',
         'choose root',
         'make as root', 
+        'remove duplicate lines without sort',
+        'remove duplicate lines with sort',
     }, {
-        prompt = 'Cscope functions',
+        prompt = 'Utilities',
     }, function(sel)
         local NEOHOME = vim.fn.expand('$HOME') .. '\\Appdata\\Local\\nvim\\'
         if sel == 'lookup symbol' then
@@ -415,12 +425,25 @@ function CscopeMenu()
             os.execute('python ' .. NEOHOME .. 'cscope_tools.py -chroot')
         elseif sel == 'make as root' then
             os.execute('python ' .. NEOHOME .. 'cscope_tools.py -mkroot')
+        elseif sel == 'remove duplicate without sort' then
+            vim.cmd('g/^\\(.*\\)$\\n\\1/d')
+        elseif sel == 'remove duplicate with sort' then
+            vim.cmd('sort u')
         end
         print(sel)
     end)
 end
-vim.keymap.set('n', nleader .. 'mm', function() CscopeMenu() end)
+vim.keymap.set('n', nleader .. 'mm', function() UtilityMenu() end)
 
 -- execute vim script to provide menu functions
 vim.cmd('source ~/Appdata/Local/nvim/neo_mm.vim')
 
+-- for tab indenting
+local opts = { noremap = true, silent = true }
+vim.keymap.set("n",    "<Tab>",         ">>",  opts)
+vim.keymap.set("n",    "<S-Tab>",       "<<",  opts)
+vim.keymap.set("v",    "<Tab>",         ">gv", opts)
+vim.keymap.set("v",    "<S-Tab>",       "<gv", opts)
+
+-- for C-BS
+vim.keymap.set("i", "<C-BS>", "<C-W>")
