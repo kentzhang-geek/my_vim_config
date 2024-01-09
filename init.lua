@@ -29,6 +29,12 @@ set backspace=indent,eol,start
 set autoread
 ]])
 
+-- check bookmark directory
+local bookmarks_path = vim.fn.expand('$HOME') .. '\\vim_bookmarks'
+if vim.fn.isdirectory(bookmarks_path) == 0 then
+    vim.fn.mkdir(bookmarks_path)
+end
+
 require('lazy').setup({
     {
         'folke/tokyonight.nvim',
@@ -190,12 +196,12 @@ require('lazy').setup({
         event = "VimEnter",
         config = function()
             require('bookmarks').setup{
-                save_file = vim.fn.expand("$HOME/.bookmarks"), -- bookmarks save file path
+                save_file = bookmarks_path .. "\\default.bookmarks", -- bookmarks save file path
                 keywords =  {
-                    ["@t"] = "☑️ ", -- mark annotation startswith @t ,signs this icon as `Todo`
-                    ["@w"] = "⚠️ ", -- mark annotation startswith @w ,signs this icon as `Warn`
-                    ["@f"] = "⛏ ", -- mark annotation startswith @f ,signs this icon as `Fix`
-                    ["@n"] = " ", -- mark annotation startswith @n ,signs this icon as `Note`
+                    ["TODO"] = "☑️ ", -- mark annotation startswith @t ,signs this icon as `Todo`
+                    ["WARN"] = "⚠️ ", -- mark annotation startswith @w ,signs this icon as `Warn`
+                    ["FIX"] = "⛏ ", -- mark annotation startswith @f ,signs this icon as `Fix`
+                    ["NOTE"] = " ", -- mark annotation startswith @n ,signs this icon as `Note`
                 },
             }
         end
@@ -399,7 +405,6 @@ lspconfig.clangd.setup{}
 -- Utilities shortcuts
 function UtilityMenu() 
     local word = vim.fn.expand('<cword>')
-    print(word)
     vim.ui.select({ 
         'lookup symbol',
         'lookup text',
@@ -409,6 +414,8 @@ function UtilityMenu()
         'make as root', 
         'remove duplicate lines without sort',
         'remove duplicate lines with sort',
+        'show bookmark files',
+        'json beautify current line',
     }, {
         prompt = 'Utilities',
     }, function(sel)
@@ -429,6 +436,10 @@ function UtilityMenu()
             vim.cmd('g/^\\(.*\\)$\\n\\1/d')
         elseif sel == 'remove duplicate lines with sort' then
             vim.cmd('sort u')
+        elseif sel == 'show bookmark files' then
+            os.execute('explorer \"' .. bookmarks_path .. '\"')
+        elseif sel == 'json beautify current line' then
+            vim.cmd('%!jq .')
         end
         print(sel)
     end)
