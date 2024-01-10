@@ -198,10 +198,10 @@ require('lazy').setup({
             require('bookmarks').setup{
                 save_file = bookmarks_path .. "\\default.bookmarks", -- bookmarks save file path
                 keywords =  {
-                    ["TODO"] = "☑️ ", -- mark annotation startswith @t ,signs this icon as `Todo`
-                    ["WARN"] = "⚠️ ", -- mark annotation startswith @w ,signs this icon as `Warn`
-                    ["FIX"] = "⛏ ", -- mark annotation startswith @f ,signs this icon as `Fix`
-                    ["NOTE"] = " ", -- mark annotation startswith @n ,signs this icon as `Note`
+                    ["@t"] = "☑️ ", -- mark annotation startswith @t ,signs this icon as `Todo`
+                    ["@w"] = "⚠️ ", -- mark annotation startswith @w ,signs this icon as `Warn`
+                    ["@f"] = "⛏ ", -- mark annotation startswith @f ,signs this icon as `Fix`
+                    ["@n"] = " ", -- mark annotation startswith @n ,signs this icon as `Note`
                 },
             }
         end
