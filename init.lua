@@ -256,6 +256,10 @@ require('lazy').setup({
     },
     'nvim-telescope/telescope-ui-select.nvim',
     'Shatur/neovim-session-manager',    -- session manager
+    {
+        "nvim-telescope/telescope-file-browser.nvim",
+        dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
+    },
 })
 
 -- coc for Frostbite
@@ -355,10 +359,6 @@ vim.keymap.set('i', '<M-e>', 'coc#pum#confirm()', opts)
 vim.keymap.set('i', '<Tab>', 'coc#pum#visible() ? coc#pum#next(1) : "<Tab>"', opts)
 vim.keymap.set('i', '<S-Tab>', 'coc#pum#visible() ? coc#pum#prev(1) : "<Tab>"', opts)
 
--- For Telescope
-vim.keymap.set('n', nleader .. 't', ':Telescope<CR>')
-require("telescope").load_extension("ui-select")
-
 -- For bookmark
 local bm = require "bookmarks"
 require('telescope').load_extension('bookmarks')
@@ -452,7 +452,16 @@ function CscopeSubmenu()
     end)
 end
 
-function JumpToDirectory()
+function FileBrowser()
+    vim.ui.input({
+        prompt='Enter root path',
+        default='C:\\',
+    }, function(root) 
+        if root then
+            vim.cmd('cd ' .. root)
+            vim.cmd('Telescope file_browser')
+        end
+    end)
 end
 
 -- Utilities shortcuts
@@ -467,7 +476,7 @@ function UtilityMenu()
         'show bookmark files',
         'json beautify current line',
         'session submenu',
-        -- 'jump dir',
+        'file browser',
     }, {
         prompt = 'Utilities',
     }, function(sel)
@@ -488,8 +497,8 @@ function UtilityMenu()
             vim.cmd('%!jq .')
         elseif sel == 'session submenu' then
             SessionMenu()
-        elseif sel == 'jump dir' then   -- not finished
-            JumpToDirectory()
+        elseif sel == 'file browser' then
+            FileBrowser()
         end
     end)
 end
@@ -526,3 +535,7 @@ require('session_manager').setup({
   max_path_length = 80,  -- Shorten the display path if length exceeds this threshold. Use 0 if don't want to shorten the path at all.
 })
 
+-- For Telescope
+vim.keymap.set('n', nleader .. 'ts', ':Telescope<CR>')
+require("telescope").load_extension("ui-select")
+require("telescope").load_extension "file_browser"
