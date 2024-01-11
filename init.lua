@@ -29,10 +29,18 @@ set backspace=indent,eol,start
 set autoread
 ]])
 
--- check bookmark directory
+-- path configs
+local sessions_path = vim.fn.expand('$HOME') .. '\\vim_sessions'
 local bookmarks_path = vim.fn.expand('$HOME') .. '\\vim_bookmarks'
+
+-- check bookmark directory
 if vim.fn.isdirectory(bookmarks_path) == 0 then
     vim.fn.mkdir(bookmarks_path)
+end
+
+-- check session directory
+if vim.fn.isdirectory(sessions_path) == 0 then
+    vim.fn.mkdir(sessions_path)
 end
 
 require('lazy').setup({
@@ -247,6 +255,7 @@ require('lazy').setup({
         },
     },
     'nvim-telescope/telescope-ui-select.nvim',
+    'Shatur/neovim-session-manager',    -- session manager
 })
 
 -- coc for Frostbite
@@ -402,20 +411,63 @@ vim.keymap.set('n', nleader .. 'pt', function() CopyAbsolutePath() end)
 local lspconfig = require('lspconfig')
 lspconfig.clangd.setup{}
 
+function SessionMenu()
+    vim.ui.select({ 
+        'save',
+        'load',
+        'show session files'
+    }, {
+        prompt = 'Utilities',
+    }, function(sel)
+        local NEOHOME = vim.fn.expand('$HOME') .. '\\Appdata\\Local\\nvim\\'
+        if sel == 'save' then
+            vim.cmd('SessionManager save_current_session')
+        elseif sel == 'load' then
+            vim.cmd('SessionManager load_session')
+        elseif sel == 'show session files' then
+            os.execute('explorer \"' .. sessions_path .. '\"')
+        end
+    end)
+end
+
+function CscopeSubmenu()
+    vim.ui.select({ 
+        'select types',
+        'update',
+        'choose root',
+        'make as root', 
+    }, {
+        prompt = 'Cscope Utilities',
+    }, function(sel)
+        local NEOHOME = vim.fn.expand('$HOME') .. '\\Appdata\\Local\\nvim\\'
+        if sel == 'select types' then
+            os.execute('python ' .. NEOHOME .. 'cscope_tools.py -files')
+        elseif sel == 'update' then
+            os.execute('python ' .. NEOHOME .. 'cscope_tools.py -update')
+        elseif sel == 'choose root' then
+            os.execute('python ' .. NEOHOME .. 'cscope_tools.py -chroot')
+        elseif sel == 'make as root' then
+            os.execute('python ' .. NEOHOME .. 'cscope_tools.py -mkroot')
+        end
+    end)
+end
+
+function JumpToDirectory()
+end
+
 -- Utilities shortcuts
 function UtilityMenu() 
     local word = vim.fn.expand('<cword>')
     vim.ui.select({ 
         'lookup symbol',
         'lookup text',
-        'select types',
-        'update',
-        'choose root',
-        'make as root', 
+        'cscope_db',
         'remove duplicate lines without sort',
         'remove duplicate lines with sort',
         'show bookmark files',
         'json beautify current line',
+        'session submenu',
+        -- 'jump dir',
     }, {
         prompt = 'Utilities',
     }, function(sel)
@@ -424,14 +476,8 @@ function UtilityMenu()
             vim.cmd('Cscope find s ' .. word)
         elseif sel == 'lookup text' then
             vim.cmd('Cscope find t ' .. word)
-        elseif sel == 'select types' then
-            os.execute('python ' .. NEOHOME .. 'cscope_tools.py -files')
-        elseif sel == 'update' then
-            os.execute('python ' .. NEOHOME .. 'cscope_tools.py -update')
-        elseif sel == 'choose root' then
-            os.execute('python ' .. NEOHOME .. 'cscope_tools.py -chroot')
-        elseif sel == 'make as root' then
-            os.execute('python ' .. NEOHOME .. 'cscope_tools.py -mkroot')
+        elseif sel == 'cscope_db' then
+            CscopeSubmenu()
         elseif sel == 'remove duplicate lines without sort' then
             vim.cmd('g/^\\(.*\\)$\\n\\1/d')
         elseif sel == 'remove duplicate lines with sort' then
@@ -440,8 +486,11 @@ function UtilityMenu()
             os.execute('explorer \"' .. bookmarks_path .. '\"')
         elseif sel == 'json beautify current line' then
             vim.cmd('%!jq .')
+        elseif sel == 'session submenu' then
+            SessionMenu()
+        elseif sel == 'jump dir' then   -- not finished
+            JumpToDirectory()
         end
-        print(sel)
     end)
 end
 vim.keymap.set('n', nleader .. 'mm', function() UtilityMenu() end)
@@ -458,3 +507,22 @@ vim.keymap.set("v",    "<S-Tab>",       "<gv", opts)
 
 -- for C-BS
 vim.keymap.set("i", "<C-BS>", "<C-W>")
+
+-- for mession manager
+local Path = require('plenary.path')
+local config = require('session_manager.config')
+require('session_manager').setup({
+  sessions_dir = Path:new(sessions_path), -- The directory where the session files will be saved.
+  autoload_mode = config.AutoloadMode.Disabled, -- Define what to do when Neovim is started without arguments. Possible values: Disabled, CurrentDir, LastSession
+  autosave_last_session = true, -- Automatically save last session on exit and on session switch.
+  autosave_ignore_not_normal = true, -- Plugin will not save a session when no buffers are opened, or all of them aren't writable or listed.
+  autosave_ignore_dirs = {}, -- A list of directories where the session will not be autosaved.
+  autosave_ignore_filetypes = { -- All buffers of these file types will be closed before the session is saved.
+    'gitcommit',
+    'gitrebase',
+  },
+  autosave_ignore_buftypes = {}, -- All buffers of these bufer types will be closed before the session is saved.
+  autosave_only_in_session = false, -- Always autosaves session. If true, only autosaves after a session is active.
+  max_path_length = 80,  -- Shorten the display path if length exceeds this threshold. Use 0 if don't want to shorten the path at all.
+})
+
