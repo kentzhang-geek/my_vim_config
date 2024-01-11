@@ -539,3 +539,8 @@ require('session_manager').setup({
 vim.keymap.set('n', nleader .. 'ts', ':Telescope<CR>')
 require("telescope").load_extension("ui-select")
 require("telescope").load_extension "file_browser"
+
+-- switch between tabs
+vim.keymap.set('n', '<C-Tab>', ':bnext<CR>')
+vim.keymap.set('n', '<C-Pagedown>', ':bnext<CR>')
+vim.keymap.set('n', '<C-Pageup>', ':bprevious<CR>')
