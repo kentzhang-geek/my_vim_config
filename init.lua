@@ -200,7 +200,7 @@ require('lazy').setup({
         dependencies = { 'nvim-lua/plenary.nvim' }
     },
     {
-        'tomasky/bookmarks.nvim', -- after = "telescope.nvim",
+        'kentzhang-geek/bookmarks.nvim', -- after = "telescope.nvim",
         event = "VimEnter",
         config = function()
             require('bookmarks').setup{
@@ -539,6 +539,16 @@ require('session_manager').setup({
 vim.keymap.set('n', nleader .. 'ts', ':Telescope<CR>')
 require("telescope").load_extension("ui-select")
 require("telescope").load_extension "file_browser"
+require('telescope').setup{
+    defaults = {
+        layout_strategy='vertical',
+        layout_config = {
+            vertical = { width = 0.8 },
+            -- other layout configuration here
+        },
+        -- other defaults configuration here
+    },
+}
 
 -- switch between tabs
 vim.keymap.set('n', '<C-Tab>', ':bnext<CR>')
