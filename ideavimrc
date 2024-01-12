@@ -2,13 +2,14 @@ set nobackup
 set tabstop=4 
 set softtabstop=4 
 set shiftwidth=4 
-set noexpandtab 
+set expandtab 
 set nu
 set autoindent 
 set cindent
 set nocompatible " be iMproved
 set backspace=2 " be iMproved
 set cursorline           " 突出显示当前行
+set clipboard+=unnamedplus
 
 Plug 'nerdtree'
 Plug 'vim-easymotion'
