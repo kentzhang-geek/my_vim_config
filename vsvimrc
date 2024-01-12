@@ -24,8 +24,7 @@ nnoremap <leader>w :w<CR>
 nnoremap <leader>q :q<CR>
 
 " Code Link
-nnoremap <leader>url let @+ = 'codelink://' . @% . ':'<CR>
+nnoremap <leader>url :let @+ = 'codelink://' . @%<CR>
 
 " for quick perforce reference
-nnoremap <leader>pt let @+ = @%<CR>
-
+nnoremap <leader>pt :let @+ = @%<CR>
