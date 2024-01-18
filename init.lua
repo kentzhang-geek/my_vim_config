@@ -80,6 +80,7 @@ require('lazy').setup({
             vim.cmd(':call fzf#install()')
         end
     },
+    'junegunn/fzf.vim',
     'github/copilot.vim',
     'junegunn/vim-easy-align',
     'frazrepo/vim-rainbow',
@@ -197,7 +198,18 @@ require('lazy').setup({
     {
         'nvim-telescope/telescope.nvim', tag = '0.1.4',
         -- or                              , branch = '0.1.x',
-        dependencies = { 'nvim-lua/plenary.nvim' }
+        dependencies = { 
+            'nvim-lua/plenary.nvim',
+            { 
+                "nvim-telescope/telescope-live-grep-args.nvim" ,
+                -- This will not install any breaking changes.
+                -- For major updates, this must be adjusted manually.
+                version = "^1.0.0",
+            },
+        },
+        config = function()
+            require("telescope").load_extension("live_grep_args")
+        end
     },
     {
         'kentzhang-geek/bookmarks.nvim', -- after = "telescope.nvim",
@@ -303,6 +315,8 @@ vim.keymap.set('n', ileader .. 'j', '<c-d>')
 
 -- paste easy
 vim.keymap.set('c', '<S-Insert>', '<C-R>+')
+vim.keymap.set('n', '<S-Insert>', '<C-R>+')
+vim.keymap.set('i', '<S-Insert>', '<C-R>+')
 
 -- save easy
 vim.keymap.set('n', '<leader>w', ':w<CR>')
@@ -477,6 +491,8 @@ function UtilityMenu()
         'json beautify current line',
         'session submenu',
         'file browser',
+        'live grep',
+        'fuzzy lines',
     }, {
         prompt = 'Utilities',
     }, function(sel)
@@ -499,6 +515,10 @@ function UtilityMenu()
             SessionMenu()
         elseif sel == 'file browser' then
             FileBrowser()
+        elseif sel == 'live grep' then
+            require("telescope").extensions.live_grep_args.live_grep_args()
+        elseif sel == 'fuzzy lines' then
+            vim.cmd('Lines')
         end
     end)
 end
