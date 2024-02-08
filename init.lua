@@ -369,8 +369,8 @@ vim.keymap.set(nimode, '<M-c>', 'copilot#Accept()', opts)
 vim.cmd(':Copilot disable')
 
 -- For basic completion
-vim.keymap.set('i', '<M-e>', 'coc#pum#confirm()', opts)
-vim.keymap.set('i', '<Tab>', 'coc#pum#visible() ? coc#pum#next(1) : "<Tab>"', opts)
+vim.keymap.set('i', '<Tag>', 'coc#pum#confirm()', opts)
+vim.keymap.set('i', '<A-e>', 'coc#pum#visible() ? coc#pum#next(1) : "<Tab>"', opts)
 vim.keymap.set('i', '<S-Tab>', 'coc#pum#visible() ? coc#pum#prev(1) : "<Tab>"', opts)
 
 -- For bookmark
@@ -478,9 +478,32 @@ function FileBrowser()
     end)
 end
 
+-- TODO -> a lua config reader
+local project_config_file = 'C:\\cscope_db\\project_config.json'
+local project_config = vim.json.decode(io.open(project_config_file, "r"):read('*a'))
+local Tag_reason = project_config.Tag_reason
+local Tag_type = project_config.Tag_type
+local User_name = project_config.User_name
+
+function FIFA_Tag(lnum, isBegin, line_indent)
+    local t = ''
+    for i = 0, line_indent - 1 do
+        t = t .. ' '
+    end
+    -- Only support c-style for now
+    if isBegin then
+        t = t .. '// FIFA_BEGIN | ' .. Tag_type .. ' | ' .. User_name .. ' | ' .. os.date('%Y-%m-%d') .. ' | ' .. Tag_reason
+    else 
+        t = t .. '// FIFA_END'
+    end
+    vim.fn.append(lnum, {t})
+end
+
 -- Utilities shortcuts
 function UtilityMenu() 
     local word = vim.fn.expand('<cword>')
+    local linenum = vim.fn.line('.')
+    local line_indent = vim.fn.indent(linenum)
     vim.ui.select({ 
         'lookup symbol',
         'lookup text',
@@ -493,6 +516,9 @@ function UtilityMenu()
         'file browser',
         'live grep',
         'fuzzy lines',
+        'fifa begin',
+        'fifa end',
+        'fifa tag config',
     }, {
         prompt = 'Utilities',
     }, function(sel)
@@ -519,6 +545,10 @@ function UtilityMenu()
             require("telescope").extensions.live_grep_args.live_grep_args()
         elseif sel == 'fuzzy lines' then
             vim.cmd('Lines')
+        elseif sel == 'fifa begin' then
+            FIFA_Tag(linenum, true, line_indent)
+        elseif sel == 'fifa end' then
+            FIFA_Tag(linenum, false, line_indent)
         end
     end)
 end
