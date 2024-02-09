@@ -369,9 +369,9 @@ vim.keymap.set(nimode, '<M-c>', 'copilot#Accept()', opts)
 vim.cmd(':Copilot disable')
 
 -- For basic completion
-vim.keymap.set('i', '<Tag>', 'coc#pum#confirm()', opts)
-vim.keymap.set('i', '<A-e>', 'coc#pum#visible() ? coc#pum#next(1) : "<Tab>"', opts)
-vim.keymap.set('i', '<S-Tab>', 'coc#pum#visible() ? coc#pum#prev(1) : "<Tab>"', opts)
+vim.keymap.set('i', '<Tab>', 'coc#pum#confirm()', opts)
+vim.keymap.set('i', '<A-e>', 'coc#pum#visible() ? coc#pum#next(1) : "<A-e>"', opts)
+vim.keymap.set('i', '<S-Tab>', 'coc#pum#visible() ? coc#pum#prev(1) : "<S-Tab>"', opts)
 
 -- For bookmark
 local bm = require "bookmarks"
