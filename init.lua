@@ -11,6 +11,9 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- set leader key
+vim.g.mapleader = ','
+
 -- Highlighter
 vim.cmd([[
 " default key mappings
@@ -27,6 +30,7 @@ let HiFind  = '<space>f'
 vim.cmd([[
 set backspace=indent,eol,start
 set autoread
+set ignorecase
 ]])
 
 -- path configs
@@ -72,7 +76,21 @@ require('lazy').setup({
     --     require'hop'.setup()
     -- end,
     -- },
-    'easymotion/vim-easymotion',
+    -- 'easymotion/vim-easymotion',
+    {
+        "folke/flash.nvim",
+        event = "VeryLazy",
+        ---@type Flash.Config
+        opts = {},
+        -- stylua: ignore
+        keys = {
+            { "<leader>s", mode = { "n", "x", "o" }, function() require("flash").jump({
+                labels = "asdfghjklqwertyuiopzxcvbnm",
+                search = { forward = true, wrap = true, multi_window = true, mode="fuzzy"},
+                label = {uppercase = false, after = false, before = true},
+            }) end, desc = "Flash" },
+        },
+    },
     'rust-lang/rust.vim',
     {
         'junegunn/fzf',
@@ -294,9 +312,6 @@ if vim.fn.has('gui_running') then
 end
 vim.cmd('set clipboard+=unnamedplus')
 
--- set leader key
-vim.g.mapleader = ','
-
 -- move easy
 local nimode = {'n', 'i'}
 local nivmode = {'n', 'i', 'v'}
@@ -353,10 +368,9 @@ vim.keymap.set('n', nleader .. 'ea', 'vip<Plug>(EasyAlign)<C-X>')
 -- For Hop
 -- vim.keymap.set('n', nleader .. 's', ':HopAnywhere<CR>')
 -- For easymotion
-vim.g.EasyMotion_smartcase = 1
-vim.keymap.set('n', nleader .. 's', '<Plug>(easymotion-sn)')
-vim.keymap.set('i', ileader .. 's', '<Plug>(easymotion-sn)')
-
+-- vim.g.EasyMotion_smartcase = 1
+-- vim.keymap.set('n', nleader .. 's', '<Plug>(easymotion-sn)')
+-- vim.keymap.set('i', ileader .. 's', '<Plug>(easymotion-sn)')
 
 -- For Copilot
 local opts = {silent = true, noremap = true, expr = true, replace_keycodes = false}
