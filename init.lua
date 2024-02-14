@@ -86,7 +86,7 @@ require('lazy').setup({
         keys = {
             { "<leader>s", mode = { "n", "x", "o" }, function() require("flash").jump({
                 labels = "asdfghjklqwertyuiopzxcvbnm",
-                search = { forward = true, wrap = true, multi_window = true, mode="fuzzy"},
+                search = { forward = true, wrap = true, multi_window = true, mode="search"},
                 label = {uppercase = false, after = false, before = true},
             }) end, desc = "Flash" },
         },
