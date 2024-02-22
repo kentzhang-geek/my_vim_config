@@ -290,6 +290,8 @@ require('lazy').setup({
         "nvim-telescope/telescope-file-browser.nvim",
         dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
     },
+    -- 'petertriho/nvim-scrollbar',
+    'dstein64/nvim-scrollview',
 })
 
 -- coc for Frostbite
@@ -311,6 +313,9 @@ if vim.fn.has('gui_running') then
     vim.cmd('set guioptions+=c')
 end
 vim.cmd('set clipboard+=unnamedplus')
+
+-- scrollbar -> another one seems better
+-- require("scrollbar").setup()
 
 -- move easy
 local nimode = {'n', 'i'}
