@@ -290,8 +290,9 @@ require('lazy').setup({
         "nvim-telescope/telescope-file-browser.nvim",
         dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
     },
-    -- 'petertriho/nvim-scrollbar',
-    'dstein64/nvim-scrollview',
+    'petertriho/nvim-scrollbar',
+    'norcalli/nvim-colorizer.lua',
+    -- 'dstein64/nvim-scrollview',
 })
 
 -- coc for Frostbite
@@ -314,8 +315,23 @@ if vim.fn.has('gui_running') then
 end
 vim.cmd('set clipboard+=unnamedplus')
 
--- scrollbar -> another one seems better
--- require("scrollbar").setup()
+-- scrollbar -> this one seems better
+require('colorizer').setup()
+local colors = require("tokyonight.colors").setup()
+
+require("scrollbar").setup({
+    handle = {
+        color = colors.blue0,
+    },
+    marks = {
+        Search = { color = colors.orange },
+        Error = { color = colors.error },
+        Warn = { color = colors.warning },
+        Info = { color = colors.info },
+        Hint = { color = colors.hint },
+        Misc = { color = colors.purple },
+    }
+})
 
 -- move easy
 local nimode = {'n', 'i'}
