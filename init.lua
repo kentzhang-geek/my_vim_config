@@ -17,7 +17,7 @@ vim.g.mapleader = ','
 -- Highlighter
 vim.cmd([[
 " default key mappings
-let HiSet   = '<space>s'
+let HiSet   = '<space>a'
 let HiErase = '<space>e'
 let HiClear = '<space>c'
 let HiFind  = '<space>f'
