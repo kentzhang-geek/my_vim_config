@@ -14,6 +14,9 @@ vim.opt.rtp:prepend(lazypath)
 -- set leader key
 vim.g.mapleader = ','
 
+-- no editor config
+vim.g.editorconfig = false
+
 -- Highlighter
 vim.cmd([[
 " default key mappings
