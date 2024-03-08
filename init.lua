@@ -340,10 +340,10 @@ require("scrollbar").setup({
 local nimode = {'n', 'i'}
 local nivmode = {'n', 'i', 'v'}
 local nleader = '<leader>'
-local ileader = '<A-,>'
+local ileader = '<M-,>'
 
-vim.keymap.set(nimode, '<A-Up>', '#')
-vim.keymap.set(nimode, '<A-Down>', '*')
+vim.keymap.set(nimode, '<M-Up>', '#')
+vim.keymap.set(nimode, '<M-Down>', '*')
 vim.keymap.set('n', '<c-p>', '#')
 vim.keymap.set('n', '<c-n>', '*')
 
@@ -408,7 +408,7 @@ vim.cmd(':Copilot disable')
 
 -- For basic completion
 vim.keymap.set('i', '<Tab>', 'coc#pum#confirm()', opts)
-vim.keymap.set('i', '<A-e>', 'coc#pum#visible() ? coc#pum#next(1) : "<A-e>"', opts)
+vim.keymap.set('i', '<M-e>', 'coc#pum#visible() ? coc#pum#next(1) : "<M-e>"', opts)
 vim.keymap.set('i', '<S-Tab>', 'coc#pum#visible() ? coc#pum#prev(1) : "<S-Tab>"', opts)
 
 -- For bookmark
@@ -452,6 +452,8 @@ function CodeLink()
     vim.fn.setreg('+', lk)
 end
 vim.keymap.set('n', nleader .. 'url', function() CodeLink() end)
+vim.keymap.set('n', '<M-c>', function() CodeLink() end)
+vim.keymap.set('i', '<M-c>', function() CodeLink() end)
 
 function CopyAbsolutePath()
     local filename = vim.fn.expand('%:p')
