@@ -533,15 +533,17 @@ function FIFA_Tag(lnum, isBegin, line_indent)
     -- Only support c-style for now
     if isBegin then
         t = t .. '// FIFA_BEGIN | ' .. Tag_type .. ' | ' .. User_name .. ' | ' .. os.date('%Y-%m-%d') .. ' | ' .. Tag_reason
+        vim.fn.append(lnum - 1, {t})
     else 
         t = t .. '// FIFA_END'
+        vim.fn.append(lnum, {t})
     end
-    vim.fn.append(lnum, {t})
 end
 
 -- Utilities shortcuts
 function UtilityMenu() 
     local word = vim.fn.expand('<cword>')
+    local file_path = vim.fn.expand('%:p:h')
     local linenum = vim.fn.line('.')
     local line_indent = vim.fn.indent(linenum)
     vim.ui.select({ 
@@ -559,6 +561,7 @@ function UtilityMenu()
         'fifa begin',
         'fifa end',
         'fifa tag config',
+        'cd to file',
     }, {
         prompt = 'Utilities',
     }, function(sel)
@@ -589,6 +592,8 @@ function UtilityMenu()
             FIFA_Tag(linenum, true, line_indent)
         elseif sel == 'fifa end' then
             FIFA_Tag(linenum, false, line_indent)
+        elseif sel == 'cd to file' then
+            vim.cmd('cd ' .. file_path)
         end
     end)
 end
