@@ -540,6 +540,17 @@ function FIFA_Tag(lnum, isBegin, line_indent)
     end
 end
 
+function FIFA_Tag_Wraper(isBegin)
+    local linenum = vim.fn.line('.')
+    local line_indent = vim.fn.indent(linenum)
+    FIFA_Tag(linenum, isBegin, line_indent)
+end
+
+function FIFA_tag_faster()
+    vim.keymap.set("n", '<M-a>', function() FIFA_Tag_Wraper(true) end) -- show marked file list in quickfix window
+    vim.keymap.set("n", '<M-b>', function() FIFA_Tag_Wraper(false) end) -- show marked file list in quickfix window
+end
+
 -- Utilities shortcuts
 function UtilityMenu() 
     local word = vim.fn.expand('<cword>')
@@ -561,6 +572,7 @@ function UtilityMenu()
         'fifa begin',
         'fifa end',
         'fifa tag config',
+        'fifa tag faster',
         'cd to file',
     }, {
         prompt = 'Utilities',
@@ -588,6 +600,8 @@ function UtilityMenu()
             require("telescope").extensions.live_grep_args.live_grep_args()
         elseif sel == 'fuzzy lines' then
             vim.cmd('Lines')
+        elseif sel == 'fifa tag faster' then
+            FIFA_tag_faster()
         elseif sel == 'fifa begin' then
             FIFA_Tag(linenum, true, line_indent)
         elseif sel == 'fifa end' then
@@ -649,3 +663,19 @@ require('telescope').setup{
 vim.keymap.set('n', '<C-Tab>', ':bnext<CR>')
 vim.keymap.set('n', '<C-Pagedown>', ':bnext<CR>')
 vim.keymap.set('n', '<C-Pageup>', ':bprevious<CR>')
+
+function nextDiff()
+    vim.cmd("normal! ]c")
+end
+
+function prevDiff()
+    vim.cmd("normal! [c")
+end
+
+-- for diff mode
+if vim.opt.diff:get() then
+    FIFA_tag_faster()
+    vim.api.nvim_set_keymap('n', '<M-Down>', ':lua nextDiff()<CR>', {noremap = true, silent = true})
+    vim.api.nvim_set_keymap('n', '<M-Up>', ':lua prevDiff()<CR>', {noremap = true, silent = true})
+    vim.api.nvim_set_keymap('n', '<C-s>', ':w<CR>', {noremap = true, silent = true})
+end
