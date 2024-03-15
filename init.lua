@@ -555,6 +555,7 @@ end
 function UtilityMenu() 
     local word = vim.fn.expand('<cword>')
     local file_path = vim.fn.expand('%:p:h')
+    local filename = vim.fn.expand('%:p')
     local linenum = vim.fn.line('.')
     local line_indent = vim.fn.indent(linenum)
     vim.ui.select({ 
@@ -574,6 +575,7 @@ function UtilityMenu()
         'fifa tag config',
         'fifa tag faster',
         'cd to file',
+        'p4 edit',
     }, {
         prompt = 'Utilities',
     }, function(sel)
@@ -608,6 +610,9 @@ function UtilityMenu()
             FIFA_Tag(linenum, false, line_indent)
         elseif sel == 'cd to file' then
             vim.cmd('cd ' .. file_path)
+        elseif sel == 'p4 edit' then
+            vim.cmd('cd ' .. file_path)
+            vim.cmd('!p4 edit ' .. filename)
         end
     end)
 end
