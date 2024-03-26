@@ -20,8 +20,8 @@ vim.g.editorconfig = false
 -- Highlighter
 vim.cmd([[
 " default key mappings
-let HiSet   = '<space>a'
-let HiErase = '<space>e'
+let HiSet   = '<M-f>'
+let HiErase = '<M-e>'
 let HiClear = '<space>c'
 let HiFind  = '<space>f'
 
@@ -445,15 +445,43 @@ map("i", ileader .. "bs", function() bmlist() end) -- show marked file list in q
 -- vim.keymap.set('i', ileader .. 'ba', '<Plug>BookmarkAnnotate')
 -- vim.keymap.set('i', ileader .. 'bs', '<Plug>BookmarkShowAll')
 
+function newCodeLinkByFileLnum(filename, lnum)
+    local lk = 'codelink://' .. filename .. ':' .. lnum
+    return lk
+end
+
+function JumpToFileAndLine(link)
+    -- Removing the 'codelink://' prefix and splitting the string by ':'
+    local path_and_line = string.sub(link, 12)
+    local split_result = {}
+    
+    -- Split the path and line number by the last colon
+    for match in (path_and_line..":"):gmatch("(.-)"..":") do
+        table.insert(split_result, match)
+    end
+
+    local file_path = table.concat(split_result, ":", 1, #split_result - 1)
+    local line_number = tonumber(split_result[#split_result])
+
+    -- Using Neovim API to open the file
+    vim.cmd('edit ' .. file_path)
+
+    -- Jumping to the specific line
+    if line_number then
+        vim.api.nvim_win_set_cursor(0, {line_number, 0})
+    end
+end
+
 function CodeLink()
     local line = vim.fn.line('.')
     local filename = vim.fn.expand('%:p')
-    local lk = 'codelink://' .. filename .. ':' .. line
+    local lk = newCodeLinkByFileLnum(filename, line)
     vim.fn.setreg('+', lk)
 end
 vim.keymap.set('n', nleader .. 'url', function() CodeLink() end)
 vim.keymap.set('n', '<M-c>', function() CodeLink() end)
 vim.keymap.set('i', '<M-c>', function() CodeLink() end)
+vim.keymap.set('n', '<M-g>', function() GotoCodeLink() end)
 
 function CopyAbsolutePath()
     local filename = vim.fn.expand('%:p')
@@ -471,7 +499,7 @@ function SessionMenu()
         'load',
         'show session files'
     }, {
-        prompt = 'Utilities',
+        prompt = 'session tools',
     }, function(sel)
         local NEOHOME = vim.fn.expand('$HOME') .. '\\Appdata\\Local\\nvim\\'
         if sel == 'save' then
@@ -480,6 +508,29 @@ function SessionMenu()
             vim.cmd('SessionManager load_session')
         elseif sel == 'show session files' then
             os.execute('explorer \"' .. sessions_path .. '\"')
+        end
+    end)
+end
+
+function GotoCodeLink()
+     vim.ui.input({ prompt = 'Enter CodeLink: ', default=vim.fn.getreg('+') }, function(input)
+         if input then
+             JumpToFileAndLine(input)
+         end
+     end)
+end
+
+function CodeLinkMenu(filename, lnum)
+    vim.ui.select({ 
+        'goto',
+        'generate',
+    }, {
+        prompt = 'CodeLinkMenu',
+    }, function(sel)
+        if sel == 'goto' then
+            GotoCodeLink()
+        elseif sel == 'generate' then
+            vim.fn.setreg('+', newCodeLinkByFileLnum(filename, lnum))
         end
     end)
 end
@@ -576,6 +627,7 @@ function UtilityMenu()
         'fifa tag faster',
         'cd to file',
         'p4 edit',
+        'codelink tools',
     }, {
         prompt = 'Utilities',
     }, function(sel)
@@ -613,6 +665,8 @@ function UtilityMenu()
         elseif sel == 'p4 edit' then
             vim.cmd('cd ' .. file_path)
             vim.cmd('!p4 edit ' .. filename)
+        elseif sel == 'codelink tools' then
+            CodeLinkMenu(filename, linenum)
         end
     end)
 end
