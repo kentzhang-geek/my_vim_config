@@ -60,7 +60,7 @@ inoremap <leader>ba <esc>:action ToggleBookmark<CR>:action EditBookmark<CR>
 inoremap <leader>bs <esc>:action ShowBookmarks<CR>
 
 " Highlighter
-noremap <space>s :action MultiHighlight<CR>
+noremap <M-f> :action MultiHighlight<CR>
 noremap <space>e :action MultiHighlight<CR>
 noremap <space>c :action MultiHighlight.ClearAction<CR>
 
@@ -78,6 +78,7 @@ function! CodeLink()
 	let @+ = "codelink://" . file_name . ":" . lnum
 endfunction
 nnoremap <leader>url :call CodeLink()<CR>
+nnoremap <M-c> :call CodeLink()<CR>
 
 " for quick perforce reference
 nnoremap <leader>pt :action CopyAbsolutePath<CR>
