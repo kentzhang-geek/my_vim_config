@@ -288,11 +288,7 @@ require('lazy').setup({
         },
     },
     'nvim-telescope/telescope-ui-select.nvim',
-    'Shatur/neovim-session-manager',    -- session manager
-    {
-        "nvim-telescope/telescope-file-browser.nvim",
-        dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
-    },
+    'nvim-telescope/telescope-file-browser.nvim',
     'petertriho/nvim-scrollbar',
     'norcalli/nvim-colorizer.lua',
     -- 'dstein64/nvim-scrollview',
@@ -493,6 +489,34 @@ vim.keymap.set('n', nleader .. 'pt', function() CopyAbsolutePath() end)
 local lspconfig = require('lspconfig')
 lspconfig.clangd.setup{}
 
+local session_name = ""
+
+function SaveSession() 
+    vim.ui.input({ prompt = 'Enter session name: ', default=session_name }, function(input)
+        if input then
+            session_name = input
+            vim.cmd('mksession! ' .. sessions_path .. '\\' .. input)
+        end
+    end)
+end
+
+function LoadSession()
+    -- Got file list under sessions_path, output a list
+    local files = {}
+    for file in io.popen('dir /b /a-d ' .. sessions_path):lines() do
+        table.insert(files, file)
+    end
+    vim.ui.select(files,
+    {
+        prompt = 'select a session to load',
+    }, function(sel)
+        if sel then
+            session_name = sel
+            vim.cmd('source ' .. sessions_path .. '\\' .. sel)
+        end
+    end)
+end
+
 function SessionMenu()
     vim.ui.select({ 
         'save',
@@ -503,9 +527,9 @@ function SessionMenu()
     }, function(sel)
         local NEOHOME = vim.fn.expand('$HOME') .. '\\Appdata\\Local\\nvim\\'
         if sel == 'save' then
-            vim.cmd('SessionManager save_current_session')
+            SaveSession()
         elseif sel == 'load' then
-            vim.cmd('SessionManager load_session')
+            LoadSession()
         elseif sel == 'show session files' then
             os.execute('explorer \"' .. sessions_path .. '\"')
         end
@@ -684,24 +708,6 @@ vim.keymap.set("v",    "<S-Tab>",       "<gv", opts)
 
 -- for C-BS
 vim.keymap.set("i", "<C-BS>", "<C-W>")
-
--- for mession manager
-local Path = require('plenary.path')
-local config = require('session_manager.config')
-require('session_manager').setup({
-  sessions_dir = Path:new(sessions_path), -- The directory where the session files will be saved.
-  autoload_mode = config.AutoloadMode.Disabled, -- Define what to do when Neovim is started without arguments. Possible values: Disabled, CurrentDir, LastSession
-  autosave_last_session = true, -- Automatically save last session on exit and on session switch.
-  autosave_ignore_not_normal = true, -- Plugin will not save a session when no buffers are opened, or all of them aren't writable or listed.
-  autosave_ignore_dirs = {}, -- A list of directories where the session will not be autosaved.
-  autosave_ignore_filetypes = { -- All buffers of these file types will be closed before the session is saved.
-    'gitcommit',
-    'gitrebase',
-  },
-  autosave_ignore_buftypes = {}, -- All buffers of these bufer types will be closed before the session is saved.
-  autosave_only_in_session = false, -- Always autosaves session. If true, only autosaves after a session is active.
-  max_path_length = 80,  -- Shorten the display path if length exceeds this threshold. Use 0 if don't want to shorten the path at all.
-})
 
 -- For Telescope
 vim.keymap.set('n', nleader .. 'ts', ':Telescope<CR>')
