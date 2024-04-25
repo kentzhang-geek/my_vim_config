@@ -292,7 +292,19 @@ require('lazy').setup({
     'petertriho/nvim-scrollbar',
     'norcalli/nvim-colorizer.lua',
     -- 'dstein64/nvim-scrollview',
+    'wfxr/minimap.vim', -- minimap
 })
+
+vim.cmd([[
+let g:minimap_width = 10
+let g:minimap_auto_start = 1
+let g:minimap_auto_start_win_enter = 1
+]])
+
+-- for airline statusline
+vim.cmd([[
+let g:airline_section_c = '%F'
+]])
 
 -- coc for Frostbite
 vim.g.coc_global_extensions = {'coc-clangd'}
@@ -652,6 +664,7 @@ function UtilityMenu()
         'cd to file',
         'p4 edit',
         'codelink tools',
+        'minimap',
     }, {
         prompt = 'Utilities',
     }, function(sel)
@@ -691,6 +704,8 @@ function UtilityMenu()
             vim.cmd('!p4 edit ' .. filename)
         elseif sel == 'codelink tools' then
             CodeLinkMenu(filename, linenum)
+        elseif sel == 'minimap' then
+            vim.cmd('MinimapToggle')
         end
     end)
 end
