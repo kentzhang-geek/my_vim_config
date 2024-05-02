@@ -752,10 +752,62 @@ function prevDiff()
     vim.cmd("normal! [c")
 end
 
+-- Which side in VimDiff
+function IsInLeftSide()
+    -- return true if cursor is in left side
+    return vim.fn.winnr() == 1
+end
+
+-- left to right
+function DiffL2R()
+    if IsInLeftSide() then
+        vim.cmd("diffput")
+    else 
+        vim.cmd("diffget")
+    end
+end
+
+-- right to left
+function DiffR2L()
+    if IsInLeftSide() then
+        vim.cmd("diffget")
+    else 
+        vim.cmd("diffput")
+    end
+end
+
+-- select current line
+local function select_current_line()
+    local line = vim.api.nvim_win_get_cursor(0)[1] -- Get the current line number
+    vim.api.nvim_exec("normal! " .. line .. "GV" .. line .. "G", false)
+end
+
+-- left to right just 1 line
+function DiffL2R1()
+    if IsInLeftSide() then
+        vim.cmd(".diffput")
+    else 
+        vim.cmd(".diffget")
+    end
+end
+
+-- right to left just 1 line
+function DiffR2L1()
+    if IsInLeftSide() then
+        vim.cmd(".diffget")
+    else 
+        vim.cmd(".diffput")
+    end
+end
+
 -- for diff mode
 if vim.opt.diff:get() then
     FIFA_tag_faster()
     vim.api.nvim_set_keymap('n', '<M-Down>', ':lua nextDiff()<CR>', {noremap = true, silent = true})
     vim.api.nvim_set_keymap('n', '<M-Up>', ':lua prevDiff()<CR>', {noremap = true, silent = true})
+    vim.keymap.set("n", '<M-Left>', function() DiffR2L() end) 
+    vim.keymap.set("n", '<M-Right>', function() DiffL2R() end)
+    vim.keymap.set("n", '<M-S-Left>', function() DiffR2L1() end)
+    vim.keymap.set("n", '<M-S-Right>', function() DiffL2R1() end)
     vim.api.nvim_set_keymap('n', '<C-s>', ':w<CR>', {noremap = true, silent = true})
 end
