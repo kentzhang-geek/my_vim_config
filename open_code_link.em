@@ -17,7 +17,14 @@ macro GetCodeLink()
 		}
 		ich = ich + 1
 	}
+	var headlnum
+	headlnum = lnum - 15
+	if (headlnum <= 0)
+	{
+		headlnum = 1
+	}
 
 	f = OpenMiscFile(path)
-	ScrollWndToLine (GetCurrentWnd(), lnum)
+	ScrollWndToLine (GetCurrentWnd(), headlnum)
+	SetBufIns (GetBufHandle(path), lnum, 0)
 }
