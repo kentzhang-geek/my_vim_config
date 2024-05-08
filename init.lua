@@ -321,6 +321,8 @@ vim.o.softtabstop  = 4
 vim.o.hlsearch     = false
 vim.o.expandtab    = true
 vim.o.cursorline   = true
+vim.opt.swapfile   = false
+
 if vim.fn.has('gui_running') then
     vim.cmd('set guioptions+=c')
 end
