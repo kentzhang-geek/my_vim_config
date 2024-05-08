@@ -250,43 +250,6 @@ require('lazy').setup({
     {
         'neoclide/coc.nvim', branch = 'release',
     },
-    {
-        "dhananjaylatkar/cscope_maps.nvim",
-        dependencies = {
-            "folke/which-key.nvim", -- optional [for whichkey hints]
-            "nvim-telescope/telescope.nvim", -- optional [for picker="telescope"]
-            "nvim-tree/nvim-web-devicons", -- optional [for devicons in telescope or fzf]
-        },
-        opts = {
-            -- USE EMPTY FOR DEFAULT OPTIONS
-            -- DEFAULTS ARE LISTED BELOW
-
-            -- maps related defaults
-            disable_maps = true, -- "true" disables default keymaps
-            skip_input_prompt = false, -- "true" doesn't ask for input
-            prefix = "<leader>cs", -- prefix to trigger maps
-
-            -- cscope related defaults
-            cscope = {
-                -- location of cscope db file
-                db_file = "C:/cscope_db/cscope.out",
-                -- cscope executable
-                exec = "cscope", -- "cscope" or "gtags-cscope"
-                -- choose your fav picker
-                picker = "telescope", -- "telescope", "fzf-lua" or "quickfix"
-                -- size of quickfix window
-                qf_window_size = 5, -- any positive integer
-                -- position of quickfix window
-                qf_window_pos = "bottom", -- "bottom", "right", "left" or "top"
-                -- "true" does not open picker for single result, just JUMP
-                skip_picker_for_single_result = false, -- "false" or "true"
-                -- these args are directly passed to "cscope -f <db_file> <args>"
-                db_build_cmd_args = { "-bqkv" },
-                -- statusline indicator, default is cscope executable
-                statusline_indicator = nil,
-            }
-        },
-    },
     'nvim-telescope/telescope-ui-select.nvim',
     'nvim-telescope/telescope-file-browser.nvim',
     'petertriho/nvim-scrollbar',
@@ -421,9 +384,16 @@ vim.keymap.set('i', '<Tab>', 'coc#pum#confirm()', opts)
 vim.keymap.set('i', '<M-e>', 'coc#pum#visible() ? coc#pum#next(1) : "<M-e>"', opts)
 vim.keymap.set('i', '<S-Tab>', 'coc#pum#visible() ? coc#pum#prev(1) : "<S-Tab>"', opts)
 
+-- Telescope extensions
+local telescope = require('telescope')
+local pickers = require('telescope.pickers')
+local finders = require('telescope.finders')
+local actions = require('telescope.actions')
+local action_state = require('telescope.actions.state')
+
 -- For bookmark
 local bm = require "bookmarks"
-require('telescope').load_extension('bookmarks')
+telescope.load_extension('bookmarks')
 local map = vim.keymap.set
 function bmlist()
     vim.cmd(':Telescope bookmarks list')
@@ -440,6 +410,21 @@ map("i", ileader .. "bc", bm.bookmark_clean) -- clean all marks in local buffer
 map("i", ileader .. "bn", bm.bookmark_next) -- jump to next mark in local buffer
 map("i", ileader .. "bp", bm.bookmark_prev) -- jump to previous mark in local buffer
 map("i", ileader .. "bs", function() bmlist() end) -- show marked file list in quickfix window
+
+-- For Telescope
+vim.keymap.set('n', nleader .. 'ts', ':Telescope<CR>')
+telescope.load_extension("ui-select")
+telescope.load_extension "file_browser"
+telescope.setup{
+    defaults = {
+        layout_strategy='vertical',
+        layout_config = {
+            vertical = { width = 0.8 },
+            -- other layout configuration here
+        },
+        -- other defaults configuration here
+    }
+}
 
 -- Bookmark
 -- vim.cmd('highlight BookmarkSign ctermbg=NONE ctermfg=160')
@@ -573,28 +558,6 @@ function CodeLinkMenu(filename, lnum)
     end)
 end
 
-function CscopeSubmenu()
-    vim.ui.select({ 
-        'select types',
-        'update',
-        'choose root',
-        'make as root', 
-    }, {
-        prompt = 'Cscope Utilities',
-    }, function(sel)
-        local NEOHOME = vim.fn.expand('$HOME') .. '\\Appdata\\Local\\nvim\\'
-        if sel == 'select types' then
-            os.execute('python ' .. NEOHOME .. 'cscope_tools.py -files')
-        elseif sel == 'update' then
-            os.execute('python ' .. NEOHOME .. 'cscope_tools.py -update')
-        elseif sel == 'choose root' then
-            os.execute('python ' .. NEOHOME .. 'cscope_tools.py -chroot')
-        elseif sel == 'make as root' then
-            os.execute('python ' .. NEOHOME .. 'cscope_tools.py -mkroot')
-        end
-    end)
-end
-
 function FileBrowser()
     vim.ui.input({
         prompt='Enter root path',
@@ -648,9 +611,7 @@ function UtilityMenu()
     local linenum = vim.fn.line('.')
     local line_indent = vim.fn.indent(linenum)
     vim.ui.select({ 
-        'lookup symbol',
-        'lookup text',
-        'cscope_db',
+        'lookup word',
         'remove duplicate lines without sort',
         'remove duplicate lines with sort',
         'show bookmark files',
@@ -667,16 +628,13 @@ function UtilityMenu()
         'p4 edit',
         'codelink tools',
         'minimap',
+        'qgrep search',
     }, {
         prompt = 'Utilities',
     }, function(sel)
         local NEOHOME = vim.fn.expand('$HOME') .. '\\Appdata\\Local\\nvim\\'
-        if sel == 'lookup symbol' then
-            vim.cmd('Cscope find s ' .. word)
-        elseif sel == 'lookup text' then
-            vim.cmd('Cscope find t ' .. word)
-        elseif sel == 'cscope_db' then
-            CscopeSubmenu()
+        if sel == 'lookup word' then
+            vim.cmd('QgrepSearch ' .. word)
         elseif sel == 'remove duplicate lines without sort' then
             vim.cmd('g/^\\(.*\\)$\\n\\1/d')
         elseif sel == 'remove duplicate lines with sort' then
@@ -708,6 +666,8 @@ function UtilityMenu()
             CodeLinkMenu(filename, linenum)
         elseif sel == 'minimap' then
             vim.cmd('MinimapToggle')
+        elseif sel == 'qgrep search' then
+            vim.cmd('QgrepSearch')
         end
     end)
 end
@@ -725,21 +685,6 @@ vim.keymap.set("v",    "<S-Tab>",       "<gv", opts)
 
 -- for C-BS
 vim.keymap.set("i", "<C-BS>", "<C-W>")
-
--- For Telescope
-vim.keymap.set('n', nleader .. 'ts', ':Telescope<CR>')
-require("telescope").load_extension("ui-select")
-require("telescope").load_extension "file_browser"
-require('telescope').setup{
-    defaults = {
-        layout_strategy='vertical',
-        layout_config = {
-            vertical = { width = 0.8 },
-            -- other layout configuration here
-        },
-        -- other defaults configuration here
-    },
-}
 
 -- switch between tabs
 vim.keymap.set('n', '<C-Tab>', ':bnext<CR>')
