@@ -673,9 +673,6 @@ function UtilityMenu()
 end
 vim.keymap.set('n', nleader .. 'mm', function() UtilityMenu() end)
 
--- execute vim script to provide menu functions
-vim.cmd('source ~/Appdata/Local/nvim/neo_mm.vim')
-
 -- for tab indenting
 local opts = { noremap = true, silent = true }
 vim.keymap.set("n",    "<Tab>",         ">>",  opts)
