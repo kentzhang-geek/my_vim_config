@@ -106,12 +106,6 @@ require('lazy').setup({
     'junegunn/vim-easy-align',
     'frazrepo/vim-rainbow',
     {
-        'nvim-treesitter/nvim-treesitter',  -- a better syntax highlighter
-        build = function ()
-            vim.cmd(':TSUpdate')
-        end
-    },
-    {
         'gelguy/wilder.nvim',
         config = function()
             -- config goes here
