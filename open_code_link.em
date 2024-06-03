@@ -26,5 +26,5 @@ macro GetCodeLink()
 
 	f = OpenMiscFile(path)
 	ScrollWndToLine (GetCurrentWnd(), headlnum)
-	SetBufIns (hNil, lnum, 0)
+	SetBufIns (GetCurrentBuf(), lnum - 1, 0)
 }
