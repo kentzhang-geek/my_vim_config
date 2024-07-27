@@ -623,6 +623,7 @@ function UtilityMenu()
         'codelink tools',
         'minimap',
         'qgrep search',
+        'qgrep files',
     }, {
         prompt = 'Utilities',
     }, function(sel)
@@ -662,6 +663,8 @@ function UtilityMenu()
             vim.cmd('MinimapToggle')
         elseif sel == 'qgrep search' then
             vim.cmd('QgrepSearch')
+        elseif sel == 'qgrep files' then
+            vim.cmd('QgrepFiles')
         end
     end)
 end
