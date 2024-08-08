@@ -37,8 +37,12 @@ set ignorecase
 ]])
 
 -- path configs
-local sessions_path = vim.fn.expand('$HOME') .. '\\vim_sessions'
-local bookmarks_path = vim.fn.expand('$HOME') .. '\\vim_bookmarks'
+local path_spliter = '\\'
+if vim.fn.has('linux') then
+    path_spliter = '/'
+end
+local sessions_path = vim.fn.expand('$HOME') .. path_spliter .. 'vim_sessions'
+local bookmarks_path = vim.fn.expand('$HOME') .. path_spliter .. 'vim_bookmarks'
 
 -- check bookmark directory
 if vim.fn.isdirectory(bookmarks_path) == 0 then
@@ -564,12 +568,17 @@ function FileBrowser()
     end)
 end
 
+local Tag_reason = ""
+local Tag_type = ""
+local User_name = ""
+if not vim.fn.has('linux') then
 -- TODO -> a lua config reader
 local project_config_file = 'C:\\cscope_db\\project_config.json'
 local project_config = vim.json.decode(io.open(project_config_file, "r"):read('*a'))
-local Tag_reason = project_config.Tag_reason
-local Tag_type = project_config.Tag_type
-local User_name = project_config.User_name
+Tag_reason = project_config.Tag_reason
+Tag_type = project_config.Tag_type
+User_name = project_config.User_name
+end
 
 function FIFA_Tag(lnum, isBegin, line_indent)
     local t = ''
