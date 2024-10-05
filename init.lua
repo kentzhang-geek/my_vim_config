@@ -235,7 +235,7 @@ require('lazy').setup({
         event = "VimEnter",
         config = function()
             require('bookmarks').setup{
-                save_file = bookmarks_path .. "\\default.bookmarks", -- bookmarks save file path
+                save_file = bookmarks_path .. path_spliter .. "default.bookmarks", -- bookmarks save file path
                 keywords =  {
                     ["@t"] = "☑️ ", -- mark annotation startswith @t ,signs this icon as `Todo`
                     ["@w"] = "⚠️ ", -- mark annotation startswith @w ,signs this icon as `Warn`
