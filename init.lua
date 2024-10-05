@@ -398,15 +398,9 @@ function bmlist()
 end
 map("n", nleader .. "bb", bm.bookmark_toggle) -- add or remove bookmark at current line
 map("n", nleader .. "ba", bm.bookmark_ann) -- add or edit mark annotation at current line
-map("n", nleader .. "bc", bm.bookmark_clean) -- clean all marks in local buffer
-map("n", nleader .. "bn", bm.bookmark_next) -- jump to next mark in local buffer
-map("n", nleader .. "bp", bm.bookmark_prev) -- jump to previous mark in local buffer
 map("n", nleader .. "bs", function() bmlist() end) -- show marked file list in quickfix window
 map("i", ileader .. "bb", bm.bookmark_toggle) -- add or remove bookmark at current line
 map("i", ileader .. "ba", bm.bookmark_ann) -- add or edit mark annotation at current line
-map("i", ileader .. "bc", bm.bookmark_clean) -- clean all marks in local buffer
-map("i", ileader .. "bn", bm.bookmark_next) -- jump to next mark in local buffer
-map("i", ileader .. "bp", bm.bookmark_prev) -- jump to previous mark in local buffer
 map("i", ileader .. "bs", function() bmlist() end) -- show marked file list in quickfix window
 
 -- For Telescope
@@ -424,7 +418,7 @@ telescope.setup{
     }
 }
 
--- Bookmark
+-- Bookmark -> Deprecated
 -- vim.cmd('highlight BookmarkSign ctermbg=NONE ctermfg=160')
 -- vim.cmd('highlight BookmarkLine ctermbg=194 ctermfg=NONE')
 -- vim.g.bookmark_sign = '♥'
