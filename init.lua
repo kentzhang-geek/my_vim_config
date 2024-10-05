@@ -38,7 +38,7 @@ set ignorecase
 
 -- path configs
 local path_spliter = '\\'
-if vim.fn.has('linux') then
+if not vim.loop.os_uname().sysname == 'Windows_NT' then
     path_spliter = '/'
 end
 local sessions_path = vim.fn.expand('$HOME') .. path_spliter .. 'vim_sessions'
@@ -486,7 +486,7 @@ function SaveSession()
     vim.ui.input({ prompt = 'Enter session name: ', default=session_name }, function(input)
         if input then
             session_name = input
-            vim.cmd('mksession! ' .. sessions_path .. '\\' .. input)
+            vim.cmd('mksession! ' .. sessions_path .. path_spliter .. input)
         end
     end)
 end
@@ -503,7 +503,7 @@ function LoadSession()
     }, function(sel)
         if sel then
             session_name = sel
-            vim.cmd('source ' .. sessions_path .. '\\' .. sel)
+            vim.cmd('source ' .. sessions_path .. path_spliter .. sel)
         end
     end)
 end
@@ -516,7 +516,6 @@ function SessionMenu()
     }, {
         prompt = 'session tools',
     }, function(sel)
-        local NEOHOME = vim.fn.expand('$HOME') .. '\\Appdata\\Local\\nvim\\'
         if sel == 'save' then
             SaveSession()
         elseif sel == 'load' then
