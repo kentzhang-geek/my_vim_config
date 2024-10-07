@@ -38,7 +38,7 @@ set ignorecase
 
 -- path configs
 local path_spliter = '\\'
-if not vim.loop.os_uname().sysname == 'Windows_NT' then
+if not (vim.loop.os_uname().sysname == 'Windows_NT') then
     path_spliter = '/'
 end
 local sessions_path = vim.fn.expand('$HOME') .. path_spliter .. 'vim_sessions'
