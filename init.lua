@@ -657,7 +657,7 @@ function UtilityMenu()
         elseif sel == 'cd to file' then
             vim.cmd('cd ' .. file_path)
         elseif sel == 'p4 edit' then
-            vim.cmd('cd \"' .. file_path .. '\"')
+            vim.cmd('cd ' .. file_path)
             vim.cmd('!p4 edit \"' .. filename .. '\"')
         elseif sel == 'codelink tools' then
             CodeLinkMenu(filename, linenum)
