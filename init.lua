@@ -284,8 +284,19 @@ vim.o.expandtab    = true
 vim.o.cursorline   = true
 vim.opt.swapfile   = false
 
+vim.cmd([[
+let s:fontsize = 16
+function! AdjustFontSize(amount)
+  let s:fontsize = s:fontsize+a:amount
+  :execute "set guifont=Consolas:h" . s:fontsize
+endfunction
+]])
+
 if vim.fn.has('gui_running') then
     vim.cmd('set guioptions+=c')
+    vim.cmd('set guifont=Consolas:h16')
+    vim.keymap.set('n', '<C-ScrollWheelUp>', ':call AdjustFontSize(2)<CR>')
+    vim.keymap.set('n', '<C-ScrollWheelDown>', ':call AdjustFontSize(-2)<CR>')
 end
 vim.cmd('set clipboard+=unnamedplus')
 
@@ -622,6 +633,7 @@ function UtilityMenu()
         'fifa tag faster',
         'cd to file',
         'p4 edit',
+        'p4 add',
         'codelink tools',
         'minimap',
         'qgrep search',
@@ -659,6 +671,9 @@ function UtilityMenu()
         elseif sel == 'p4 edit' then
             vim.cmd('cd ' .. file_path)
             vim.cmd('!p4 edit \"' .. filename .. '\"')
+        elseif sel == 'p4 add' then
+            vim.cmd('cd ' .. file_path)
+            vim.cmd('!p4 add \"' .. filename .. '\"')
         elseif sel == 'codelink tools' then
             CodeLinkMenu(filename, linenum)
         elseif sel == 'minimap' then

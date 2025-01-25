@@ -1,6 +1,6 @@
 Windows Registry Editor Version 5.00
 [HKEY_CLASSES_ROOT\*\shell\Edit with Neovim]
-"Icon"="C:\\Program Files\\Neovide\\neovide.exe"
+"Icon"="C:\\Tools\\bin\\goneovim.exe"
 
 [HKEY_CLASSES_ROOT\*\shell\Edit with Neovim\command]
-@="\"C:\\Program Files\\Neovide\\neovide.exe\" \"%1\"" 
+@="\"C:\\Tools\\bin\\goneovim.exe\" \"%1\"" 
