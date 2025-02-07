@@ -560,10 +560,10 @@ function CodeLinkMenu(filename, lnum)
     end)
 end
 
-function FileBrowser()
+function FileBrowser(file_path)
     vim.ui.input({
         prompt='Enter root path',
-        default='C:\\',
+        default=file_path,
     }, function(root) 
         if root then
             vim.cmd('cd ' .. root)
@@ -655,7 +655,7 @@ function UtilityMenu()
         elseif sel == 'session submenu' then
             SessionMenu()
         elseif sel == 'file browser' then
-            FileBrowser()
+            FileBrowser(file_path)
         elseif sel == 'live grep' then
             require("telescope").extensions.live_grep_args.live_grep_args()
         elseif sel == 'fuzzy lines' then
