@@ -107,6 +107,17 @@ require('lazy').setup({
     },
     'junegunn/fzf.vim',
     'github/copilot.vim',
+    {
+        "CopilotC-Nvim/CopilotChat.nvim",
+        dependencies = {
+            { "github/copilot.vim" }, -- or zbirenbaum/copilot.lua
+            { "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
+        },
+        opts = {
+            -- See Configuration section for options
+        },
+        -- See Commands section for default commands if you want to lazy load on them
+    },
     'junegunn/vim-easy-align',
     'frazrepo/vim-rainbow',
     {
@@ -386,7 +397,7 @@ vim.keymap.set(nimode, '<M-r>', '<Plug>(copilot-suggest)', Plug_opts)
 vim.keymap.set(nimode, '<M-n>', '<Plug>(copilot-next)', Plug_opts)
 vim.keymap.set(nimode, '<M-p>', '<Plug>(copilot-prev)', Plug_opts)
 vim.keymap.set(nimode, '<M-x>', 'copilot#Accept()', opts)
-vim.cmd(':Copilot disable')
+vim.cmd(':Copilot enable')
 
 -- For basic completion
 vim.keymap.set('i', '<Tab>', 'coc#pum#confirm()', opts)
