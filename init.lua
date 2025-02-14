@@ -633,6 +633,7 @@ function UtilityMenu()
         'remove duplicate lines without sort',
         'remove duplicate lines with sort',
         'show bookmark files',
+        'bookmarks reload',
         'json beautify current line',
         'session submenu',
         'file browser',
@@ -661,6 +662,8 @@ function UtilityMenu()
             vim.cmd('sort u')
         elseif sel == 'show bookmark files' then
             os.execute('explorer \"' .. bookmarks_path .. '\"')
+        elseif sel == 'bookmarks reload' then
+            vim.cmd(':Telescope bookmarks reload')
         elseif sel == 'json beautify current line' then
             vim.cmd('%!jq .')
         elseif sel == 'session submenu' then
