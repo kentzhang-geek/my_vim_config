@@ -392,6 +392,7 @@ vim.keymap.set('n', nleader .. 'ea', 'vip<Plug>(EasyAlign)<C-X>')
 -- For Copilot
 local opts = {silent = true, noremap = true, expr = true, replace_keycodes = false}
 local Plug_opts = {silent = true, noremap = false}
+vim.g.copilot_no_tab_map = true
 vim.keymap.set(nimode, '<M-\\>', '<Plug>(copilot-suggest)', Plug_opts)
 vim.keymap.set(nimode, '<M-r>', '<Plug>(copilot-suggest)', Plug_opts)
 vim.keymap.set(nimode, '<M-n>', '<Plug>(copilot-next)', Plug_opts)
@@ -400,9 +401,9 @@ vim.keymap.set(nimode, '<M-x>', 'copilot#Accept()', opts)
 vim.cmd(':Copilot enable')
 
 -- For basic completion
-vim.keymap.set('i', '<Tab>', 'coc#pum#confirm()', opts)
-vim.keymap.set('i', '<M-e>', 'coc#pum#visible() ? coc#pum#next(1) : "<M-e>"', opts)
-vim.keymap.set('i', '<S-Tab>', 'coc#pum#visible() ? coc#pum#prev(1) : "<S-Tab>"', opts)
+vim.keymap.set('i', '<Tab>', 'coc#pum#visible() ? coc#pum#confirm() : "<Tab>"', opts)
+vim.keymap.set('i', '<C-down>', 'coc#pum#visible() ? coc#pum#next(1) : "<C-down>"', opts)
+vim.keymap.set('i', '<C-up>', 'coc#pum#visible() ? coc#pum#prev(1) : "<C-up>"', opts)
 
 -- Telescope extensions
 local telescope = require('telescope')
@@ -644,6 +645,7 @@ function UtilityMenu()
         'fifa tag config',
         'fifa tag faster',
         'cd to file',
+        'file remove read only',
         'p4 edit',
         'p4 add',
         'codelink tools',
@@ -682,6 +684,9 @@ function UtilityMenu()
             FIFA_Tag(linenum, false, line_indent)
         elseif sel == 'cd to file' then
             vim.cmd('cd ' .. file_path)
+        elseif sel == 'file remove read only' then
+            vim.cmd('cd ' .. file_path)
+            vim.cmd('!attrib -r \"' .. filename .. '\"')
         elseif sel == 'p4 edit' then
             vim.cmd('cd ' .. file_path)
             vim.cmd('!p4 edit \"' .. filename .. '\"')
