@@ -242,6 +242,15 @@ require('lazy').setup({
         end
     },
     {
+        'kentzhang-geek/zoekt.nvim',
+        dependencies = { 
+            'nvim-lua/plenary.nvim',
+        },
+        config = function()
+            require('zoektnvim').setup()
+        end
+    },
+    {
         'kentzhang-geek/bookmarks.nvim', -- after = "telescope.nvim",
         event = "VimEnter",
         config = function()
@@ -652,6 +661,7 @@ function UtilityMenu()
         'minimap',
         'qgrep search',
         'qgrep files',
+        'zoekt search',
     }, {
         prompt = 'Utilities',
     }, function(sel)
@@ -701,6 +711,8 @@ function UtilityMenu()
             vim.cmd('QgrepSearch')
         elseif sel == 'qgrep files' then
             vim.cmd('QgrepFiles')
+        elseif sel == 'zoekt search' then
+            vim.cmd('ZoektSearch')
         end
     end)
 end
