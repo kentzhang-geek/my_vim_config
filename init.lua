@@ -662,6 +662,7 @@ function UtilityMenu()
         'qgrep search',
         'qgrep files',
         'zoekt search',
+        'zoekt lookup',
     }, {
         prompt = 'Utilities',
     }, function(sel)
@@ -713,6 +714,8 @@ function UtilityMenu()
             vim.cmd('QgrepFiles')
         elseif sel == 'zoekt search' then
             vim.cmd('ZoektSearch')
+        elseif sel == 'zoekt lookup' then
+            vim.cmd('ZoektSearch ' .. word)
         end
     end)
 end
