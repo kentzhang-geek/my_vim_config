@@ -596,13 +596,27 @@ end
 local Tag_reason = ""
 local Tag_type = ""
 local User_name = ""
-if not vim.fn.has('linux') then
--- TODO -> a lua config reader
-local project_config_file = 'C:\\cscope_db\\project_config.json'
-local project_config = vim.json.decode(io.open(project_config_file, "r"):read('*a'))
-Tag_reason = project_config.Tag_reason
-Tag_type = project_config.Tag_type
-User_name = project_config.User_name
+local config_file_path = vim.fn.expand('$HOME') .. path_spliter .. '.config' .. path_spliter .. 'nvim' .. path_spliter
+local config_file = config_file_path .. 'project_config.json'
+if vim.loop.os_uname().sysname == 'Windows_NT' then
+    -- detect and create config file
+    if vim.fn.isdirectory(config_file_path) == 0 then
+        vim.fn.mkdir(config_file_path)
+    end
+    if vim.fn.filereadable(config_file) == 0 then
+        local default_config = {
+            Tag_reason = "new feature",
+            Tag_type = "feature",
+            User_name = "usere name",
+        }
+        local f = io.open(config_file, "w")
+        f:write(vim.fn.json_encode(default_config))
+        f:close()
+    end
+    local project_config = vim.json.decode(io.open(config_file, "r"):read('*a'))
+    Tag_reason = project_config.Tag_reason
+    Tag_type = project_config.Tag_type
+    User_name = project_config.User_name
 end
 
 function FIFA_Tag(lnum, isBegin, line_indent)
@@ -666,7 +680,6 @@ function UtilityMenu()
     }, {
         prompt = 'Utilities',
     }, function(sel)
-        local NEOHOME = vim.fn.expand('$HOME') .. '\\Appdata\\Local\\nvim\\'
         if sel == 'lookup word' then
             vim.cmd('QgrepSearch ' .. word)
         elseif sel == 'remove duplicate lines without sort' then
@@ -675,6 +688,8 @@ function UtilityMenu()
             vim.cmd('sort u')
         elseif sel == 'show bookmark files' then
             os.execute('explorer \"' .. bookmarks_path .. '\"')
+        elseif sel == 'fifa tag config' then
+            vim.cmd('edit ' .. config_file)
         elseif sel == 'bookmarks reload' then
             vim.cmd(':Telescope bookmarks reload')
         elseif sel == 'json beautify current line' then
