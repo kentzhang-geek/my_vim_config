@@ -274,6 +274,7 @@ require('lazy').setup({
     'norcalli/nvim-colorizer.lua',
     -- 'dstein64/nvim-scrollview',
     'wfxr/minimap.vim', -- minimap
+    'fannheyward/telescope-coc.nvim'
 })
 
 vim.cmd([[
@@ -288,6 +289,17 @@ let g:airline_section_c = '%F'
 ]])
 
 -- coc for Frostbite
+require("telescope").setup({
+  extensions = {
+    coc = {
+        theme = 'ivy',
+        prefer_locations = true, -- always use Telescope locations to preview definitions/declarations/implementations etc
+        push_cursor_on_edit = true, -- save the cursor position to jump back in the future
+        timeout = 3000, -- timeout for coc commands
+    }
+  },
+})
+require('telescope').load_extension('coc')
 vim.g.coc_global_extensions = {'coc-clangd'}
 
 vim.opt.encoding   = 'utf-8'
@@ -508,10 +520,6 @@ function CopyAbsolutePath()
 end
 vim.keymap.set('n', nleader .. 'pt', function() CopyAbsolutePath() end)
 
--- Setup language servers.
-local lspconfig = require('lspconfig')
-lspconfig.clangd.setup{}
-
 local session_name = ""
 
 function SaveSession() 
@@ -593,40 +601,62 @@ function FileBrowser(file_path)
     end)
 end
 
-local Tag_reason = ""
-local Tag_type = ""
-local User_name = ""
 local config_file_path = vim.fn.expand('$HOME') .. path_spliter .. '.config' .. path_spliter .. 'nvim' .. path_spliter
 local config_file = config_file_path .. 'project_config.json'
-if vim.loop.os_uname().sysname == 'Windows_NT' then
-    -- detect and create config file
-    if vim.fn.isdirectory(config_file_path) == 0 then
-        vim.fn.mkdir(config_file_path)
+function load_config()
+    local Tag_reason = ""
+    local Tag_type = ""
+    local User_name = ""
+    if vim.loop.os_uname().sysname == 'Windows_NT' then
+        -- detect and create config file
+        if vim.fn.isdirectory(config_file_path) == 0 then
+            vim.fn.mkdir(config_file_path)
+        end
+        if vim.fn.filereadable(config_file) == 0 then
+            local default_config = {
+                Tag_reason = "new feature",
+                Tag_type = "feature",
+                User_name = "usere name",
+                Clang_Index = ""
+            }
+            local f = io.open(config_file, "w")
+            f:write(vim.fn.json_encode(default_config))
+            f:close()
+        end
+        local project_config = vim.json.decode(io.open(config_file, "r"):read('*a'))
+        Tag_reason = project_config.Tag_reason
+        Tag_type = project_config.Tag_type
+        User_name = project_config.User_name
+        Clang_Index = project_config.Clang_Index
     end
-    if vim.fn.filereadable(config_file) == 0 then
-        local default_config = {
-            Tag_reason = "new feature",
-            Tag_type = "feature",
-            User_name = "usere name",
-        }
-        local f = io.open(config_file, "w")
-        f:write(vim.fn.json_encode(default_config))
-        f:close()
-    end
-    local project_config = vim.json.decode(io.open(config_file, "r"):read('*a'))
-    Tag_reason = project_config.Tag_reason
-    Tag_type = project_config.Tag_type
-    User_name = project_config.User_name
+    return {
+        Tag_reason = Tag_reason,
+        Tag_type = Tag_type,
+        User_name = User_name,
+        Clang_Index = Clang_Index
+    }
 end
+local cfg = load_config() -- test file if not exists
+
+-- Setup language servers.
+require('lspconfig').clangd.setup {
+    cmd = {
+        "clangd",
+        "--background-index=0",
+        "-index-file=" .. cfg.Clang_Index
+    },
+}
+
 
 function FIFA_Tag(lnum, isBegin, line_indent)
     local t = ''
+    local cfg = load_config()
     for i = 0, line_indent - 1 do
         t = t .. ' '
     end
     -- Only support c-style for now
     if isBegin then
-        t = t .. '// FIFA_BEGIN | ' .. Tag_type .. ' | ' .. User_name .. ' | ' .. os.date('%Y-%m-%d') .. ' | ' .. Tag_reason
+        t = t .. '// FIFA_BEGIN | ' .. cfg.Tag_type .. ' | ' .. cfg.User_name .. ' | ' .. os.date('%Y-%m-%d') .. ' | ' .. cfg.Tag_reason
         vim.fn.append(lnum - 1, {t})
     else 
         t = t .. '// FIFA_END'
