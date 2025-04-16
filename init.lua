@@ -707,6 +707,7 @@ function UtilityMenu()
         'qgrep files',
         'zoekt search',
         'zoekt lookup',
+        'enable fold',
         'coc menu'
     }, {
         prompt = 'Utilities',
@@ -721,6 +722,9 @@ function UtilityMenu()
             os.execute('explorer \"' .. bookmarks_path .. '\"')
         elseif sel == 'fifa tag config' then
             vim.cmd('edit ' .. config_file)
+        elseif sel == 'enable fold' then
+            vim.cmd(':set foldenable')
+            vim.cmd(':set foldmethod=syntax')
         elseif sel == 'bookmarks reload' then
             vim.cmd(':Telescope bookmarks reload')
         elseif sel == 'coc menu' then
