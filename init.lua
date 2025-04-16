@@ -707,6 +707,7 @@ function UtilityMenu()
         'qgrep files',
         'zoekt search',
         'zoekt lookup',
+        'coc menu'
     }, {
         prompt = 'Utilities',
     }, function(sel)
@@ -722,6 +723,8 @@ function UtilityMenu()
             vim.cmd('edit ' .. config_file)
         elseif sel == 'bookmarks reload' then
             vim.cmd(':Telescope bookmarks reload')
+        elseif sel == 'coc menu' then
+            vim.cmd(':Telescope coc')
         elseif sel == 'json beautify current line' then
             vim.cmd('%!jq .')
         elseif sel == 'session submenu' then
