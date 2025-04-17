@@ -683,7 +683,7 @@ function UtilityMenu()
     local linenum = vim.fn.line('.')
     local line_indent = vim.fn.indent(linenum)
     vim.ui.select({ 
-        'lookup word',
+        -- 'lookup word',
         'remove duplicate lines without sort',
         'remove duplicate lines with sort',
         'show bookmark files',
@@ -703,9 +703,10 @@ function UtilityMenu()
         'p4 add',
         'codelink tools',
         'minimap',
-        'qgrep search',
-        'qgrep files',
+        -- 'qgrep search',
+        -- 'qgrep files',
         'zoekt search',
+        'zoekt prefix',
         'zoekt lookup',
         'enable fold',
         'coc menu'
@@ -766,6 +767,8 @@ function UtilityMenu()
             vim.cmd('QgrepFiles')
         elseif sel == 'zoekt search' then
             vim.cmd('ZoektSearch')
+        elseif sel == 'zoekt prefix' then
+            vim.cmd('ZoektSetQueryPrefix')
         elseif sel == 'zoekt lookup' then
             vim.cmd('ZoektSearch ' .. word)
         end
