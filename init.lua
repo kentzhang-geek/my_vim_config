@@ -642,6 +642,8 @@ local cfg = load_config() -- test file if not exists
 require('lspconfig').clangd.setup {
     cmd = {
         "clangd",
+        "--clang-tidy=false",
+        "-pretty",
         "--background-index=0",
         "-index-file=" .. cfg.Clang_Index
     },

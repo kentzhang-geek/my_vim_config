@@ -17,10 +17,15 @@ UND_Goto(Filename, Row:=1, Col:=1) {
     Run UND_PATH Filename " " Row
 }
 
+BCOMP_Goto(Filename, Row:=1, Col:=1) {
+    BC_PATH := "C:\Tools\bin\BComp.exe"
+    Run BC_PATH " " Filename
+}
+
 MyGui := Gui()
 MyGui.Add("Text", "Section", "CodeLink:")  ; Save this control's position and start a new section.
 CLink := MyGui.Add("Edit", "w460 r1")  ; Add a fairly wide edit control at the top of the window.
-Target := MyGui.AddComboBox("vTarget", ["VisualStudio","Understand"])
+Target := MyGui.AddComboBox("vTarget", ["VisualStudio","Understand", "Beyond Compare"])
 MyGui.Add("Button", "Default", "OK").OnEvent("Click", OK_Click)
 
 OK_Click(*)
@@ -36,6 +41,8 @@ OK_Click(*)
             VST_Goto(filePath, lineNumber)
         } else if Target.Value == "2" {
             UND_Goto(filePath, lineNumber)
+        } else if Target.Value == "3" {
+            BCOMP_Goto(filePath, lineNumber)
         }
     }
     else
