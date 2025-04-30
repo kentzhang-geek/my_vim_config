@@ -17,15 +17,25 @@ UND_Goto(Filename, Row:=1, Col:=1) {
     Run UND_PATH Filename " " Row
 }
 
-BCOMP_Goto(Filename, Row:=1, Col:=1) {
+BCOMP_Goto(Filename) {
     BC_PATH := "C:\Tools\bin\BComp.exe"
     Run BC_PATH " " Filename
 }
 
+BCOMP_Compare(Filename1, Filename2) {
+    BC_PATH := "C:\Tools\bin\BComp.exe"
+    Run BC_PATH " " Filename1 " " Filename2
+}
+
+
 MyGui := Gui()
 MyGui.Add("Text", "Section", "CodeLink:")  ; Save this control's position and start a new section.
 CLink := MyGui.Add("Edit", "w460 r1")  ; Add a fairly wide edit control at the top of the window.
-Target := MyGui.AddComboBox("vTarget", ["VisualStudio","Understand", "Beyond Compare"])
+MyGui.Add("Text", "Section", "BC pattern:")  ; Save this control's position and start a new section.
+Replace_pattern := MyGui.Add("Edit", "w460 r1")  ; Add a fairly wide edit control at the top of the window.
+MyGui.Add("Text", "Section", "BC target:")  ; Save this control's position and start a new section.
+Replace_target := MyGui.Add("Edit", "w460 r1")  ; Add a fairly wide edit control at the top of the window.
+Target := MyGui.AddComboBox("vTarget", ["VisualStudio", "Understand", "Beyond Compare"])
 MyGui.Add("Button", "Default", "OK").OnEvent("Click", OK_Click)
 
 OK_Click(*)
@@ -42,7 +52,14 @@ OK_Click(*)
         } else if Target.Value == "2" {
             UND_Goto(filePath, lineNumber)
         } else if Target.Value == "3" {
-            BCOMP_Goto(filePath, lineNumber)
+            pattern := Replace_pattern.Value
+            bctarget := Replace_target.Value
+            if pattern != "" && target != "" {
+                filePath2 := StrReplace(filePath, pattern, bctarget)
+                BCOMP_Compare(filePath, filePath2)
+            } else {
+                BCOMP_Goto(filePath)
+            }
         }
     }
     else
