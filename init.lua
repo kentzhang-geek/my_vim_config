@@ -566,6 +566,18 @@ function SessionMenu()
     end)
 end
 
+-- show key bindings with <leader> or <Alt> in this config
+function ShowKeyBindings()
+    local mappings = vim.api.nvim_get_keymap('n') -- Get normal mode mappings
+    local result = {}
+
+    for _, map in ipairs(mappings) do
+        table.insert(result, string.format("%s -> %s", map.lhs, map.rhs))
+    end
+
+    vim.ui.select(result, { prompt = "Key Bindings" }, function(_) end)
+end
+
 function GotoCodeLink()
      vim.ui.input({ prompt = 'Enter CodeLink: ', default=vim.fn.getreg('+') }, function(input)
          if input then
@@ -711,7 +723,8 @@ function UtilityMenu()
         'zoekt prefix',
         'zoekt lookup',
         'enable fold',
-        'coc menu'
+        'coc menu',
+        'key bindings help'
     }, {
         prompt = 'Utilities',
     }, function(sel)
@@ -773,6 +786,8 @@ function UtilityMenu()
             vim.cmd('ZoektSetQueryPrefix')
         elseif sel == 'zoekt lookup' then
             vim.cmd('ZoektSearch ' .. word)
+        elseif sel == 'key bindings help' then
+            ShowKeyBindings()
         end
     end)
 end
