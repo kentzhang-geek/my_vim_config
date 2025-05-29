@@ -73,6 +73,8 @@ OK_Click(*)
 #G::
 {
     ClipSaved := A_Clipboard
+    ; change \\ to /
+    ClipSaved := StrReplace(ClipSaved, "\", "/")
     CLink.Value := ClipSaved
     MyGui.Show("w480 h200")
 
