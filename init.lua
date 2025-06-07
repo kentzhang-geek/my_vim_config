@@ -606,6 +606,15 @@ function GotoCodeLink()
      end)
 end
 
+function GitCommit(filename)
+     vim.ui.input({ prompt = 'Git Commit Msg: ', default="" }, function(input)
+         if input then
+             vim.cmd('!git commit -m \"' .. input .. '\"')
+         end
+     end)
+ end
+
+
 function CodeLinkMenu(filename, lnum)
     vim.ui.select({ 
         'goto',
@@ -735,6 +744,8 @@ function UtilityMenu()
         'file remove read only',
         'p4 edit',
         'p4 add',
+        'git add',
+        'git commit',
         'codelink tools',
         'minimap',
         -- 'qgrep search',
@@ -792,6 +803,12 @@ function UtilityMenu()
         elseif sel == 'p4 add' then
             vim.cmd('cd ' .. file_path)
             vim.cmd('!p4 add \"' .. filename .. '\"')
+        elseif sel == 'git add' then
+            vim.cmd('cd ' .. file_path)
+            vim.cmd('!git add \"' .. filename .. '\"')
+        elseif sel == 'git commit' then
+            vim.cmd('cd ' .. file_path)
+            GitCommit(filename)
         elseif sel == 'codelink tools' then
             CodeLinkMenu(filename, linenum)
         elseif sel == 'minimap' then
