@@ -805,7 +805,7 @@ function UtilityMenu()
             vim.cmd('!p4 add \"' .. filename .. '\"')
         elseif sel == 'git add' then
             vim.cmd('cd ' .. file_path)
-            vim.cmd('!git add \"' .. filename .. '\"')
+            vim.cmd('!git add -f \"' .. filename .. '\"')
         elseif sel == 'git commit' then
             vim.cmd('cd ' .. file_path)
             GitCommit(filename)
