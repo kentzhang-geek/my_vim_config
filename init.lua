@@ -736,6 +736,7 @@ function UtilityMenu()
         'file browser',
         'live grep',
         'fuzzy lines',
+        'fuzzy lines lookup',
         'fifa begin',
         'fifa end',
         'fifa tag config',
@@ -787,6 +788,8 @@ function UtilityMenu()
             require("telescope").extensions.live_grep_args.live_grep_args()
         elseif sel == 'fuzzy lines' then
             vim.cmd('Lines')
+        elseif sel == 'fuzzy lines lookup' then
+            vim.cmd('Lines ' .. word)
         elseif sel == 'fifa tag faster' then
             FIFA_tag_faster()
         elseif sel == 'fifa begin' then
