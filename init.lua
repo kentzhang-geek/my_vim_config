@@ -611,6 +611,15 @@ function GotoCodeLink()
      end)
 end
 
+function GitCommit(filename)
+     vim.ui.input({ prompt = 'Git Commit Msg: ', default="" }, function(input)
+         if input then
+             vim.cmd('!git commit -m \"' .. input .. '\"')
+         end
+     end)
+ end
+
+
 function CodeLinkMenu(filename, lnum)
     vim.ui.select({ 
         'goto',
@@ -740,6 +749,9 @@ function UtilityMenu()
         'file remove read only',
         'p4 edit',
         'p4 add',
+        'git add',
+        'git add all buffer',
+        'git commit',
         'codelink tools',
         'minimap',
         -- 'qgrep search',
@@ -797,6 +809,27 @@ function UtilityMenu()
         elseif sel == 'p4 add' then
             vim.cmd('cd ' .. file_path)
             vim.cmd('!p4 add \"' .. filename .. '\"')
+        elseif sel == 'git add' then
+            vim.cmd('cd ' .. file_path)
+            vim.cmd('!git add -f \"' .. filename .. '\"')
+        elseif sel == 'git add all buffer' then
+            vim.cmd('cd ' .. file_path)
+            -- git add all opened files
+            local bufnr = vim.api.nvim_get_current_buf()
+            local buffers = vim.api.nvim_list_bufs()
+            local filenames = {}
+            for _, buf in ipairs(buffers) do
+                if vim.api.nvim_buf_is_loaded(buf) and vim.api.nvim_buf_get_name(buf) ~= '' then
+                    table.insert(filenames, vim.api.nvim_buf_get_name(buf))
+                end
+            end
+            -- add files to git
+            for _, fname in ipairs(filenames) do
+                vim.cmd('!git add -f \"' .. fname .. '\"')
+            end
+        elseif sel == 'git commit' then
+            vim.cmd('cd ' .. file_path)
+            GitCommit(filename)
         elseif sel == 'codelink tools' then
             CodeLinkMenu(filename, linenum)
         elseif sel == 'minimap' then
