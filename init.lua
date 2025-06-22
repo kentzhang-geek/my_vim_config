@@ -276,6 +276,11 @@ require('lazy').setup({
     'wfxr/minimap.vim', -- minimap
     'fannheyward/telescope-coc.nvim',
     {
+        "GCBallesteros/jupytext.nvim",
+        config = true,
+        lazy=false
+    },
+    {
         "kdheepak/lazygit.nvim",
         lazy = true,
         cmd = {
