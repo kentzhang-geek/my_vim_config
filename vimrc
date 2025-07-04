@@ -12,10 +12,7 @@ set encoding=UTF-8
 
 
 " 设置Leader键
-let mapleader = "<c-a-f11><c-a-f9>"
-" Leader while insert to <alt-,>
-imap <a-,> <leader>
-nmap , <leader>
+let mapleader = ','
 
 " move easy
 nnoremap <leader>k <c-u>
