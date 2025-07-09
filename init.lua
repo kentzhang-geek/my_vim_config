@@ -605,6 +605,51 @@ function ShowKeyBindings()
     vim.ui.select(result, { prompt = "Key Bindings" }, function(_) end)
 end
 
+-- show tips in this config, also all other things easy to forgot
+function ShowTips()
+    local tips = {
+        "Use <leader>mm for utilities like removing duplicate lines, json beautify, session tools, git/p4 helpers, and more.",
+        "Use <M-Up> and <M-Down> to navigate to previous/next search results.",
+        "Use <leader>w to save the current file.",
+        "Use <leader>q to close the current buffer.",
+        "Use <leader>nt to toggle NERDTree.",
+        "Use <M-c> to copy a CodeLink for the current line.",
+        "Use <M-g> to jump to a CodeLink.",
+        "Use <leader>pt to copy the absolute path of the current file.",
+        "Use <leader>bb to toggle bookmarks at the current line.",
+        "Use <leader>ba to annotate bookmarks at the current line.",
+        "Use <leader>bs to show all bookmarks in a list.",
+        "Use <leader>ea to start EasyAlign for the current selection.",
+        "Use <leader>ts to open Telescope.",
+        "Use <leader>lg to open LazyGit.",
+        "Use <leader>url to copy a CodeLink for the current line.",
+        "Use ga in visual mode to start EasyAlign.",
+        "Use <M-\\> to trigger Copilot suggestions.",
+        "Use <M-r> to refresh Copilot suggestions.",
+        "Use <M-n> and <M-p> to navigate through Copilot suggestions.",
+        "Use <M-x> to accept Copilot suggestions.",
+        "Use <Tab>/<S-Tab> to indent/unindent lines in normal/visual mode.",
+        "Use <C-Tab>/<C-Pagedown> and <C-Pageup> to switch buffers.",
+        "Use <C-BS> in insert mode to delete the previous word.",
+        "Use :MyMenu to open the UtilityMenu via command.",
+        "Use <leader>ts to open Telescope main menu.",
+        "Use <C-k> in normal/insert mode to open Telescope.",
+        "Use <leader>f to open FZF file search.",
+        "Use <leader>s in normal/visual/operator mode to trigger Flash jump.",
+        "Use :Telescope coc to open CoC integration.",
+        "Use :Telescope bookmarks list to show bookmarks.",
+        "Use :Telescope file_browser to open file browser.",
+        "Use <M-a>/<M-b> to quickly insert tags in diff mode.",
+        "Use <M-Left>/<M-Right> to copy diffs between buffers in diff mode.",
+        "Use <M-S-Left>/<M-S-Right> to copy a single line diff.",
+        "Use <C-s> to save in diff mode.",
+        "Use :MinimapToggle to toggle the minimap.",
+        "Use :ZoektSearch for fast code search.",
+        "Use :GitCommit to commit with a message prompt.",
+    }
+    vim.ui.select(tips, { prompt = "Tips" }, function(_) end)
+end
+
 function GotoCodeLink()
      vim.ui.input({ prompt = 'Enter CodeLink: ', default=vim.fn.getreg('+') }, function(input)
          if input then
@@ -764,7 +809,8 @@ function UtilityMenu()
         'zoekt lookup',
         'enable fold',
         'coc menu',
-        'key bindings help'
+        'key bindings help',
+        'tips and help'
     }, {
         prompt = 'Utilities',
     }, function(sel)
@@ -851,6 +897,8 @@ function UtilityMenu()
             vim.cmd('ZoektSearch ' .. word)
         elseif sel == 'key bindings help' then
             ShowKeyBindings()
+        elseif sel == 'tips and help' then
+            ShowTips()
         end
     end)
 end
