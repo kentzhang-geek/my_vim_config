@@ -77,6 +77,7 @@ require('lazy').setup({
 
     'vim-airline/vim-airline',
     'vim-airline/vim-airline-themes',
+
     -- {
     -- 'phaazon/hop.nvim', -- instead of easymotion, it's faster
     -- config = function()
@@ -340,6 +341,14 @@ vim.o.softtabstop   = 4
 vim.o.hlsearch      = false
 vim.o.cursorline    = true
 vim.opt.swapfile    = false
+vim.opt.list = true
+vim.opt.listchars = {
+  tab = '>-',         -- How a tab will be shown
+  trail = '~',        -- Trailing spaces
+  extends = '>',      -- When line is too long at end
+  precedes = '<',     -- When line is too long at beginning
+}
+vim.opt.listchars:append("space:·") -- Use "·" or another char for spaces
 
 vim.cmd([[
 let s:fontsize = 16
@@ -649,7 +658,7 @@ function FileBrowser(file_path)
     end)
 end
 
-local vim_home_path = vim.fn.stdpath('config')
+local vim_home_path = vim.fn.stdpath('config') .. path_spliter
 local config_file_path = vim.fn.expand('$HOME') .. path_spliter .. '.config' .. path_spliter .. 'nvim' .. path_spliter
 local config_file = config_file_path .. 'project_config.json'
 function load_config()
