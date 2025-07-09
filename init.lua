@@ -649,6 +649,7 @@ function FileBrowser(file_path)
     end)
 end
 
+local vim_home_path = vim.fn.stdpath('config')
 local config_file_path = vim.fn.expand('$HOME') .. path_spliter .. '.config' .. path_spliter .. 'nvim' .. path_spliter
 local config_file = config_file_path .. 'project_config.json'
 function load_config()
@@ -728,7 +729,7 @@ end
 -- show tips in this config, also all other things easy to forgot
 function ShowTips()
 	-- read a json file
-	local tips_json = config_file_path .. 'tips.json'
+	local tips_json = vim_home_path .. 'tips.json'
 	local tips = vim.json.decode(io.open(tips_json, "r"):read('*a')).tips
     vim.ui.select(tips, { prompt = "Tips" }, function(_) end)
 end
