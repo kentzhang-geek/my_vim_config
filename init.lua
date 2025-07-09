@@ -327,19 +327,19 @@ require("telescope").setup({
 require('telescope').load_extension('coc')
 vim.g.coc_global_extensions = {'coc-clangd'}
 
-vim.opt.encoding   = 'utf-8'
-vim.opt.nu         = true
-vim.opt.autoindent = true
-vim.opt.cindent    = true
-vim.opt.tabstop    = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab  = true
-vim.bo.softtabstop = 4
-vim.o.softtabstop  = 4
-vim.o.hlsearch     = false
-vim.o.expandtab    = true
-vim.o.cursorline   = true
-vim.opt.swapfile   = false
+vim.opt.encoding    = 'utf-8'
+vim.opt.nu          = true
+vim.opt.smartindent = true
+vim.opt.expandtab   = false   -- use tabs, not spaces
+vim.opt.tabstop     = 4        -- tab character is 4 spaces wide
+vim.opt.shiftwidth  = 4     -- indent levels are 4 spaces
+vim.opt.softtabstop = 4    -- number of spaces when hitting Tab
+vim.opt.cindent     = true
+vim.bo.softtabstop  = 4
+vim.o.softtabstop   = 4
+vim.o.hlsearch      = false
+vim.o.cursorline    = true
+vim.opt.swapfile    = false
 
 vim.cmd([[
 let s:fontsize = 16
@@ -457,6 +457,8 @@ local pickers = require('telescope.pickers')
 local finders = require('telescope.finders')
 local actions = require('telescope.actions')
 local action_state = require('telescope.actions.state')
+vim.keymap.set("n", "<C-k>", function() vim.cmd(':Telescope') end) -- Invoke Telescope with <C-K> in normal mode
+vim.keymap.set("i", "<C-k>", function() vim.cmd(':Telescope') end) -- Invoke Telescope with <C-K> in insert mode
 
 -- For bookmark
 local bm = require "bookmarks"
@@ -853,6 +855,8 @@ function UtilityMenu()
     end)
 end
 vim.keymap.set('n', nleader .. 'mm', function() UtilityMenu() end)
+-- register UtilityMenu to Telescope
+vim.api.nvim_create_user_command('MyMenu', UtilityMenu, {})
 
 -- for tab indenting
 local opts = { noremap = true, silent = true }
