@@ -843,8 +843,10 @@ function UtilityMenu()
             local buffers = vim.api.nvim_list_bufs()
             local filenames = {}
             for _, buf in ipairs(buffers) do
-                if vim.api.nvim_buf_is_loaded(buf) and vim.api.nvim_buf_get_name(buf) ~= '' then
-                    table.insert(filenames, vim.api.nvim_buf_get_name(buf))
+                if vim.api.nvim_buf_get_name(buf) ~= '' then
+                    -- file name should convert '\' to '/' in Windows
+                    local fname = vim.api.nvim_buf_get_name(buf):gsub('\\', '/')
+                    table.insert(filenames, fname)
                 end
             end
             -- add files to git
