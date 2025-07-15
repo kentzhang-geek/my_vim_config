@@ -743,139 +743,155 @@ function ShowTips()
     vim.ui.select(tips, { prompt = "Tips" }, function(_) end)
 end
 
+-- Tools to get all buffers
+function GetAllBuffers()
+	local bufnr = vim.api.nvim_get_current_buf()
+	local buffers = vim.api.nvim_list_bufs()
+	local filenames = {}
+	for _, buf in ipairs(buffers) do
+		if vim.api.nvim_buf_get_name(buf) ~= '' then
+			-- file name should convert '\' to '/' in Windows
+			local fname = vim.api.nvim_buf_get_name(buf):gsub('\\', '/')
+			table.insert(filenames, fname)
+		end
+	end
+	return filenames
+end
+
 -- Utilities shortcuts
 function UtilityMenu() 
-    local word = vim.fn.expand('<cword>')
-    local file_path = vim.fn.expand('%:p:h')
-    local filename = vim.fn.expand('%:p')
-    local linenum = vim.fn.line('.')
-    local line_indent = vim.fn.indent(linenum)
-    vim.ui.select({ 
-        -- 'lookup word',
-        'remove duplicate lines without sort',
-        'remove duplicate lines with sort',
-        'show bookmark files',
-        'bookmarks reload',
-        'json beautify current line',
-        'session submenu',
-        'file browser',
-        'live grep',
-        'fuzzy lines',
-        'fuzzy lines lookup',
-        'fifa begin',
-        'fifa end',
-        'fifa tag config',
-        'fifa tag faster',
-        'cd to file',
-        'file remove read only',
-        'p4 edit',
-        'p4 add',
-        'git add',
-        'git add all buffer',
-        'git commit',
-        'codelink tools',
-        'minimap',
-        -- 'qgrep search',
-        -- 'qgrep files',
-        'zoekt search',
-        'zoekt prefix',
-        'zoekt lookup',
-        'enable fold',
-        'coc menu',
-        'key bindings help',
-        'tips and help'
-    }, {
-        prompt = 'Utilities',
-    }, function(sel)
-        if sel == 'lookup word' then
-            vim.cmd('QgrepSearch ' .. word)
-        elseif sel == 'remove duplicate lines without sort' then
-            vim.cmd('g/^\\(.*\\)$\\n\\1/d')
-        elseif sel == 'remove duplicate lines with sort' then
-            vim.cmd('sort u')
-        elseif sel == 'show bookmark files' then
-            os.execute('explorer \"' .. bookmarks_path .. '\"')
-        elseif sel == 'fifa tag config' then
-            vim.cmd('edit ' .. config_file)
-        elseif sel == 'enable fold' then
-            vim.cmd(':set foldenable')
-            vim.cmd(':set foldmethod=syntax')
-        elseif sel == 'bookmarks reload' then
-            vim.cmd(':Telescope bookmarks reload')
-        elseif sel == 'coc menu' then
-            vim.cmd(':Telescope coc')
-        elseif sel == 'json beautify current line' then
-            vim.cmd('%!jq .')
-        elseif sel == 'session submenu' then
-            SessionMenu()
-        elseif sel == 'file browser' then
-            FileBrowser(file_path)
-        elseif sel == 'live grep' then
-            require("telescope").extensions.live_grep_args.live_grep_args()
-        elseif sel == 'fuzzy lines' then
-            vim.cmd('Lines')
-        elseif sel == 'fuzzy lines lookup' then
-            vim.cmd('Lines ' .. word)
-        elseif sel == 'fifa tag faster' then
-            FIFA_tag_faster()
-        elseif sel == 'fifa begin' then
-            FIFA_Tag(linenum, true, line_indent)
-        elseif sel == 'fifa end' then
-            FIFA_Tag(linenum, false, line_indent)
-        elseif sel == 'cd to file' then
-            vim.cmd('cd ' .. file_path)
-        elseif sel == 'file remove read only' then
-            vim.cmd('cd ' .. file_path)
-            vim.cmd('!attrib -r \"' .. filename .. '\"')
-        elseif sel == 'p4 edit' then
-            vim.cmd('cd ' .. file_path)
-            vim.cmd('!p4 edit \"' .. filename .. '\"')
-        elseif sel == 'p4 add' then
-            vim.cmd('cd ' .. file_path)
-            vim.cmd('!p4 add \"' .. filename .. '\"')
-        elseif sel == 'git add' then
-            vim.cmd('cd ' .. file_path)
-            vim.cmd('!git add -f \"' .. filename .. '\"')
-        elseif sel == 'git add all buffer' then
-            vim.cmd('cd ' .. file_path)
-            -- git add all opened files
-            local bufnr = vim.api.nvim_get_current_buf()
-            local buffers = vim.api.nvim_list_bufs()
-            local filenames = {}
-            for _, buf in ipairs(buffers) do
-                if vim.api.nvim_buf_get_name(buf) ~= '' then
-                    -- file name should convert '\' to '/' in Windows
-                    local fname = vim.api.nvim_buf_get_name(buf):gsub('\\', '/')
-                    table.insert(filenames, fname)
-                end
-            end
-            -- add files to git
-            for _, fname in ipairs(filenames) do
-                vim.cmd('!git add -f \"' .. fname .. '\"')
-            end
-        elseif sel == 'git commit' then
-            vim.cmd('cd ' .. file_path)
-            GitCommit(filename)
-        elseif sel == 'codelink tools' then
-            CodeLinkMenu(filename, linenum)
-        elseif sel == 'minimap' then
-            vim.cmd('MinimapToggle')
-        elseif sel == 'qgrep search' then
-            vim.cmd('QgrepSearch')
-        elseif sel == 'qgrep files' then
-            vim.cmd('QgrepFiles')
-        elseif sel == 'zoekt search' then
-            vim.cmd('ZoektSearch')
-        elseif sel == 'zoekt prefix' then
-            vim.cmd('ZoektSetQueryPrefix')
-        elseif sel == 'zoekt lookup' then
-            vim.cmd('ZoektSearch ' .. word)
-        elseif sel == 'key bindings help' then
-            ShowKeyBindings()
-        elseif sel == 'tips and help' then
-            ShowTips()
-        end
-    end)
+	local word = vim.fn.expand('<cword>')
+	local file_path = vim.fn.expand('%:p:h')
+	local filename = vim.fn.expand('%:p')
+	local linenum = vim.fn.line('.')
+	local line_indent = vim.fn.indent(linenum)
+	vim.ui.select({ 
+		-- 'lookup word',
+		'remove duplicate lines without sort',
+		'remove duplicate lines with sort',
+		'show bookmark files',
+		'bookmarks reload',
+		'json beautify current line',
+		'session submenu',
+		'file browser',
+		'live grep',
+		'fuzzy lines',
+		'fuzzy lines lookup',
+		'fifa begin',
+		'fifa end',
+		'fifa tag config',
+		'fifa tag faster',
+		'cd to file',
+		'file remove read only',
+		'p4 edit',
+		'p4 all buffers add and edit',
+		'p4 add',
+		'git add',
+		'git add all buffer',
+		'git commit',
+		'codelink tools',
+		'minimap',
+		-- 'qgrep search',
+		-- 'qgrep files',
+		'zoekt search',
+		'zoekt prefix',
+		'zoekt lookup',
+		'enable fold',
+		'coc menu',
+		'key bindings help',
+		'tips and help'
+	}, {
+		prompt = 'Utilities',
+	}, function(sel)
+		if sel == 'lookup word' then
+			vim.cmd('QgrepSearch ' .. word)
+		elseif sel == 'remove duplicate lines without sort' then
+			vim.cmd('g/^\\(.*\\)$\\n\\1/d')
+		elseif sel == 'remove duplicate lines with sort' then
+			vim.cmd('sort u')
+		elseif sel == 'show bookmark files' then
+			os.execute('explorer \"' .. bookmarks_path .. '\"')
+		elseif sel == 'fifa tag config' then
+			vim.cmd('edit ' .. config_file)
+		elseif sel == 'enable fold' then
+			vim.cmd(':set foldenable')
+			vim.cmd(':set foldmethod=syntax')
+		elseif sel == 'bookmarks reload' then
+			vim.cmd(':Telescope bookmarks reload')
+		elseif sel == 'coc menu' then
+			vim.cmd(':Telescope coc')
+		elseif sel == 'json beautify current line' then
+			vim.cmd('%!jq .')
+		elseif sel == 'session submenu' then
+			SessionMenu()
+		elseif sel == 'file browser' then
+			FileBrowser(file_path)
+		elseif sel == 'live grep' then
+			require("telescope").extensions.live_grep_args.live_grep_args()
+		elseif sel == 'fuzzy lines' then
+			vim.cmd('Lines')
+		elseif sel == 'fuzzy lines lookup' then
+			vim.cmd('Lines ' .. word)
+		elseif sel == 'fifa tag faster' then
+			FIFA_tag_faster()
+		elseif sel == 'fifa begin' then
+			FIFA_Tag(linenum, true, line_indent)
+		elseif sel == 'fifa end' then
+		FIFA_Tag(linenum, false, line_indent)
+	elseif sel == 'cd to file' then
+		vim.cmd('cd ' .. file_path)
+	elseif sel == 'file remove read only' then
+		vim.cmd('cd ' .. file_path)
+		vim.cmd('!attrib -r \"' .. filename .. '\"')
+	elseif sel == 'p4 edit' then
+		vim.cmd('cd ' .. file_path)
+		vim.cmd('!p4 edit \"' .. filename .. '\"')
+	elseif sel == 'p4 add' then
+		vim.cmd('cd ' .. file_path)
+		vim.cmd('!p4 add \"' .. filename .. '\"')
+	elseif sel == 'git add' then
+		vim.cmd('cd ' .. file_path)
+		vim.cmd('!git add -f \"' .. filename .. '\"')
+	elseif sel == 'p4 all buffers add and edit' then
+		vim.cmd('cd ' .. file_path)
+		-- git add all opened files
+		local filenames = GetAllBuffers()
+		-- add files to git
+		for _, fname in ipairs(filenames) do
+			vim.cmd('!p4 add \"' .. fname .. '\"')
+			vim.cmd('!p4 edit \"' .. fname .. '\"')
+		end
+	elseif sel == 'git add all buffer' then
+		vim.cmd('cd ' .. file_path)
+		-- git add all opened files
+		local filenames = GetAllBuffers()
+		-- add files to git
+		for _, fname in ipairs(filenames) do
+			vim.cmd('!git add -f \"' .. fname .. '\"')
+		end
+	elseif sel == 'git commit' then
+		vim.cmd('cd ' .. file_path)
+		GitCommit(filename)
+	elseif sel == 'codelink tools' then
+		CodeLinkMenu(filename, linenum)
+	elseif sel == 'minimap' then
+		vim.cmd('MinimapToggle')
+	elseif sel == 'qgrep search' then
+		vim.cmd('QgrepSearch')
+	elseif sel == 'qgrep files' then
+		vim.cmd('QgrepFiles')
+	elseif sel == 'zoekt search' then
+		vim.cmd('ZoektSearch')
+	elseif sel == 'zoekt prefix' then
+		vim.cmd('ZoektSetQueryPrefix')
+	elseif sel == 'zoekt lookup' then
+		vim.cmd('ZoektSearch ' .. word)
+	elseif sel == 'key bindings help' then
+		ShowKeyBindings()
+	elseif sel == 'tips and help' then
+		ShowTips()
+	end
+end)
 end
 vim.keymap.set('n', nleader .. 'mm', function() UtilityMenu() end)
 -- register UtilityMenu to Telescope
