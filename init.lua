@@ -349,6 +349,8 @@ vim.opt.listchars = {
   precedes = '<',     -- When line is too long at beginning
 }
 vim.opt.listchars:append("space:·") -- Use "·" or another char for spaces
+vim.opt.fixendofline = false
+vim.opt.fixeol = false
 
 vim.cmd([[
 let s:fontsize = 16
