@@ -5,6 +5,9 @@
 ; Hotkey: Win + N
 #N::
 {
-    GNVIM := "goneovim"
-    Run GNVIM
+NewPID := 0
+GNVIM := "goneovim"
+Run GNVIM, , , &NewPID
+WinWait "ahk_pid " NewPID
+WinActivate "ahk_pid " NewPID
 }
