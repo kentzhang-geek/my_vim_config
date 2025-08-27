@@ -323,18 +323,36 @@ vim.cmd([[
 let g:airline_section_c = '%F'
 ]])
 
--- coc for Frostbite
 require("telescope").setup({
-  extensions = {
-    coc = {
-        theme = 'ivy',
-        prefer_locations = true, -- always use Telescope locations to preview definitions/declarations/implementations etc
-        push_cursor_on_edit = true, -- save the cursor position to jump back in the future
-        timeout = 3000, -- timeout for coc commands
-    }
-  },
+	extensions = {
+		-- areal outline in telescope
+		aerial = {
+			-- Set the width of the first two columns (the second
+			-- is relevant only when show_columns is set to 'both')
+			col1_width = 4,
+			col2_width = 30,
+			-- How to format the symbols
+			format_symbol = function(symbol_path, filetype)
+				if filetype == "json" or filetype == "yaml" then
+					return table.concat(symbol_path, ".")
+				else
+					return symbol_path[#symbol_path]
+				end
+			end,
+			-- Available modes: symbols, lines, both
+			show_columns = "both",
+		},
+		-- coc for Frostbite
+		coc = {
+			theme = 'ivy',
+			prefer_locations = true, -- always use Telescope locations to preview definitions/declarations/implementations etc
+			push_cursor_on_edit = true, -- save the cursor position to jump back in the future
+			timeout = 3000, -- timeout for coc commands
+		}
+	},
 })
 require('telescope').load_extension('coc')
+require("telescope").load_extension("aerial")
 vim.g.coc_global_extensions = {'coc-clangd'}
 
 vim.opt.encoding    = 'utf-8'
@@ -729,6 +747,7 @@ require("aerial").setup({
 })
 -- You probably also want to set a keymap to toggle aerial
 vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>")
+vim.keymap.set("n", "<leader>ol", "<cmd>Telescope aerial<CR>")
 
 
 function FIFA_Tag(lnum, isBegin, line_indent)
