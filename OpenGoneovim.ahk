@@ -11,3 +11,9 @@ Run GNVIM, , , &NewPID
 WinWait "ahk_pid " NewPID
 WinActivate "ahk_pid " NewPID
 }
+
+; Hotkey: Alt + PrintScreen => redirect to Win + Shift + R to record screen video
+!PrintScreen::
+{
+Send "#+r"
+}
