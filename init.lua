@@ -482,7 +482,7 @@ vim.keymap.set(nimode, '<M-r>', '<Plug>(copilot-suggest)', Plug_opts)
 vim.keymap.set(nimode, '<M-n>', '<Plug>(copilot-next)', Plug_opts)
 vim.keymap.set(nimode, '<M-p>', '<Plug>(copilot-prev)', Plug_opts)
 vim.keymap.set(nimode, '<M-x>', 'copilot#Accept()', opts)
-vim.cmd(':Copilot disable')
+vim.cmd(':Copilot enable')
 
 -- For basic completion
 vim.keymap.set('i', '<Tab>', 'coc#pum#visible() ? coc#pum#confirm() : "<Tab>"', opts)
