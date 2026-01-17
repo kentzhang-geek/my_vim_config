@@ -69,8 +69,8 @@ OK_Click(*)
     MyGui.Hide()
 }
 
-; Hotkey: Win + G
-#G::
+; Hotkey: Alt + Shift + G
+!+G::
 {
     ClipSaved := A_Clipboard
     ; change \\ to /
