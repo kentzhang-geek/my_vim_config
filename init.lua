@@ -122,8 +122,6 @@ require('lazy').setup({
 			-- add any opts here
 			-- this file can contain specific instructions for your project
 			instructions_file = "avante.md",
-			-- for example
-			provider = "copilot",
 		},
 		dependencies = {
 			"nvim-lua/plenary.nvim",
@@ -798,15 +796,14 @@ vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>")
 vim.keymap.set("n", "<leader>ol", "<cmd>Telescope aerial<CR>")
 
 -- setup avante
-require("copilot").setup({})
 require("avante").setup({
-  provider = "copilot",
+  provider = cfg.avante_provider,
 })
 
 
 function FIFA_Tag(lnum, isBegin, line_indent)
     local t = ''
-    local cfg = load_config()
+	local cfg = load_config() -- load cfg every calls
     for i = 0, line_indent - 1 do
         t = t .. ' '
     end
