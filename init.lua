@@ -72,12 +72,9 @@ require('lazy').setup({
     'hrsh7th/cmp-cmdline',
     'hrsh7th/nvim-cmp',
     'tpope/vim-commentary',
-
     'scrooloose/nerdtree',
-
     'vim-airline/vim-airline',
     'vim-airline/vim-airline-themes',
-
     -- {
     -- 'phaazon/hop.nvim', -- instead of easymotion, it's faster
     -- config = function()
@@ -162,7 +159,6 @@ require('lazy').setup({
 			},
 		},
 	},
-    -- 'saghen/blink.cmp', -- Removed
     'hrsh7th/cmp-vsnip',
     'hrsh7th/vim-vsnip',
     'junegunn/vim-easy-align',
@@ -248,7 +244,6 @@ require('lazy').setup({
         dependencies = { {'nvim-tree/nvim-web-devicons'}}
     },
     { 'stevearc/dressing.nvim' },
-    -- 'mattesgroeger/vim-bookmarks',
     'azabiong/vim-highlighter',
     'tikhomirov/vim-glsl',
     'beyondmarc/hlsl.vim',
@@ -351,12 +346,6 @@ require('lazy').setup({
 		},
 	}
 })
-
-vim.cmd([[
-let g:minimap_width = 10
-let g:minimap_auto_start = 1
-let g:minimap_auto_start_win_enter = 1
-]])
 
 -- for airline statusline
 vim.cmd([[
@@ -961,7 +950,6 @@ function UtilityMenu()
 		'git add all buffer',
 		'git commit',
 		'codelink tools',
-		'minimap',
 		-- 'qgrep search',
 		-- 'qgrep files',
 		'zoekt search',
@@ -1045,8 +1033,6 @@ function UtilityMenu()
 		GitCommit(filename)
 	elseif sel == 'codelink tools' then
 		CodeLinkMenu(filename, linenum)
-	elseif sel == 'minimap' then
-		vim.cmd('MinimapToggle')
 	elseif sel == 'qgrep search' then
 		vim.cmd('QgrepSearch')
 	elseif sel == 'qgrep files' then
