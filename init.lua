@@ -527,12 +527,11 @@ vim.keymap.set('n', nleader .. 'ea', 'vip<Plug>(EasyAlign)<C-X>')
 -- vim.keymap.set(nimode, '<M-p>', '<Plug>(copilot-prev)', Plug_opts)
 -- vim.keymap.set(nimode, '<M-x>', 'copilot#Accept()', opts)
 -- vim.cmd(':Copilot enable')
-require("copilot").setup({})
 
 -- For basic completion
-vim.keymap.set('i', '<Tab>', 'coc#pum#visible() ? coc#pum#confirm() : "<Tab>"', opts)
-vim.keymap.set('i', '<C-down>', 'coc#pum#visible() ? coc#pum#next(1) : "<C-down>"', opts)
-vim.keymap.set('i', '<C-up>', 'coc#pum#visible() ? coc#pum#prev(1) : "<C-up>"', opts)
+-- vim.keymap.set('i', '<Tab>', 'coc#pum#visible() ? coc#pum#confirm() : "<Tab>"', opts)
+-- vim.keymap.set('i', '<C-down>', 'coc#pum#visible() ? coc#pum#next(1) : "<C-down>"', opts)
+-- vim.keymap.set('i', '<C-up>', 'coc#pum#visible() ? coc#pum#prev(1) : "<C-up>"', opts)
 
 -- Telescope extensions
 local telescope = require('telescope')
@@ -739,6 +738,7 @@ function load_config()
     local Tag_reason = ""
     local Tag_type = ""
     local User_name = ""
+	local avante_provider = ""
     if vim.loop.os_uname().sysname == 'Windows_NT' then
         -- detect and create config file
         if vim.fn.isdirectory(config_file_path) == 0 then
@@ -749,7 +749,8 @@ function load_config()
                 Tag_reason = "new feature",
                 Tag_type = "feature",
                 User_name = "usere name",
-                Clang_Index = ""
+                Clang_Index = "",
+				avante_provider = "copilot"
             }
             local f = io.open(config_file, "w")
             f:write(vim.fn.json_encode(default_config))
@@ -760,12 +761,14 @@ function load_config()
         Tag_type = project_config.Tag_type
         User_name = project_config.User_name
         Clang_Index = project_config.Clang_Index
+		avante_provider = project_config.avante_provider
     end
     return {
         Tag_reason = Tag_reason,
         Tag_type = Tag_type,
         User_name = User_name,
-        Clang_Index = Clang_Index
+        Clang_Index = Clang_Index,
+		avante_provider = avante_provider
     }
 end
 local cfg = load_config() -- test file if not exists
@@ -793,6 +796,12 @@ require("aerial").setup({
 -- You probably also want to set a keymap to toggle aerial
 vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>")
 vim.keymap.set("n", "<leader>ol", "<cmd>Telescope aerial<CR>")
+
+-- setup avante
+require("copilot").setup({})
+require("avante").setup({
+  provider = "copilot",
+})
 
 
 function FIFA_Tag(lnum, isBegin, line_indent)

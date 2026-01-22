@@ -36,7 +36,7 @@ global storedPassword := ""
 #N::
 {
 NewPID := 0
-GNVIM := "goneovim"
+GNVIM := "C:\Program Files\Neovide\neovide.exe"
 Run GNVIM, , , &NewPID
 WinWait "ahk_pid " NewPID
 WinActivate "ahk_pid " NewPID
