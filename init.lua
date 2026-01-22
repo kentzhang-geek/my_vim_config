@@ -530,20 +530,6 @@ telescope.setup{
     }
 }
 
--- Bookmark -> Deprecated
--- vim.cmd('highlight BookmarkSign ctermbg=NONE ctermfg=160')
--- vim.cmd('highlight BookmarkLine ctermbg=194 ctermfg=NONE')
--- vim.g.bookmark_sign = '♥'
--- vim.g.bookmark_highlight_lines = 1
--- vim.g.bookmark_auto_close = 1
--- vim.g.bookmark_show_toggle_warning = 0
--- vim.keymap.set('n', nleader .. 'bb', '<Plug>BookmarkToggle')
--- vim.keymap.set('n', nleader .. 'ba', '<Plug>BookmarkAnnotate')
--- vim.keymap.set('n', nleader .. 'bs', '<Plug>BookmarkShowAll')
--- vim.keymap.set('i', ileader .. 'bb', '<Plug>BookmarkToggle')
--- vim.keymap.set('i', ileader .. 'ba', '<Plug>BookmarkAnnotate')
--- vim.keymap.set('i', ileader .. 'bs', '<Plug>BookmarkShowAll')
-
 function newCodeLinkByFileLnum(filename, lnum)
     local lk = 'codelink://' .. filename .. ':' .. lnum
     return lk
