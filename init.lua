@@ -162,6 +162,29 @@ require('lazy').setup({
 			},
 		},
 	},
+	{
+		'saghen/blink.cmp',
+		dependencies = {
+			'Kaiser-Yang/blink-cmp-avante',
+			-- ... Other dependencies
+		},
+		opts = {
+			fuzzy = { implementation = "lua" },
+			sources = {
+				-- Add 'avante' to the list
+				default = { 'avante', 'lsp', 'path', 'snippets', 'buffer' },
+				providers = {
+					avante = {
+						module = 'blink-cmp-avante',
+						name = 'Avante',
+						opts = {
+							-- options for blink-cmp-avante
+						}
+					}
+				},
+			}
+		}
+	},
     'junegunn/vim-easy-align',
     'frazrepo/vim-rainbow',
     {
@@ -309,16 +332,12 @@ require('lazy').setup({
             }
         end
     },
-    {
-        'neoclide/coc.nvim', branch = 'release',
-    },
     'nvim-telescope/telescope-ui-select.nvim',
     'nvim-telescope/telescope-file-browser.nvim',
     'petertriho/nvim-scrollbar',
     'norcalli/nvim-colorizer.lua',
     -- 'dstein64/nvim-scrollview',
     'wfxr/minimap.vim', -- minimap
-    'fannheyward/telescope-coc.nvim',
     {
         "GCBallesteros/jupytext.nvim",
         config = true,
@@ -384,19 +403,10 @@ require("telescope").setup({
 			end,
 			-- Available modes: symbols, lines, both
 			show_columns = "both",
-		},
-		-- coc for Frostbite
-		coc = {
-			theme = 'ivy',
-			prefer_locations = true, -- always use Telescope locations to preview definitions/declarations/implementations etc
-			push_cursor_on_edit = true, -- save the cursor position to jump back in the future
-			timeout = 3000, -- timeout for coc commands
 		}
 	},
 })
-require('telescope').load_extension('coc')
 require("telescope").load_extension("aerial")
-vim.g.coc_global_extensions = {'coc-clangd'}
 
 vim.opt.encoding    = 'utf-8'
 vim.opt.nu          = true
@@ -514,22 +524,6 @@ vim.keymap.set('n', nleader .. 'ea', 'vip<Plug>(EasyAlign)<C-X>')
 -- vim.g.EasyMotion_smartcase = 1
 -- vim.keymap.set('n', nleader .. 's', '<Plug>(easymotion-sn)')
 -- vim.keymap.set('i', ileader .. 's', '<Plug>(easymotion-sn)')
-
--- For Copilot
--- local opts = {silent = true, noremap = true, expr = true, replace_keycodes = false}
--- local Plug_opts = {silent = true, noremap = false}
--- vim.g.copilot_no_tab_map = true
--- vim.keymap.set(nimode, '<M-\\>', '<Plug>(copilot-suggest)', Plug_opts)
--- vim.keymap.set(nimode, '<M-r>', '<Plug>(copilot-suggest)', Plug_opts)
--- vim.keymap.set(nimode, '<M-n>', '<Plug>(copilot-next)', Plug_opts)
--- vim.keymap.set(nimode, '<M-p>', '<Plug>(copilot-prev)', Plug_opts)
--- vim.keymap.set(nimode, '<M-x>', 'copilot#Accept()', opts)
--- vim.cmd(':Copilot enable')
-
--- For basic completion
--- vim.keymap.set('i', '<Tab>', 'coc#pum#visible() ? coc#pum#confirm() : "<Tab>"', opts)
--- vim.keymap.set('i', '<C-down>', 'coc#pum#visible() ? coc#pum#next(1) : "<C-down>"', opts)
--- vim.keymap.set('i', '<C-up>', 'coc#pum#visible() ? coc#pum#prev(1) : "<C-up>"', opts)
 
 -- Telescope extensions
 local telescope = require('telescope')
@@ -795,10 +789,25 @@ require("aerial").setup({
 vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>")
 vim.keymap.set("n", "<leader>ol", "<cmd>Telescope aerial<CR>")
 
+-- For basic completion
+-- vim.keymap.set('i', '<Tab>', 'coc#pum#visible() ? coc#pum#confirm() : "<Tab>"', opts)
+-- vim.keymap.set('i', '<C-down>', 'coc#pum#visible() ? coc#pum#next(1) : "<C-down>"', opts)
+-- vim.keymap.set('i', '<C-up>', 'coc#pum#visible() ? coc#pum#prev(1) : "<C-up>"', opts)
+
 -- setup avante
-require("avante").setup({
+local avante = require("avante")
+avante.setup({
   provider = cfg.avante_provider,
 })
+-- For avante
+local opts = {silent = true, noremap = true, expr = true, replace_keycodes = false}
+local Plug_opts = {silent = true, noremap = false}
+vim.keymap.set("i", '<M-\\>', function() require("copilot.suggestion").next() end, {silent = true})
+-- vim.keymap.set(nimode, '<M-r>', '<Plug>(copilot-suggest)', Plug_opts)
+-- vim.keymap.set(nimode, '<M-n>', '<Plug>(copilot-next)', Plug_opts)
+-- vim.keymap.set(nimode, '<M-p>', '<Plug>(copilot-prev)', Plug_opts)
+-- vim.keymap.set(nimode, '<M-x>', 'copilot#Accept()', opts)
+-- vim.cmd(':Copilot enable')
 
 
 function FIFA_Tag(lnum, isBegin, line_indent)
