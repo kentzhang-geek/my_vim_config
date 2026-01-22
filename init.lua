@@ -162,29 +162,9 @@ require('lazy').setup({
 			},
 		},
 	},
-	{
-		'saghen/blink.cmp',
-		dependencies = {
-			'Kaiser-Yang/blink-cmp-avante',
-			-- ... Other dependencies
-		},
-		opts = {
-			fuzzy = { implementation = "lua" },
-			sources = {
-				-- Add 'avante' to the list
-				default = { 'avante', 'lsp', 'path', 'snippets', 'buffer' },
-				providers = {
-					avante = {
-						module = 'blink-cmp-avante',
-						name = 'Avante',
-						opts = {
-							-- options for blink-cmp-avante
-						}
-					}
-				},
-			}
-		}
-	},
+    -- 'saghen/blink.cmp', -- Removed
+    'hrsh7th/cmp-vsnip',
+    'hrsh7th/vim-vsnip',
     'junegunn/vim-easy-align',
     'frazrepo/vim-rainbow',
     {
@@ -336,8 +316,6 @@ require('lazy').setup({
     'nvim-telescope/telescope-file-browser.nvim',
     'petertriho/nvim-scrollbar',
     'norcalli/nvim-colorizer.lua',
-    -- 'dstein64/nvim-scrollview',
-    'wfxr/minimap.vim', -- minimap
     {
         "GCBallesteros/jupytext.nvim",
         config = true,
@@ -766,7 +744,7 @@ end
 local cfg = load_config() -- test file if not exists
 
 -- Setup language servers.
-require('lspconfig').clangd.setup {
+vim.lsp.config['clangd'] = {
     cmd = {
         "clangd",
         "--clang-tidy=false",
@@ -789,25 +767,116 @@ require("aerial").setup({
 vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>")
 vim.keymap.set("n", "<leader>ol", "<cmd>Telescope aerial<CR>")
 
--- For basic completion
--- vim.keymap.set('i', '<Tab>', 'coc#pum#visible() ? coc#pum#confirm() : "<Tab>"', opts)
--- vim.keymap.set('i', '<C-down>', 'coc#pum#visible() ? coc#pum#next(1) : "<C-down>"', opts)
--- vim.keymap.set('i', '<C-up>', 'coc#pum#visible() ? coc#pum#prev(1) : "<C-up>"', opts)
+-- nvim-cmp setup
+local cmp = require'cmp'
+
+cmp.setup({
+  snippet = {
+    -- REQUIRED - you must specify a snippet engine
+    expand = function(args)
+      vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+    end,
+  },
+  window = {
+    -- completion = cmp.config.window.bordered(),
+    -- documentation = cmp.config.window.bordered(),
+  },
+  mapping = cmp.mapping.preset.insert({
+    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-e>'] = cmp.mapping.abort(),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    ['<Tab>'] = cmp.mapping.select_next_item(),
+    ['<M-e>'] = cmp.mapping.complete(),
+  }),
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp' },
+    { name = 'vsnip' }, -- For vsnip users.
+  }, {
+    { name = 'buffer' },
+  })
+})
+
+-- Copilot Alt+x implementation
+vim.keymap.set("i", '<M-x>', function() 
+    local has_copilot, copilot = pcall(require, "copilot.suggestion")
+    if has_copilot and copilot.is_visible() then
+        copilot.accept()
+    end
+end, {silent = true})
+
+-- Copilot config: disable auto trigger if you want manually Trigger with M-r? (User requested "only accepted by alt+x", implies auto-suggestion might be okay but accept is explicit)
+-- For now we just map Alt+x.
+
+-- setup copilot
+function SetupCopilot()
+    require('copilot').setup({
+  panel = {
+    enabled = false,
+  },
+  suggestion = {
+    enabled = true,
+    auto_trigger = true,
+    hide_during_completion = false,
+    debounce = 15,
+    trigger_on_accept = true,
+    keymap = nil
+    -- {
+    --   accept = "<M-l>",
+    --   accept_word = false,
+    --   accept_line = false,
+    --   next = "<M-]>",
+    --   prev = "<M-[>",
+    --   dismiss = "<C-]>",
+    --   toggle_auto_trigger = false,
+    -- },
+  },
+  logger = {
+    file = vim.fn.stdpath("log") .. "/copilot-lua.log",
+    file_log_level = vim.log.levels.OFF,
+    print_log_level = vim.log.levels.WARN,
+    trace_lsp = "off", -- "off" | "debug" | "verbose"
+    trace_lsp_progress = false,
+    log_lsp_messages = false,
+  },
+  root_dir = function()
+    return vim.fs.dirname(vim.fs.find(".git", { upward = true })[1])
+  end,
+  should_attach = function(_, _)
+    if not vim.bo.buflisted then
+      return false
+    end
+
+    if vim.bo.buftype ~= "" then
+      return false
+    end
+
+    return true
+  end,
+  server = {
+    type = "nodejs", -- "nodejs" | "binary"
+    custom_server_filepath = nil,
+  },
+  server_opts_overrides = {},
+})
+end
 
 -- setup avante
 local avante = require("avante")
 avante.setup({
   provider = cfg.avante_provider,
 })
--- For avante
-local opts = {silent = true, noremap = true, expr = true, replace_keycodes = false}
-local Plug_opts = {silent = true, noremap = false}
-vim.keymap.set("i", '<M-\\>', function() require("copilot.suggestion").next() end, {silent = true})
--- vim.keymap.set(nimode, '<M-r>', '<Plug>(copilot-suggest)', Plug_opts)
--- vim.keymap.set(nimode, '<M-n>', '<Plug>(copilot-next)', Plug_opts)
--- vim.keymap.set(nimode, '<M-p>', '<Plug>(copilot-prev)', Plug_opts)
--- vim.keymap.set(nimode, '<M-x>', 'copilot#Accept()', opts)
--- vim.cmd(':Copilot enable')
+if cfg.avante_provider == "copilot" then
+    require("avante.providers").refresh("copilot")
+    SetupCopilot()
+    -- For copilot
+    local opts = {silent = true, noremap = true, expr = true, replace_keycodes = false}
+    local Plug_opts = {silent = true, noremap = false}
+    vim.keymap.set("i", '<M-\\>', function() require("copilot.suggestion").next() end, {silent = true})
+    vim.keymap.set("i", '<M-r>', function() require("copilot.suggestion").next() end, {silent = true})
+end
+
 
 
 function FIFA_Tag(lnum, isBegin, line_indent)
