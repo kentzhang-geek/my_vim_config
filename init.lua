@@ -456,7 +456,7 @@ vim.keymap.set('i', '<S-Insert>', '<C-R>+')
 -- save easy
 vim.keymap.set('n', '<leader>w', ':w<CR>')
 vim.keymap.set('n', '<leader>q', ':bd<CR>')
-vim.keymap.set('n', '<leader>x', ':q<CR>')
+vim.keymap.set('n', '<leader>x', ':qa<CR>')
 
 -- configs for NERDTree
 vim.keymap.set('n', nleader .. 'nt', ':NERDTree<CR>')
@@ -843,7 +843,7 @@ avante.setup({
   provider = cfg.avante_provider,
 })
 if cfg.avante_provider == "copilot" then
-    require("avante.providers").refresh("copilot")
+    -- require("avante.providers").refresh("copilot")
     SetupCopilot()
     -- For copilot
     local opts = {silent = true, noremap = true, expr = true, replace_keycodes = false}
