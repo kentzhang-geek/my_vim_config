@@ -839,17 +839,39 @@ end
 
 -- setup avante
 local avante = require("avante")
-avante.setup({
-  provider = cfg.avante_provider,
-})
+local opts = {silent = true, noremap = true, expr = true, replace_keycodes = false}
+local Plug_opts = {silent = true, noremap = false}
 if cfg.avante_provider == "copilot" then
-    -- require("avante.providers").refresh("copilot")
-    SetupCopilot()
-    -- For copilot
-    local opts = {silent = true, noremap = true, expr = true, replace_keycodes = false}
-    local Plug_opts = {silent = true, noremap = false}
-    vim.keymap.set("i", '<M-\\>', function() require("copilot.suggestion").next() end, {silent = true})
+	avante.setup({
+		provider = cfg.avante_provider,
+		behavior = {
+			auto_suggestions = false,
+		},
+	})
+	SetupCopilot()
+	-- For copilot
+	vim.keymap.set("i", '<M-\\>', function() avante.toggle() end, {silent = true})
     vim.keymap.set("i", '<M-r>', function() require("copilot.suggestion").next() end, {silent = true})
+else
+	avante.setup({
+		auto_suggestions_provider = cfg.avante_provider,
+		provider = cfg.avante_provider,
+		behavior = {
+			auto_suggestions = true,
+		},
+
+		mappings = {
+			suggestion = {
+				accept = "<M-x>",
+				next = "<M-]>",
+				prev = "<M-[>",
+				dismiss = "<C-]>",
+				toggle_suggestion_display = "<M-\\>",
+			},
+		}
+	})
+	vim.keymap.set("i", '<M-\\>', function() require("avante").toggle() end, {silent = true})
+	vim.keymap.set("i", '<M-r>', function() require("avante").get_suggestion():suggest() end, {silent = true})
 end
 
 
@@ -942,7 +964,6 @@ function UtilityMenu()
 		'zoekt prefix',
 		'zoekt lookup',
 		'enable fold',
-		'coc menu',
 		'key bindings help',
 		'tips and help'
 	}, {
@@ -963,8 +984,6 @@ function UtilityMenu()
 			vim.cmd(':set foldmethod=syntax')
 		elseif sel == 'bookmarks reload' then
 			vim.cmd(':Telescope bookmarks reload')
-		elseif sel == 'coc menu' then
-			vim.cmd(':Telescope coc')
 		elseif sel == 'json beautify current line' then
 			vim.cmd('%!jq .')
 		elseif sel == 'session submenu' then
