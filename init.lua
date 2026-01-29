@@ -69,23 +69,31 @@ require('lazy').setup({
     -- blink.cmp
     {
         'saghen/blink.cmp',
-        dependencies = 'rafamadriz/friendly-snippets',
+        dependencies = {
+            'rafamadriz/friendly-snippets',
+        },
         version = '*',
         opts = {
             keymap = {
                 preset = 'none',
-                ['<C-b>'] = { 'scroll_documentation_up', 'fallback' },
-                ['<C-f>'] = { 'scroll_documentation_down', 'fallback' },
-                ['<C-Space>'] = { 'show', 'show_documentation', 'hide_documentation', 'fallback' },
-                ['<C-e>'] = { 'hide', 'fallback' },
                 ['<CR>'] = { 'accept', 'fallback' },
-                ['<Tab>'] = { 'select_next', 'fallback' },
+                ['<Tab>'] = { 'accept', 'fallback' },
+                ['<Down>'] = { 'select_next', 'fallback' },
+                ['<Up>'] = { 'select_prev', 'fallback' },
                 ['<S-Tab>'] = { 'select_prev', 'fallback' },
-                ['<M-e>'] = { 'show', 'fallback' },
+                ['<M-e>'] = { 'show', 'show_documentation', 'hide_documentation' },
             },
             appearance = {
                 use_nvim_cmp_as_default = true,
                 nerd_font_variant = 'mono'
+            },
+            completion = {
+                list = {
+                    selection = {
+                        preselect = true,
+                        auto_insert = false
+                    }
+                }
             },
             sources = {
                 default = { 'lsp', 'path', 'snippets', 'buffer' },
@@ -96,7 +104,7 @@ require('lazy').setup({
                                 return vim.api.nvim_list_bufs()
                             end,
                         }
-                    }
+                    },
                 }
             },
         },
