@@ -636,6 +636,12 @@ function LoadSession()
         if sel then
             session_name = sel
             vim.cmd('source ' .. sessions_path .. path_spliter .. sel)
+            -- Force load all buffers to ensure they are indexed by blink.cmp
+            for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+                if vim.api.nvim_buf_is_valid(buf) and not vim.api.nvim_buf_is_loaded(buf) then
+                    vim.fn.bufload(buf)
+                end
+            end
         end
     end)
 end
