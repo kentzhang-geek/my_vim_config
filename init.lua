@@ -844,15 +844,6 @@ local avante = require("avante")
 local opts = {silent = true, noremap = true, expr = true, replace_keycodes = false}
 local Plug_opts = {silent = true, noremap = false}
 if cfg.avante_provider == "copilot" then
-<<<<<<< HEAD
-    require("avante.providers").refresh("copilot")
-    SetupCopilot()
-    -- For copilot
-    local opts = {silent = true, noremap = true, expr = true, replace_keycodes = false}
-    local Plug_opts = {silent = true, noremap = false}
-    vim.keymap.set("i", '<M-\\>', function() require("copilot.suggestion").next() end, {silent = true})
-    vim.keymap.set("n", '<M-\\>', function() require("copilot.suggestion").next() end, {silent = true})
-=======
 	avante.setup({
 		provider = cfg.avante_provider,
 		behavior = {
@@ -862,7 +853,6 @@ if cfg.avante_provider == "copilot" then
 	SetupCopilot()
 	-- For copilot
 	vim.keymap.set("i", '<M-\\>', function() avante.toggle() end, {silent = true})
->>>>>>> 4c77b66cf307f590188db48e5ef194f737a4a82b
     vim.keymap.set("i", '<M-r>', function() require("copilot.suggestion").next() end, {silent = true})
 else
 	avante.setup({
