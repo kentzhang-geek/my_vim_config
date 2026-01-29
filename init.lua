@@ -66,11 +66,42 @@ require('lazy').setup({
     },
     -- For NVim completion
     'neovim/nvim-lspconfig',
-    'hrsh7th/cmp-nvim-lsp',
-    'hrsh7th/cmp-buffer',
-    'hrsh7th/cmp-path',
-    'hrsh7th/cmp-cmdline',
-    'hrsh7th/nvim-cmp',
+    -- blink.cmp
+    {
+        'saghen/blink.cmp',
+        dependencies = 'rafamadriz/friendly-snippets',
+        version = '*',
+        opts = {
+            keymap = {
+                preset = 'none',
+                ['<C-b>'] = { 'scroll_documentation_up', 'fallback' },
+                ['<C-f>'] = { 'scroll_documentation_down', 'fallback' },
+                ['<C-Space>'] = { 'show', 'show_documentation', 'hide_documentation', 'fallback' },
+                ['<C-e>'] = { 'hide', 'fallback' },
+                ['<CR>'] = { 'accept', 'fallback' },
+                ['<Tab>'] = { 'select_next', 'fallback' },
+                ['<S-Tab>'] = { 'select_prev', 'fallback' },
+                ['<M-e>'] = { 'show', 'fallback' },
+            },
+            appearance = {
+                use_nvim_cmp_as_default = true,
+                nerd_font_variant = 'mono'
+            },
+            sources = {
+                default = { 'lsp', 'path', 'snippets', 'buffer' },
+                providers = {
+                    buffer = {
+                        opts = {
+                            get_bufnrs = function()
+                                return vim.api.nvim_list_bufs()
+                            end,
+                        }
+                    }
+                }
+            },
+        },
+        opts_extend = { "sources.default" }
+    },
     'tpope/vim-commentary',
     'scrooloose/nerdtree',
     'vim-airline/vim-airline',
@@ -159,8 +190,7 @@ require('lazy').setup({
 			},
 		},
 	},
-    'hrsh7th/cmp-vsnip',
-    'hrsh7th/vim-vsnip',
+
     'junegunn/vim-easy-align',
     'frazrepo/vim-rainbow',
     {
@@ -743,35 +773,7 @@ vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>")
 vim.keymap.set("n", "<leader>ol", "<cmd>Telescope aerial<CR>")
 
 -- nvim-cmp setup
-local cmp = require'cmp'
 
-cmp.setup({
-  snippet = {
-    -- REQUIRED - you must specify a snippet engine
-    expand = function(args)
-      vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-    end,
-  },
-  window = {
-    -- completion = cmp.config.window.bordered(),
-    -- documentation = cmp.config.window.bordered(),
-  },
-  mapping = cmp.mapping.preset.insert({
-    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete(),
-    ['<C-e>'] = cmp.mapping.abort(),
-    ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-    ['<Tab>'] = cmp.mapping.select_next_item(),
-    ['<M-e>'] = cmp.mapping.complete(),
-  }),
-  sources = cmp.config.sources({
-    { name = 'nvim_lsp' },
-    { name = 'vsnip' }, -- For vsnip users.
-  }, {
-    { name = 'buffer' },
-  })
-})
 
 -- Copilot Alt+x implementation
 vim.keymap.set("i", '<M-x>', function() 
@@ -849,6 +851,7 @@ if cfg.avante_provider == "copilot" then
     local opts = {silent = true, noremap = true, expr = true, replace_keycodes = false}
     local Plug_opts = {silent = true, noremap = false}
     vim.keymap.set("i", '<M-\\>', function() require("copilot.suggestion").next() end, {silent = true})
+    vim.keymap.set("n", '<M-\\>', function() require("copilot.suggestion").next() end, {silent = true})
     vim.keymap.set("i", '<M-r>', function() require("copilot.suggestion").next() end, {silent = true})
 end
 
