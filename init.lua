@@ -96,7 +96,7 @@ require('lazy').setup({
                 }
             },
             sources = {
-                default = { 'lsp', 'path', 'snippets', 'buffer' },
+                default = { 'lsp', 'path', 'snippets', 'buffer', 'buffer_names' },
                 providers = {
                     buffer = {
                         opts = {
@@ -105,6 +105,11 @@ require('lazy').setup({
                             end,
                         }
                     },
+                    buffer_names = {
+                        name = 'BufferNames',
+                        module = 'buffer_names',
+                        score_offset = 100, -- Give it a boost if needed
+                    }
                 }
             },
         },
