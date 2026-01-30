@@ -502,8 +502,8 @@ vim.keymap.set('n', '<leader>q', ':bd<CR>')
 vim.keymap.set('n', '<leader>x', ':qa<CR>')
 
 -- configs for NERDTree
-vim.keymap.set('n', nleader .. 'nt', ':NERDTree<CR>')
-vim.keymap.set('i', ileader .. 'nt', '<esc>:NERDTree<CR>')
+vim.keymap.set('n', nleader .. 'nt', ':cd %:p:h<CR>:NERDTree<CR>')
+vim.keymap.set('i', ileader .. 'nt', '<esc>:cd %:p:h<CR>:NERDTree<CR>')
 
 -- configs for fzf
 vim.g.fzf_preview_window = 'right:50%'
