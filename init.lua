@@ -872,6 +872,7 @@ if cfg.avante_provider == "copilot" then
 	SetupCopilot()
 	-- For copilot
 	vim.keymap.set("i", '<M-\\>', function() avante.toggle() end, {silent = true})
+	vim.keymap.set("n", '<M-\\>', function() avante.toggle() end, {silent = true})
     vim.keymap.set("i", '<M-r>', function() require("copilot.suggestion").next() end, {silent = true})
 else
 	avante.setup({
@@ -892,6 +893,7 @@ else
 		}
 	})
 	vim.keymap.set("i", '<M-\\>', function() require("avante").toggle() end, {silent = true})
+	vim.keymap.set("n", '<M-\\>', function() require("avante").toggle() end, {silent = true})
 	vim.keymap.set("i", '<M-r>', function() require("avante").get_suggestion():suggest() end, {silent = true})
 end
 
@@ -934,11 +936,12 @@ end
 
 -- Tools to get all buffers
 function GetAllBuffers()
-	local bufnr = vim.api.nvim_get_current_buf()
+local bufnr = vim.api.nvim_get_current_buf()
 	local buffers = vim.api.nvim_list_bufs()
 	local filenames = {}
 	for _, buf in ipairs(buffers) do
-		if vim.api.nvim_buf_get_name(buf) ~= '' then
+        -- Only add valid and normal buffers (no buftype)
+		if vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_buf_get_option(buf, 'buftype') == '' and vim.api.nvim_buf_get_name(buf) ~= '' then
 			-- file name should convert '\' to '/' in Windows
 			local fname = vim.api.nvim_buf_get_name(buf):gsub('\\', '/')
 			table.insert(filenames, fname)
