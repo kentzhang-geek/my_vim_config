@@ -947,6 +947,28 @@ function GetAllBuffers()
 	return filenames
 end
 
+-- Close buffers for deleted files
+function CloseDeletedBuffers()
+    local buffers = vim.api.nvim_list_bufs()
+    local closed_count = 0
+    for _, buf in ipairs(buffers) do
+        if vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_buf_get_option(buf, 'buflisted') then
+            local filename = vim.api.nvim_buf_get_name(buf)
+            if filename ~= "" and vim.fn.filereadable(filename) == 0 then
+                -- Check if it's a special buffer (like term://, fugitive://) which might not appear 'readable' on disk
+                -- Simple check: if it looks like a path and doesn't exist.
+                -- Use buftype check
+                if vim.api.nvim_buf_get_option(buf, 'buftype') == "" then
+                     print("Closing deleted buffer: " .. filename)
+                     vim.api.nvim_buf_delete(buf, { force = false }) -- Safe delete by default
+                     closed_count = closed_count + 1
+                end
+            end
+        end
+    end
+    print("Closed " .. closed_count .. " deleted buffers.")
+end
+
 -- Utilities shortcuts
 function UtilityMenu() 
 	local word = vim.fn.expand('<cword>')
@@ -958,6 +980,7 @@ function UtilityMenu()
 		-- 'lookup word',
 		'remove duplicate lines without sort',
 		'remove duplicate lines with sort',
+		'close deleted buffers',
 		'show bookmark files',
 		'bookmarks reload',
 		'json beautify current line',
@@ -996,6 +1019,8 @@ function UtilityMenu()
 			vim.cmd('g/^\\(.*\\)$\\n\\1/d')
 		elseif sel == 'remove duplicate lines with sort' then
 			vim.cmd('sort u')
+		elseif sel == 'close deleted buffers' then
+			CloseDeletedBuffers()
 		elseif sel == 'show bookmark files' then
 			os.execute('explorer \"' .. bookmarks_path .. '\"')
 		elseif sel == 'fifa tag config' then

@@ -1,9 +1,9 @@
 {
-	"tips":[
-		"Tips file is in ${HOME}/.config/nvim/tips.json",
-		"Use `:bufdo %s/foo/bar/g | update` to replace string in all buffers and save them if changed.",
-		"Use `retab!` in visual mode to reindent selected lines with tabs.",
-        "Use <leader>mm for utilities like removing duplicate lines, json beautify, session tools, git/p4 helpers, and more.",
+    "tips": [
+        "Tips file is in ${HOME}/vimfiles/tips.json",
+        "Use `:bufdo %s/foo/bar/g | update` to replace string in all buffers and save them if changed.",
+        "Use `retab!` in visual mode to reindent selected lines with tabs.",
+        "Use <leader>mm for utilities like `CloseDeletedBuffers`, json beautify, session tools, etc.",
         "Use <M-Up> and <M-Down> to navigate to previous/next search results.",
         "Use <leader>w to save the current file.",
         "Use <leader>q to close the current buffer.",
@@ -19,11 +19,11 @@
         "Use <leader>lg to open LazyGit.",
         "Use <leader>url to copy a CodeLink for the current line.",
         "Use ga in visual mode to start EasyAlign.",
-        "Use <M-\\> to trigger Copilot suggestions.",
+        "Use <M-\\> to trigger Copilot/Avante.",
         "Use <M-r> to refresh Copilot suggestions.",
-        "Use <M-n> and <M-p> to navigate through Copilot suggestions.",
         "Use <M-x> to accept Copilot suggestions.",
-        "Use <Tab>/<S-Tab> to indent/unindent lines in normal/visual mode.",
+        "Use <Tab>/<S-Tab> to select next/prev completion item.",
+        "Use <M-e> to toggle completion menu.",
         "Use <C-Tab>/<C-Pagedown> and <C-Pageup> to switch buffers.",
         "Use <C-BS> in insert mode to delete the previous word.",
         "Use :MyMenu to open the UtilityMenu via command.",
@@ -31,15 +31,14 @@
         "Use <C-k> in normal/insert mode to open Telescope.",
         "Use <leader>f to open FZF file search.",
         "Use <leader>s in normal/visual/operator mode to trigger Flash jump.",
-        "Use :Telescope coc to open CoC integration.",
         "Use :Telescope bookmarks list to show bookmarks.",
         "Use :Telescope file_browser to open file browser.",
         "Use <M-a>/<M-b> to quickly insert tags in diff mode.",
         "Use <M-Left>/<M-Right> to copy diffs between buffers in diff mode.",
         "Use <M-S-Left>/<M-S-Right> to copy a single line diff.",
         "Use <C-s> to save in diff mode.",
-        "Use :MinimapToggle to toggle the minimap.",
         "Use :ZoektSearch for fast code search.",
-        "Use :GitCommit to commit with a message prompt."
-	]
+        "Use :GitCommit to commit with a message prompt.",
+        "Type any open buffer's filename to see it in completion."
+    ]
 }
