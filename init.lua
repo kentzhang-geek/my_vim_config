@@ -342,10 +342,10 @@ require('lazy').setup({
             require('bookmarks').setup{
                 save_file = bookmarks_path .. path_spliter .. "default.bookmarks", -- bookmarks save file path
                 keywords =  {
-                    ["@t"] = "☑️ ", -- mark annotation startswith @t ,signs this icon as `Todo`
-                    ["@w"] = "⚠️ ", -- mark annotation startswith @w ,signs this icon as `Warn`
-                    ["@f"] = "⛏ ", -- mark annotation startswith @f ,signs this icon as `Fix`
-                    ["@n"] = " ", -- mark annotation startswith @n ,signs this icon as `Note`
+                    ["@t"] = "☑️", -- mark annotation startswith @t ,signs this icon as `Todo`
+                    ["@w"] = "⚠️", -- mark annotation startswith @w ,signs this icon as `Warn`
+                    ["@f"] = "⛏", -- mark annotation startswith @f ,signs this icon as `Fix`
+                    ["@n"] = "", -- mark annotation startswith @n ,signs this icon as `Note`
                 },
             }
         end
