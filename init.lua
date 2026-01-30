@@ -972,6 +972,18 @@ function CloseDeletedBuffers()
     print("Closed " .. closed_count .. " deleted buffers.")
 end
 
+-- Clean ShaDa temporary files
+function CleanShadaTmpFiles()
+    local shada_path = vim.fn.stdpath('data') .. '/shada'
+    local files = vim.fn.glob(shada_path .. '/main.shada.tmp.*', false, true)
+    local deleted_count = 0
+    for _, file in ipairs(files) do
+        os.remove(file)
+        deleted_count = deleted_count + 1
+    end
+    print("Deleted " .. deleted_count .. " temporary shada files from " .. shada_path)
+end
+
 -- Utilities shortcuts
 function UtilityMenu() 
 	local word = vim.fn.expand('<cword>')
@@ -984,6 +996,7 @@ function UtilityMenu()
 		'remove duplicate lines without sort',
 		'remove duplicate lines with sort',
 		'close deleted buffers',
+		'clean shada tmp files',
 		'show bookmark files',
 		'bookmarks reload',
 		'json beautify current line',
@@ -1024,6 +1037,8 @@ function UtilityMenu()
 			vim.cmd('sort u')
 		elseif sel == 'close deleted buffers' then
 			CloseDeletedBuffers()
+		elseif sel == 'clean shada tmp files' then
+			CleanShadaTmpFiles()
 		elseif sel == 'show bookmark files' then
 			os.execute('explorer \"' .. bookmarks_path .. '\"')
 		elseif sel == 'fifa tag config' then
