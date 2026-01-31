@@ -55,7 +55,14 @@ OK_Click(*)
             pattern := Replace_pattern.Value
             bctarget := Replace_target.Value
             if pattern != "" && target != "" {
-                filePath2 := StrReplace(filePath, pattern, bctarget)
+                if (InStr(filePath, pattern)) {
+                                filePath2 := StrReplace(filePath, pattern, bctarget)
+                            } else if (InStr(filePath, bctarget)) {
+                                filePath2 := StrReplace(filePath, bctarget, pattern)
+                            } else {
+                                MsgBox("Neither pattern nor target matched the file path.")
+                                return
+                            }
                 BCOMP_Compare(filePath, filePath2)
             } else {
                 BCOMP_Goto(filePath)
