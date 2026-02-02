@@ -76,7 +76,6 @@ require('lazy').setup({
         opts = {
             keymap = {
                 preset = 'none',
-                ['<CR>'] = { 'accept', 'fallback' },
                 ['<Tab>'] = { 'accept', 'fallback' },
                 ['<Down>'] = { 'select_next', 'fallback' },
                 ['<Up>'] = { 'select_prev', 'fallback' },
