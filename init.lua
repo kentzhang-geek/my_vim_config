@@ -1020,8 +1020,10 @@ function UtilityMenu()
 		'codelink tools',
 		-- 'qgrep search',
 		-- 'qgrep files',
-		'zoekt search',
+		'quick zoekt search',
 		'zoekt prefix',
+		'quick zoekt lookup',
+		'zoekt search',
 		'zoekt lookup',
 		'enable fold',
 		'key bindings help',
@@ -1106,12 +1108,16 @@ function UtilityMenu()
 		vim.cmd('QgrepSearch')
 	elseif sel == 'qgrep files' then
 		vim.cmd('QgrepFiles')
-	elseif sel == 'zoekt search' then
+	elseif sel == 'quick zoekt search' then
 		vim.cmd('ZoektSearch')
 	elseif sel == 'zoekt prefix' then
 		vim.cmd('ZoektSetQueryPrefix')
-	elseif sel == 'zoekt lookup' then
+	elseif sel == 'quick zoekt lookup' then
 		vim.cmd('ZoektSearch ' .. word)
+	elseif sel == 'zoekt search' then
+		vim.cmd('ZoektSearchBuffer')
+	elseif sel == 'zoekt lookup' then
+		vim.cmd('ZoektSearchBuffer ' .. word)
 	elseif sel == 'key bindings help' then
 		ShowKeyBindings()
 	elseif sel == 'tips and help' then
