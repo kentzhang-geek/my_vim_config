@@ -162,6 +162,13 @@ require('lazy').setup({
 			-- add any opts here
 			-- this file can contain specific instructions for your project
 			instructions_file = "avante.md",
+			providers = {
+				claude = {	-- this is a local api proxy
+					endpoint = "http://127.0.0.1:8045",
+					model = "gemini-3-pro-high",
+					timeout = 30000, -- Timeout in milliseconds
+				}
+			},
 		},
 		dependencies = {
 			"nvim-lua/plenary.nvim",
