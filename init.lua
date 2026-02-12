@@ -1013,6 +1013,35 @@ function CleanShadaTmpFiles()
 	print("Deleted " .. deleted_count .. " temporary shada files from " .. shada_path)
 end
 
+-- Diff with buffer
+function DiffWithBuffer()
+	local buffers = GetAllBuffers()
+	local current_file = vim.fn.expand('%:p'):gsub('\\', '/')
+	
+	vim.ui.select(buffers, {
+		prompt = 'Select buffer to diff with:',
+	}, function(selected_file)
+		if selected_file then
+			if current_file == "" or selected_file == "" then
+				print("Cannot diff: one of the buffers has no file path.")
+				return
+			end
+			
+			local cmd = "nvim"
+			local args = "-d"
+			
+			if vim.fn.executable("neovide") == 1 then
+				 cmd = "neovide"
+				 args = "-- -O -d"
+			end
+			
+			local exec_cmd = string.format('cmd /c start "Diff" %s %s "%s" "%s"', cmd, args, current_file, selected_file)
+			print("Executing: " .. exec_cmd)
+			os.execute(exec_cmd)
+		end
+	end)
+end
+
 -- Utilities shortcuts
 function UtilityMenu() 
 	local word = vim.fn.expand('<cword>')
@@ -1047,6 +1076,7 @@ function UtilityMenu()
 		'git add all buffer',
 		'git commit',
 		'codelink tools',
+		'diff with buffer',
 		-- 'qgrep search',
 		-- 'qgrep files',
 		'quick zoekt search',
@@ -1133,6 +1163,9 @@ function UtilityMenu()
 		GitCommit(filename)
 	elseif sel == 'codelink tools' then
 		CodeLinkMenu(filename, linenum)
+	elseif sel == 'diff with buffer' then
+        vim.cmd('cd ' .. file_path)
+		DiffWithBuffer()
 	elseif sel == 'qgrep search' then
 		vim.cmd('QgrepSearch')
 	elseif sel == 'qgrep files' then
