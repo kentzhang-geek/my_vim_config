@@ -1207,11 +1207,11 @@ vim.keymap.set('n', '<C-Pagedown>', ':bnext<CR>')
 vim.keymap.set('n', '<C-Pageup>', ':bprevious<CR>')
 
 function nextDiff()
-	vim.cmd("normal! ]c")
+	vim.cmd("normal! ]czz")
 end
 
 function prevDiff()
-	vim.cmd("normal! [c")
+	vim.cmd("normal! [czz")
 end
 
 -- Which side in VimDiff
