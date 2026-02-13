@@ -1271,5 +1271,11 @@ if vim.opt.diff:get() then
 	vim.keymap.set("n", '<M-Right>', function() DiffL2R() end)
 	vim.keymap.set("n", '<M-S-Left>', function() DiffR2L1() end)
 	vim.keymap.set("n", '<M-S-Right>', function() DiffL2R1() end)
+	vim.api.nvim_set_keymap('n', '<M-j>', ':lua nextDiff()<CR>', {noremap = true, silent = true})
+	vim.api.nvim_set_keymap('n', '<M-k>', ':lua prevDiff()<CR>', {noremap = true, silent = true})
+	vim.keymap.set("n", '<M-h>', function() DiffR2L() end)
+	vim.keymap.set("n", '<M-l>', function() DiffL2R() end)
+	vim.keymap.set("n", '<M-S-h>', function() DiffR2L1() end)
+	vim.keymap.set("n", '<M-S-l>', function() DiffL2R1() end)
 	vim.api.nvim_set_keymap('n', '<C-s>', ':w<CR>', {noremap = true, silent = true})
 end
