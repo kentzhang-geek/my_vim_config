@@ -931,8 +931,8 @@ function applyChangeTag(lnum, isBegin, line_indent)
 		begin_tag = "// " .. tag_head .. "_BEGIN | " .. cfg.Tag_type .. " | " .. cfg.User_name .. " | " .. os.date('%Y-%m-%d') .. " | " .. cfg.Tag_reason
 		end_tag = "// " .. tag_head .. "_END"
 	else -- default to generic comment style
-		begin_tag = "# " .. tag_head .. "_BEGIN | " .. cfg.Tag_type .. " | " .. cfg.User_name .. " | " .. os.date('%Y-%m-%d') .. " | " .. cfg.Tag_reason
-		end_tag = "# " .. tag_head .. "_END"
+		begin_tag = "// " .. tag_head .. "_BEGIN | " .. cfg.Tag_type .. " | " .. cfg.User_name .. " | " .. os.date('%Y-%m-%d') .. " | " .. cfg.Tag_reason
+		end_tag = "// " .. tag_head .. "_END"
 	end
 
 	if isBegin then
