@@ -1084,6 +1084,7 @@ function UtilityMenu()
 		'quick zoekt lookup',
 		'zoekt search',
 		'zoekt lookup',
+		'zoekt close all buffers',
 		'enable fold',
 		'key bindings help',
 		'tips and help'
@@ -1180,6 +1181,8 @@ function UtilityMenu()
 		vim.cmd('ZoektSearchBuffer')
 	elseif sel == 'zoekt lookup' then
 		vim.cmd('ZoektSearchBuffer ' .. word)
+	elseif sel == 'zoekt close all buffers' then
+		vim.cmd('ZoektCloseAll')
 	elseif sel == 'key bindings help' then
 		ShowKeyBindings()
 	elseif sel == 'tips and help' then
@@ -1279,3 +1282,16 @@ if vim.opt.diff:get() then
 	vim.keymap.set("n", '<M-S-l>', function() DiffL2R1() end)
 	vim.api.nvim_set_keymap('n', '<C-s>', ':w<CR>', {noremap = true, silent = true})
 end
+
+-- Close all zoekt buffers
+vim.api.nvim_create_user_command('ZoektCloseAll', function()
+	local buffers = vim.api.nvim_list_bufs()
+	local closed_count = 0
+	for _, buf in ipairs(buffers) do
+		if vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_buf_get_option(buf, 'filetype') == 'zoekt' then
+			vim.api.nvim_buf_delete(buf, { force = true })
+			closed_count = closed_count + 1
+		end
+	end
+	print("Closed " .. closed_count .. " zoekt buffers.")
+end, { desc = 'Close all zoekt buffers' })
