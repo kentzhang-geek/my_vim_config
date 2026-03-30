@@ -1,5 +1,6 @@
 {
     "tips": [
+		"use p4diff to output p4 CL to a unified diff file, for AI code review",
         "Tips file is in ${HOME}/vimfiles/tips.json",
         "Use `:bufdo %s/foo/bar/g | update` to replace string in all buffers and save them if changed.",
         "Use `retab!` in visual mode to reindent selected lines with tabs.",
