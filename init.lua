@@ -358,12 +358,6 @@ require('lazy').setup({
 	'nvim-telescope/telescope-ui-select.nvim',
 	'nvim-telescope/telescope-file-browser.nvim',
 	'petertriho/nvim-scrollbar',
-	'norcalli/nvim-colorizer.lua',
-	{
-		"GCBallesteros/jupytext.nvim",
-		config = true,
-		lazy=false
-	},
 	{
 		"kdheepak/lazygit.nvim",
 		lazy = true,
@@ -423,25 +417,25 @@ require("telescope").setup({
 })
 require("telescope").load_extension("aerial")
 
-vim.opt.encoding	= 'utf-8'
-vim.opt.nu		  = true
+vim.opt.encoding    = 'utf-8'
+vim.opt.nu          = true
 vim.opt.smartindent = true
 vim.opt.expandtab   = false   -- use tabs, not spaces
-vim.opt.tabstop	 = 4		-- tab character is 4 spaces wide
+vim.opt.tabstop     = 4		-- tab character is 4 spaces wide
 vim.opt.shiftwidth  = 4	 -- indent levels are 4 spaces
 vim.opt.softtabstop = 4	-- number of spaces when hitting Tab
-vim.opt.cindent	 = true
+vim.opt.cindent     = true
 vim.bo.softtabstop  = 4
 vim.o.softtabstop   = 4
-vim.o.hlsearch	  = false
-vim.o.cursorline	= true
-vim.opt.swapfile	= false
-vim.opt.list = true
-vim.opt.listchars = {
-  tab = '>-',		 -- How a tab will be shown
-  trail = '~',		-- Trailing spaces
-  extends = '>',	  -- When line is too long at end
-  precedes = '<',	 -- When line is too long at beginning
+vim.o.hlsearch      = false
+vim.o.cursorline    = true
+vim.opt.swapfile    = false
+vim.opt.list        = true
+vim.opt.listchars   = {
+	tab             = '>-',		 -- How a tab will be shown
+	trail           = '~',		-- Trailing spaces
+	extends         = '>',	  -- When line is too long at end
+	precedes        = '<',	 -- When line is too long at beginning
 }
 vim.opt.listchars:append("space:·") -- Use "·" or another char for spaces
 vim.opt.fixendofline = false
@@ -455,7 +449,16 @@ function! AdjustFontSize(amount)
 endfunction
 ]])
 
-if vim.fn.has('gui_running') then
+if vim.g.neovide then
+	-- Dynamic font size adjustment via neovide_scale_factor
+	vim.g.neovide_scale_factor = 1.0
+	vim.keymap.set('n', '<C-ScrollWheelUp>', function()
+		vim.g.neovide_scale_factor = vim.g.neovide_scale_factor * 1.1
+	end)
+	vim.keymap.set('n', '<C-ScrollWheelDown>', function()
+		vim.g.neovide_scale_factor = vim.g.neovide_scale_factor / 1.1
+	end)
+elseif vim.fn.has('gui_running') == 1 then
 	vim.cmd('set guifont=Consolas:h16')
 	vim.keymap.set('n', '<C-ScrollWheelUp>', ':call AdjustFontSize(2)<CR>')
 	vim.keymap.set('n', '<C-ScrollWheelDown>', ':call AdjustFontSize(-2)<CR>')
@@ -463,25 +466,24 @@ end
 vim.cmd('set clipboard+=unnamedplus')
 
 -- scrollbar -> this one seems better
-require('colorizer').setup()
 local colors = require("tokyonight.colors").setup()
 
 require("scrollbar").setup({
-	handle = {
-		color = colors.blue0,
+	handle     = {
+		color  = colors.blue0,
 	},
-	marks = {
+	marks      = {
 		Search = { color = colors.orange },
-		Error = { color = colors.error },
-		Warn = { color = colors.warning },
-		Info = { color = colors.info },
-		Hint = { color = colors.hint },
-		Misc = { color = colors.purple },
+		Error  = { color = colors.error },
+		Warn   = { color = colors.warning },
+		Info   = { color = colors.info },
+		Hint   = { color = colors.hint },
+		Misc   = { color = colors.purple },
 	}
 })
 
 -- move easy
-local nimode = {'n', 'i'}
+local nimode  = {'n', 'i'}
 local nivmode = {'n', 'i', 'v'}
 local nleader = '<leader>'
 local ileader = '<M-,>'
@@ -734,11 +736,11 @@ local vim_home_path = vim.fn.stdpath('config') .. path_spliter
 local config_file_path = vim.fn.expand('$HOME') .. path_spliter .. '.config' .. path_spliter .. 'nvim' .. path_spliter
 local config_file = config_file_path .. 'project_config.json'
 function load_config()
-	local Tag_reason = ""
-	local Tag_type = ""
-	local User_name = ""
+	local Tag_reason      = ""
+	local Tag_type        = ""
+	local User_name       = ""
 	local avante_provider = ""
-	local Tag_head = "NONE"
+	local Tag_head        = "NONE"
 	if vim.loop.os_uname().sysname == 'Windows_NT' then
 		-- detect and create config file
 		if vim.fn.isdirectory(config_file_path) == 0 then
@@ -746,31 +748,31 @@ function load_config()
 		end
 		if vim.fn.filereadable(config_file) == 0 then
 			local default_config = {
-				Tag_reason = "new feature",
-				Tag_type = "feature",
-				User_name = "usere name",
-				Clang_Index = "",
+				Tag_reason      = "new feature",
+				Tag_type        = "feature",
+				User_name       = "usere name",
+				Clang_Index     = "",
 				avante_provider = "copilot",
-				tag_head = "NONE"
+				tag_head        = "NONE"
 			}
 			local f = io.open(config_file, "w")
 			f:write(vim.fn.json_encode(default_config))
 			f:close()
 		end
 		local project_config = vim.json.decode(io.open(config_file, "r"):read('*a'))
-		Tag_reason = project_config.Tag_reason
-		Tag_type = project_config.Tag_type
-		User_name = project_config.User_name
-		Clang_Index = project_config.Clang_Index
+		Tag_reason      = project_config.Tag_reason
+		Tag_type        = project_config.Tag_type
+		User_name       = project_config.User_name
+		Clang_Index     = project_config.Clang_Index
 		avante_provider = project_config.avante_provider
-		Tag_head = project_config.tag_head
+		Tag_head        = project_config.tag_head
 	end
 	return {
-		Tag_reason = Tag_reason,
-		Tag_type = Tag_type,
-		User_name = User_name,
-		Clang_Index = Clang_Index,
-		tag_head = Tag_head,
+		Tag_reason      = Tag_reason,
+		Tag_type        = Tag_type,
+		User_name       = User_name,
+		Clang_Index     = Clang_Index,
+		tag_head        = Tag_head,
 		avante_provider = avante_provider
 	}
 end
@@ -821,12 +823,12 @@ function SetupCopilot()
 	enabled = false,
   },
   suggestion = {
-	enabled = true,
-	auto_trigger = true,
+	enabled                = true,
+	auto_trigger           = true,
 	hide_during_completion = false,
-	debounce = 15,
-	trigger_on_accept = true,
-	keymap = nil
+	debounce               = 15,
+	trigger_on_accept      = true,
+	keymap                 = nil
 	-- {
 	--   accept = "<M-l>",
 	--   accept_word = false,
@@ -838,12 +840,12 @@ function SetupCopilot()
 	-- },
   },
   logger = {
-	file = vim.fn.stdpath("log") .. "/copilot-lua.log",
-	file_log_level = vim.log.levels.OFF,
-	print_log_level = vim.log.levels.WARN,
-	trace_lsp = "off", -- "off" | "debug" | "verbose"
+	file               = vim.fn.stdpath("log") .. "/copilot-lua.log",
+	file_log_level     = vim.log.levels.OFF,
+	print_log_level    = vim.log.levels.WARN,
+	trace_lsp          = "off", -- "off" | "debug" | "verbose"
 	trace_lsp_progress = false,
-	log_lsp_messages = false,
+	log_lsp_messages   = false,
   },
   root_dir = function()
 	return vim.fs.dirname(vim.fs.find(".git", { upward = true })[1])
