@@ -119,96 +119,123 @@ require('lazy').setup({
 	'vim-airline/vim-airline',
 	'vim-airline/vim-airline-themes',
 	-- {
-	-- 'phaazon/hop.nvim', -- instead of easymotion, it's faster
-	-- config = function()
-	--	 require'hop'.setup()
-	-- end,
-	-- },
-	-- 'easymotion/vim-easymotion',
-	{
-		"folke/flash.nvim",
-		event = "VeryLazy",
-		---@type Flash.Config
-		opts = {},
-		-- stylua: ignore
-		keys = {
-			{ "<leader>s", mode = { "n", "x", "o" }, function() require("flash").jump({
-				labels = "asdfghjklqwertyuiopzxcvbnm",
-				search = { forward = true, wrap = true, multi_window = true, mode="search"},
-				label = {uppercase = false, after = false, before = true},
-			}) end, desc = "Flash" },
-		},
-	},
-	'rust-lang/rust.vim',
-	{
-		'junegunn/fzf',
-		build = function ()
-			vim.cmd(':call fzf#install()')
-		end
-	},
-	'junegunn/fzf.vim',
-	{
-		"yetone/avante.nvim",
-		-- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-		-- ⚠️ must add this setting! ! !
-		build = vim.fn.has("win32") ~= 0
-		and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
-		or "make",
-		event = "VeryLazy",
-		version = false, -- Never set this value to "*"! Never!
-		---@module 'avante'
-		---@type avante.Config
-		opts = {
-			-- add any opts here
-			-- this file can contain specific instructions for your project
-			instructions_file = "avante.md",
-			providers = {
-				claude = {	-- this is a local api proxy
-					endpoint = "http://127.0.0.1:8045",
-					model = "gemini-3-pro-high",
-					timeout = 30000, -- Timeout in milliseconds
-				}
-			},
-		},
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"MunifTanjim/nui.nvim",
-			--- The below dependencies are optional,
-			"nvim-mini/mini.pick", -- for file_selector provider mini.pick
-			"nvim-telescope/telescope.nvim", -- for file_selector provider telescope
-			"hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
-			"ibhagwan/fzf-lua", -- for file_selector provider fzf
-			"stevearc/dressing.nvim", -- for input provider dressing
-			"folke/snacks.nvim", -- for input provider snacks
-			"nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-			"zbirenbaum/copilot.lua", -- for providers='copilot'
+		-- 'phaazon/hop.nvim', -- instead of easymotion, it's faster
+		-- config = function()
+			--	 require'hop'.setup()
+			-- end,
+			-- },
+			-- 'easymotion/vim-easymotion',
 			{
-				-- support for image pasting
-				"HakonHarnes/img-clip.nvim",
+				"folke/flash.nvim",
 				event = "VeryLazy",
+				---@type Flash.Config
+				opts = {},
+				-- stylua: ignore
+				keys = {
+					{ "<leader>s", mode = { "n", "x", "o" }, function() require("flash").jump({
+						labels = "asdfghjklqwertyuiopzxcvbnm",
+						search = { forward = true, wrap = true, multi_window = true, mode="search"},
+						label = {uppercase = false, after = false, before = true},
+					}) end, desc = "Flash" },
+				},
+			},
+			'rust-lang/rust.vim',
+			{
+				'junegunn/fzf',
+				build = function ()
+					vim.cmd(':call fzf#install()')
+				end
+			},
+			'junegunn/fzf.vim',
+			{
+				"yetone/avante.nvim",
+				-- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+				-- ⚠️ must add this setting! ! !
+				build = vim.fn.has("win32") ~= 0
+				and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
+				or "make",
+				event = "VeryLazy",
+				version = false, -- Never set this value to "*"! Never!
+				---@module 'avante'
+				---@type avante.Config
 				opts = {
-					-- recommended settings
-					default = {
-						embed_image_as_base64 = false,
-						prompt_for_file_name = false,
-						drag_and_drop = {
-							insert_mode = true,
+					-- add any opts here
+					-- this file can contain specific instructions for your project
+					instructions_file = "avante.md",
+					providers = {
+						claude = {	-- this is a local api proxy
+							endpoint = "http://127.0.0.1:8045",
+							model = "gemini-3-pro-high",
+							timeout = 30000, -- Timeout in milliseconds
+						}
+					},
+					acp_providers = {
+						["gemini-cli"] = {
+							command = "gemini",
+							args = { "--experimental-acp" },
+							env = {
+								NODE_NO_WARNINGS = "1",
+							},
 						},
-						-- required for Windows users
-						use_absolute_path = true,
+						["claude-code"] = {
+							command = "claude-agent-acp",
+							args = { },
+							env = {
+								NODE_NO_WARNINGS = "1",
+							},
+						},
+						["copilot-acp"] = {
+							command = "copilot",
+							args = { "--acp" },
+						},
+						["codex"] = {
+							command = "codex-acp",
+							args = {},
+							env = {
+								NODE_NO_WARNINGS = "1",
+							},
+						},
+					},
+				},
+				dependencies = {
+					"nvim-lua/plenary.nvim",
+					"MunifTanjim/nui.nvim",
+					--- The below dependencies are optional,
+					"nvim-mini/mini.pick", -- for file_selector provider mini.pick
+					"nvim-telescope/telescope.nvim", -- for file_selector provider telescope
+					"hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
+					"ibhagwan/fzf-lua", -- for file_selector provider fzf
+					"stevearc/dressing.nvim", -- for input provider dressing
+					"folke/snacks.nvim", -- for input provider snacks
+					"nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+					"zbirenbaum/copilot.lua", -- for providers='copilot'
+					{
+						-- support for image pasting
+						"HakonHarnes/img-clip.nvim",
+						event = "VeryLazy",
+						opts = {
+							-- recommended settings
+							default = {
+								embed_image_as_base64 = false,
+								prompt_for_file_name = false,
+								drag_and_drop = {
+									insert_mode = true,
+								},
+								-- required for Windows users
+								use_absolute_path = true,
+							},
+						},
+					},
+					{
+						-- Make sure to set this up properly if you have lazy=true
+						'MeanderingProgrammer/render-markdown.nvim',
+						opts = {
+							file_types = { "markdown" },
+						},
+						ft = { "markdown" },
 					},
 				},
 			},
-			{
-				-- Make sure to set this up properly if you have lazy=true
-				'MeanderingProgrammer/render-markdown.nvim',
-				opts = {
-					file_types = { "markdown", "Avante" },
-				},
-				ft = { "markdown", "Avante" },
-			},
-		},
-	},
 
 	'junegunn/vim-easy-align',
 	'frazrepo/vim-rainbow',
@@ -917,12 +944,35 @@ end
 local avante = require("avante")
 local opts = {silent = true, noremap = true, expr = true, replace_keycodes = false}
 local Plug_opts = {silent = true, noremap = false}
+local acp_providers_config = {
+	["gemini-cli"] = {
+		command = "gemini",
+		args = { "--experimental-acp" },
+		env = { NODE_NO_WARNINGS = "1" },
+	},
+	["claude-code"] = {
+		command = "claude-agent-acp",
+		args = {},
+		env = { NODE_NO_WARNINGS = "1" },
+	},
+	["copilot-acp"] = {
+		command = "copilot",
+		args = { "--acp" },
+	},
+	["codex"] = {
+		command = "codex-acp",
+		args = {},
+		env = { NODE_NO_WARNINGS = "1" },
+	},
+}
+
 if cfg.avante_provider == "copilot" then
 	avante.setup({
 		provider = cfg.avante_provider,
 		behavior = {
 			auto_suggestions = false,
 		},
+		acp_providers = acp_providers_config,
 		system_prompt = function()
 			local hub = require("mcphub").get_hub_instance()
 			return hub and hub:get_active_servers_prompt() or ""
@@ -946,6 +996,7 @@ else
 		behavior = {
 			auto_suggestions = true,
 		},
+		acp_providers = acp_providers_config,
 		system_prompt = function()
 			local hub = require("mcphub").get_hub_instance()
 			return hub and hub:get_active_servers_prompt() or ""
