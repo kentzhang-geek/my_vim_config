@@ -54,6 +54,50 @@ if vim.fn.isdirectory(sessions_path) == 0 then
 	vim.fn.mkdir(sessions_path)
 end
 
+-- check and install nerd font
+function CheckAndInstallNerdFont()
+	local is_windows = vim.loop.os_uname().sysname == 'Windows_NT'
+	local is_mac = vim.loop.os_uname().sysname == 'Darwin'
+	local found = false
+
+	if is_windows then
+		local handle = io.popen('reg query "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts" /s 2>nul | findstr /i "JetBrainsMono.*Nerd"')
+		if handle then
+			local result = handle:read('*a')
+			handle:close()
+			found = result and result ~= ""
+		end
+	else
+		local handle = io.popen('fc-list : family 2>/dev/null | grep -i "JetBrainsMono Nerd"')
+		if handle then
+			local result = handle:read('*a')
+			handle:close()
+			found = result and result ~= ""
+		end
+	end
+
+	if found then
+		vim.notify("JetBrainsMono Nerd Font is already installed.", vim.log.levels.INFO)
+		return
+	end
+
+	local install_cmd
+	if is_windows then
+		install_cmd = 'winget install DEVCOM.JetBrainsMonoNerdFont --accept-source-agreements --accept-package-agreements'
+	elseif is_mac then
+		install_cmd = 'brew install --cask font-jetbrains-mono-nerd-font'
+	else
+		install_cmd = 'echo "Please install JetBrainsMono Nerd Font manually"'
+	end
+	vim.notify("Installing JetBrainsMono Nerd Font...", vim.log.levels.WARN)
+	vim.fn.system(install_cmd)
+	if vim.v.shell_error == 0 then
+		vim.notify("JetBrainsMono Nerd Font installed successfully. Restart to apply.", vim.log.levels.INFO)
+	else
+		vim.notify("Failed to install. Run manually:\n" .. install_cmd, vim.log.levels.ERROR)
+	end
+end
+
 require('lazy').setup({
 	{
 		'folke/tokyonight.nvim',
@@ -487,6 +531,7 @@ endfunction
 ]])
 
 if vim.g.neovide then
+	vim.o.guifont = "JetBrainsMono Nerd Font:h14"
 	-- Dynamic font size adjustment via neovide_scale_factor
 	vim.g.neovide_scale_factor = 1.0
 	vim.keymap.set('n', '<C-ScrollWheelUp>', function()
@@ -496,7 +541,7 @@ if vim.g.neovide then
 		vim.g.neovide_scale_factor = vim.g.neovide_scale_factor / 1.1
 	end)
 elseif vim.fn.has('gui_running') == 1 then
-	vim.cmd('set guifont=Consolas:h16')
+	vim.cmd('set guifont=JetBrainsMono\\ Nerd\\ Font:h14')
 	vim.keymap.set('n', '<C-ScrollWheelUp>', ':call AdjustFontSize(2)<CR>')
 	vim.keymap.set('n', '<C-ScrollWheelDown>', ':call AdjustFontSize(-2)<CR>')
 end
@@ -1203,6 +1248,7 @@ function UtilityMenu()
 		'zoekt lookup',
 		'zoekt close all buffers',
 		'enable fold',
+		'install nerd font',
 		'key bindings help',
 		'tips and help'
 	}, {
@@ -1302,6 +1348,8 @@ function UtilityMenu()
 		vim.cmd('ZoektSearchBuffer ' .. word)
 	elseif sel == 'zoekt close all buffers' then
 		vim.cmd('ZoektCloseAll')
+	elseif sel == 'install nerd font' then
+		CheckAndInstallNerdFont()
 	elseif sel == 'key bindings help' then
 		ShowKeyBindings()
 	elseif sel == 'tips and help' then
