@@ -1253,46 +1253,47 @@ function UtilityMenu()
 		'tips and help'
 	}, {
 		prompt = 'Utilities',
-	}, function(sel)
-		if sel == 'lookup word' then
-			vim.cmd('QgrepSearch ' .. word)
-		elseif sel == 'remove duplicate lines without sort' then
-			vim.cmd('g/^\\(.*\\)$\\n\\1/d')
-		elseif sel == 'remove duplicate lines with sort' then
-			vim.cmd('sort u')
-		elseif sel == 'close deleted buffers' then
-			CloseDeletedBuffers()
-		elseif sel == 'clean shada tmp files' then
-			CleanShadaTmpFiles()
-		elseif sel == 'show bookmark files' then
-			os.execute('explorer \"' .. bookmarks_path .. '\"')
-		elseif sel == 'config' then
-			vim.cmd('edit ' .. config_file)
-		elseif sel == 'config repair' then
-			RepairConfigJson()
-		elseif sel == 'enable fold' then
-			vim.cmd(':set foldenable')
-			vim.cmd(':set foldmethod=syntax')
-		elseif sel == 'bookmarks reload' then
-			vim.cmd(':Telescope bookmarks reload')
-		elseif sel == 'json beautify current line' then
-			vim.cmd('%!jq .')
-		elseif sel == 'session submenu' then
-			SessionMenu()
-		elseif sel == 'file browser' then
-			FileBrowser(file_path)
-		elseif sel == 'live grep' then
-			require("telescope").extensions.live_grep_args.live_grep_args()
-		elseif sel == 'fuzzy lines' then
-			vim.cmd('Lines')
-		elseif sel == 'fuzzy lines lookup' then
-			vim.cmd('Lines ' .. word)
-		elseif sel == 'tag faster' then
-			tag_faster()
-		elseif sel == 'tag begin' then
-			tagWrapper(true)
-		elseif sel == 'tag end' then
-			tagWrapper(false)
+	},
+	function(sel)
+	if sel == 'lookup word' then
+		vim.cmd('QgrepSearch ' .. word)
+	elseif sel == 'remove duplicate lines without sort' then
+		vim.cmd('g/^\\(.*\\)$\\n\\1/d')
+	elseif sel == 'remove duplicate lines with sort' then
+		vim.cmd('sort u')
+	elseif sel == 'close deleted buffers' then
+		CloseDeletedBuffers()
+	elseif sel == 'clean shada tmp files' then
+		CleanShadaTmpFiles()
+	elseif sel == 'show bookmark files' then
+		os.execute('explorer \"' .. bookmarks_path .. '\"')
+	elseif sel == 'config' then
+		vim.cmd('edit ' .. config_file)
+	elseif sel == 'config repair' then
+		RepairConfigJson()
+	elseif sel == 'enable fold' then
+		vim.cmd(':set foldenable')
+		vim.cmd(':set foldmethod=syntax')
+	elseif sel == 'bookmarks reload' then
+		vim.cmd(':Telescope bookmarks reload')
+	elseif sel == 'json beautify current line' then
+		vim.cmd('%!jq .')
+	elseif sel == 'session submenu' then
+		SessionMenu()
+	elseif sel == 'file browser' then
+		FileBrowser(file_path)
+	elseif sel == 'live grep' then
+		require("telescope").extensions.live_grep_args.live_grep_args()
+	elseif sel == 'fuzzy lines' then
+		vim.cmd('Lines')
+	elseif sel == 'fuzzy lines lookup' then
+		vim.cmd('Lines ' .. word)
+	elseif sel == 'tag faster' then
+		tag_faster()
+	elseif sel == 'tag begin' then
+		tagWrapper(true)
+	elseif sel == 'tag end' then
+		tagWrapper(false)
 	elseif sel == 'cd to file' then
 		vim.cmd('cd ' .. file_path)
 	elseif sel == 'file remove read only' then
@@ -1330,7 +1331,7 @@ function UtilityMenu()
 	elseif sel == 'codelink tools' then
 		CodeLinkMenu(filename, linenum)
 	elseif sel == 'diff with buffer' then
-        vim.cmd('cd ' .. file_path)
+		vim.cmd('cd ' .. file_path)
 		DiffWithBuffer()
 	elseif sel == 'qgrep search' then
 		vim.cmd('QgrepSearch')
