@@ -357,6 +357,16 @@ require('lazy').setup({
 	},
 	'nvim-telescope/telescope-ui-select.nvim',
 	'nvim-telescope/telescope-file-browser.nvim',
+	{
+		"ravitemer/mcphub.nvim",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+		},
+		build = "npm install -g mcp-hub@latest",  -- Installs `mcp-hub` node binary globally
+		config = function()
+			require("mcphub").setup()
+		end
+	},
 	'petertriho/nvim-scrollbar',
 	{
 		"kdheepak/lazygit.nvim",
@@ -913,6 +923,16 @@ if cfg.avante_provider == "copilot" then
 		behavior = {
 			auto_suggestions = false,
 		},
+		system_prompt = function()
+			local hub = require("mcphub").get_hub_instance()
+			return hub and hub:get_active_servers_prompt() or ""
+		end,
+		-- Using function prevents requiring mcphub before it's loaded
+		custom_tools = function()
+			return {
+				require("mcphub.extensions.avante").mcp_tool(),
+			}
+		end,
 	})
 	SetupCopilot()
 	-- For copilot
@@ -926,7 +946,16 @@ else
 		behavior = {
 			auto_suggestions = true,
 		},
-
+		system_prompt = function()
+			local hub = require("mcphub").get_hub_instance()
+			return hub and hub:get_active_servers_prompt() or ""
+		end,
+		-- Using function prevents requiring mcphub before it's loaded
+		custom_tools = function()
+			return {
+				require("mcphub.extensions.avante").mcp_tool(),
+			}
+		end,
 		mappings = {
 			suggestion = {
 				accept = "<M-x>",
