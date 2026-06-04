@@ -735,6 +735,40 @@ end
 local vim_home_path = vim.fn.stdpath('config') .. path_spliter
 local config_file_path = vim.fn.expand('$HOME') .. path_spliter .. '.config' .. path_spliter .. 'nvim' .. path_spliter
 local config_file = config_file_path .. 'project_config.json'
+
+function RepairConfigJson()
+	local default_config = {
+		Tag_reason      = "new feature",
+		Tag_type        = "feature",
+		User_name       = "user name",
+		Clang_Index     = "",
+		avante_provider = "copilot",
+		tag_head        = "NONE"
+	}
+	if vim.fn.isdirectory(config_file_path) == 0 then
+		vim.fn.mkdir(config_file_path)
+	end
+	local existing = {}
+	if vim.fn.filereadable(config_file) == 1 then
+		local content = io.open(config_file, "r"):read('*a')
+		local ok, parsed = pcall(vim.json.decode, content)
+		if ok and parsed then
+			existing = parsed
+		end
+	end
+	-- merge: keep existing values, add missing keys from default
+	for k, v in pairs(default_config) do
+		if existing[k] == nil then
+			existing[k] = v
+		end
+	end
+	local f = io.open(config_file, "w")
+	f:write(vim.fn.json_encode(existing))
+	f:close()
+	print("Config repaired: " .. config_file)
+	vim.cmd('edit ' .. config_file)
+end
+
 function load_config()
 	local Tag_reason      = ""
 	local Tag_type        = ""
@@ -1067,7 +1101,8 @@ function UtilityMenu()
 		'fuzzy lines lookup',
 		'tag begin',
 		'tag end',
-		'tag config',
+		'config',
+		'config repair',
 		'tag faster',
 		'cd to file',
 		'file remove read only',
@@ -1105,8 +1140,10 @@ function UtilityMenu()
 			CleanShadaTmpFiles()
 		elseif sel == 'show bookmark files' then
 			os.execute('explorer \"' .. bookmarks_path .. '\"')
-		elseif sel == 'tag config' then
+		elseif sel == 'config' then
 			vim.cmd('edit ' .. config_file)
+		elseif sel == 'config repair' then
+			RepairConfigJson()
 		elseif sel == 'enable fold' then
 			vim.cmd(':set foldenable')
 			vim.cmd(':set foldmethod=syntax')
