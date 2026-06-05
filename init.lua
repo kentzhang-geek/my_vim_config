@@ -1083,7 +1083,7 @@ else
 				if ok and api.get_suggestion then
 					local sugg_ok, suggestion = pcall(api.get_suggestion)
 					if sugg_ok and suggestion then
-						pcall(function() suggestion:suggest() end)
+						suggestion:suggest()
 					end
 				end
 			else
