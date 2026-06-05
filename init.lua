@@ -206,40 +206,6 @@ require('lazy').setup({
 					-- add any opts here
 					-- this file can contain specific instructions for your project
 					instructions_file = "avante.md",
-					providers = {
-						claude = {	-- this is a local api proxy
-							endpoint = "http://127.0.0.1:8045",
-							model = "gemini-3-pro-high",
-							timeout = 30000, -- Timeout in milliseconds
-						}
-					},
-					acp_providers = {
-						["gemini-cli"] = {
-							command = "gemini",
-							args = { "--experimental-acp" },
-							env = {
-								NODE_NO_WARNINGS = "1",
-							},
-						},
-						["claude-code"] = {
-							command = "claude-agent-acp",
-							args = { },
-							env = {
-								NODE_NO_WARNINGS = "1",
-							},
-						},
-						["copilot-acp"] = {
-							command = "copilot",
-							args = { "--acp" },
-						},
-						["codex"] = {
-							command = "codex-acp",
-							args = {},
-							env = {
-								NODE_NO_WARNINGS = "1",
-							},
-						},
-					},
 				},
 				dependencies = {
 					"nvim-lua/plenary.nvim",
@@ -990,9 +956,9 @@ local avante = require("avante")
 local opts = {silent = true, noremap = true, expr = true, replace_keycodes = false}
 local Plug_opts = {silent = true, noremap = false}
 local acp_providers_config = {
-	["gemini-cli"] = {
+	["gemini-acp"] = {
 		command = "gemini",
-		args = { "--experimental-acp" },
+		args = { "--acp" },
 		env = { NODE_NO_WARNINGS = "1" },
 	},
 	["claude-code"] = {
@@ -1004,7 +970,7 @@ local acp_providers_config = {
 		command = "copilot",
 		args = { "--acp" },
 	},
-	["codex"] = {
+	["codex-acp"] = {
 		command = "codex-acp",
 		args = {},
 		env = { NODE_NO_WARNINGS = "1" },
