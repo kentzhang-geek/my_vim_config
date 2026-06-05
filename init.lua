@@ -1231,6 +1231,45 @@ function DiffWithBuffer()
 	end)
 end
 
+function AvanteMenu()
+	vim.ui.select({
+		'avante ask',
+		'avante chat',
+		'avante edit',
+		'avante refresh',
+		'avante toggle',
+		'avante clear cache',
+		'avante switch provider',
+		'avante change model',
+		'avante change acp model',
+		'avante change acp work mode',
+	}, {
+		prompt = 'Avante Settings',
+	}, function(sel)
+		if sel == 'avante ask' then
+			vim.cmd('AvanteAsk')
+		elseif sel == 'avante chat' then
+			vim.cmd('AvanteChat')
+		elseif sel == 'avante edit' then
+			vim.cmd('AvanteEdit')
+		elseif sel == 'avante toggle' then
+			vim.cmd('AvanteToggle')
+		elseif sel == 'avante clear cache' then
+			vim.cmd('AvanteClear')
+		elseif sel == 'avante switch provider' then
+			vim.cmd('AvanteSwitchProvider')
+		elseif sel == 'avante change model' then
+			vim.cmd('AvanteModels')
+		elseif sel == 'avante refresh' then
+			vim.cmd('AvanteRefresh')
+		elseif sel == 'avante change acp model' then
+			vim.cmd('AvanteACPModels')
+		elseif sel == 'avante change acp work mode' then
+			vim.cmd('AvanteACPModes')
+		end
+	end)
+end
+
 -- Utilities shortcuts
 function UtilityMenu() 
 	local word = vim.fn.expand('<cword>')
@@ -1248,6 +1287,7 @@ function UtilityMenu()
 		'bookmarks reload',
 		'json beautify current line',
 		'session submenu',
+		'avante submenu',
 		'file browser',
 		'live grep',
 		'fuzzy lines',
@@ -1308,6 +1348,8 @@ function UtilityMenu()
 		vim.cmd('%!jq .')
 	elseif sel == 'session submenu' then
 		SessionMenu()
+	elseif sel == 'avante submenu' then
+		AvanteMenu()
 	elseif sel == 'file browser' then
 		FileBrowser(file_path)
 	elseif sel == 'live grep' then
