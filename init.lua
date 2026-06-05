@@ -779,14 +779,14 @@ local config_file = config_file_path .. 'project_config.json'
 
 function RepairConfigJson()
 	local default_config = {
-		Tag_reason          = "new feature",
-		Tag_type            = "feature",
-		User_name           = "user name",
-		Clang_Index         = "",
-		avante_provider     = "copilot",
-		tag_head            = "NONE",
-		suggestion_provider = "gemini",
-		suggestion_key      = ""
+		Tag_reason      = "new feature",
+		Tag_type        = "feature",
+		User_name       = "user name",
+		Clang_Index     = "",
+		avante_provider = "copilot",
+		tag_head        = "NONE",
+		suggestion_key  = "",
+		ollama_model    = ""
 	}
 	if vim.fn.isdirectory(config_file_path) == 0 then
 		vim.fn.mkdir(config_file_path)
@@ -805,6 +805,7 @@ function RepairConfigJson()
 			existing[k] = v
 		end
 	end
+	existing.suggestion_provider = nil
 	local f = io.open(config_file, "w")
 	f:write(vim.fn.json_encode(existing))
 	f:close()
@@ -813,13 +814,13 @@ function RepairConfigJson()
 end
 
 function load_config()
-	local Tag_reason          = ""
-	local Tag_type            = ""
-	local User_name           = ""
-	local avante_provider     = ""
-	local Tag_head            = "NONE"
-	local suggestion_provider = "gemini"
-	local suggestion_key      = ""
+	local Tag_reason      = ""
+	local Tag_type        = ""
+	local User_name       = ""
+	local avante_provider = ""
+	local Tag_head        = "NONE"
+	local suggestion_key  = ""
+	local ollama_model    = ""
 	if vim.loop.os_uname().sysname == 'Windows_NT' then
 		-- detect and create config file
 		if vim.fn.isdirectory(config_file_path) == 0 then
@@ -827,38 +828,38 @@ function load_config()
 		end
 		if vim.fn.filereadable(config_file) == 0 then
 			local default_config = {
-				Tag_reason          = "new feature",
-				Tag_type            = "feature",
-				User_name           = "usere name",
-				Clang_Index         = "",
-				avante_provider     = "copilot",
-				tag_head            = "NONE",
-				suggestion_provider = "gemini",
-				suggestion_key      = ""
+				Tag_reason      = "new feature",
+				Tag_type        = "feature",
+				User_name       = "usere name",
+				Clang_Index     = "",
+				avante_provider = "copilot",
+				tag_head        = "NONE",
+				suggestion_key  = "",
+				ollama_model    = ""
 			}
 			local f = io.open(config_file, "w")
 			f:write(vim.fn.json_encode(default_config))
 			f:close()
 		end
 		local project_config = vim.json.decode(io.open(config_file, "r"):read('*a'))
-		Tag_reason          = project_config.Tag_reason
-		Tag_type            = project_config.Tag_type
-		User_name           = project_config.User_name
-		Clang_Index         = project_config.Clang_Index
-		avante_provider     = project_config.avante_provider
-		Tag_head            = project_config.tag_head
-		suggestion_provider = project_config.suggestion_provider or "gemini"
-		suggestion_key      = project_config.suggestion_key or ""
+		Tag_reason      = project_config.Tag_reason
+		Tag_type        = project_config.Tag_type
+		User_name       = project_config.User_name
+		Clang_Index     = project_config.Clang_Index
+		avante_provider = project_config.avante_provider
+		Tag_head        = project_config.tag_head
+		suggestion_key  = project_config.suggestion_key or ""
+		ollama_model    = project_config.ollama_model or ""
 	end
 	return {
-		Tag_reason          = Tag_reason,
-		Tag_type            = Tag_type,
-		User_name           = User_name,
-		Clang_Index         = Clang_Index,
-		tag_head            = Tag_head,
-		avante_provider     = avante_provider,
-		suggestion_provider = suggestion_provider,
-		suggestion_key      = suggestion_key
+		Tag_reason      = Tag_reason,
+		Tag_type        = Tag_type,
+		User_name       = User_name,
+		Clang_Index     = Clang_Index,
+		tag_head        = Tag_head,
+		avante_provider = avante_provider,
+		suggestion_key  = suggestion_key,
+		ollama_model    = ollama_model
 	}
 end
 local cfg = load_config() -- test file if not exists
@@ -1016,24 +1017,31 @@ if cfg.avante_provider == "copilot" then
 	end, {silent = true})
 else
 	DisableCopilot()
-	--! @brief Check if the suggestion key is configured and not empty.
+	--! @brief Load suggestion key into environment variables for the current provider.
 	local has_suggestion_key = cfg.suggestion_key and cfg.suggestion_key:match("%S") ~= nil
 	if has_suggestion_key then
-		if cfg.suggestion_provider == "gemini" then
+		if cfg.avante_provider == "gemini" then
 			vim.fn.setenv("GEMINI_API_KEY", cfg.suggestion_key)
-		elseif cfg.suggestion_provider == "openai" then
+		elseif cfg.avante_provider == "openai" then
 			vim.fn.setenv("OPENAI_API_KEY", cfg.suggestion_key)
-		elseif cfg.suggestion_provider == "claude" then
+		elseif cfg.avante_provider == "claude" then
 			vim.fn.setenv("ANTHROPIC_API_KEY", cfg.suggestion_key)
 		end
 	end
 
-	--! @brief Table to hold avante setup options.
+	local is_acp = acp_providers_config[cfg.avante_provider] ~= nil
+
+	--! @brief Set up avante options with conditional auto suggestion support.
 	local avante_opts = {
 		instructions_file = "avante.md",
 		provider = cfg.avante_provider,
 		behavior = {
-			auto_suggestions = has_suggestion_key,
+			auto_suggestions = not is_acp and has_suggestion_key,
+		},
+		providers = {
+			ollama = {	
+				model = cfg.ollama_model,
+			}
 		},
 		acp_providers = acp_providers_config,
 		system_prompt = function()
@@ -1048,8 +1056,7 @@ else
 		end,
 	}
 
-	if has_suggestion_key then
-		avante_opts.auto_suggestions_provider = cfg.suggestion_provider or "gemini"
+	if not is_acp and has_suggestion_key then
 		avante_opts.mappings = {
 			suggestion = {
 				accept = "<M-x>",
@@ -1066,12 +1073,22 @@ else
 	vim.keymap.set("i", '<M-\\>', function() require("avante").toggle() end, {silent = true})
 	vim.keymap.set("n", '<M-\\>', function() require("avante").toggle() end, {silent = true})
 
-	--! @brief Trigger auto suggestion manually if suggestion key is available.
+	--! @brief Trigger auto suggestion manually if not in ACP mode.
 	local function trigger_suggest()
-		if has_suggestion_key then
-			require("avante").get_suggestion():suggest()
+		if is_acp then
+			print("[Avante] Suggestion is not available in ACP mode.")
 		else
-			print("No suggestion key configured, autocomplete is disabled.")
+			if has_suggestion_key then
+				local ok, api = pcall(require, "avante.api")
+				if ok and api.get_suggestion then
+					local sugg_ok, suggestion = pcall(api.get_suggestion)
+					if sugg_ok and suggestion then
+						pcall(function() suggestion:suggest() end)
+					end
+				end
+			else
+				print("[Avante] No suggestion key configured, autocomplete is disabled.")
+			end
 		end
 	end
 	vim.keymap.set("i", '<M-r>', trigger_suggest, {silent = true})

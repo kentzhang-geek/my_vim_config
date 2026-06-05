@@ -40,6 +40,7 @@
         "Use <C-s> to save in diff mode.",
         "Use :ZoektSearch for fast code search.",
         "Use :GitCommit to commit with a message prompt.",
-        "Type any open buffer's filename to see it in completion."
+        "Type any open buffer's filename to see it in completion.",
+        "Use `:messages` to check print logs if they disappear in Insert mode."
     ]
 }
