@@ -159,7 +159,10 @@ require('lazy').setup({
 		opts_extend = { "sources.default" }
 	},
 	'tpope/vim-commentary',
-	'scrooloose/nerdtree',
+	{
+		'scrooloose/nerdtree',
+		cmd = { 'NERDTree', 'NERDTreeToggle', 'NERDTreeFind', 'NERDTreeClose', 'NERDTreeMirror' },
+	},
 	'vim-airline/vim-airline',
 	'vim-airline/vim-airline-themes',
 	-- {
@@ -200,6 +203,9 @@ require('lazy').setup({
 				or "make",
 				event = "VeryLazy",
 				version = false, -- Never set this value to "*"! Never!
+				config = function()
+					SetupAvantePlugin()
+				end,
 				dependencies = {
 					"nvim-lua/plenary.nvim",
 					"MunifTanjim/nui.nvim",
@@ -281,7 +287,7 @@ require('lazy').setup({
 	},
 	{
 		'nvimdev/dashboard-nvim',
-		event = 'VimEnter',
+		event = 'VeryLazy',
 		config = function()
 			require('dashboard').setup {
 				-- config
@@ -347,7 +353,7 @@ require('lazy').setup({
 	'nvim-lua/plenary.nvim',
 	{
 		'nvim-telescope/telescope.nvim', tag = '0.1.4',
-		-- or							  , branch = '0.1.x',
+		cmd = { "Telescope" },
 		dependencies = { 
 			'nvim-lua/plenary.nvim',
 			{ 
@@ -358,7 +364,7 @@ require('lazy').setup({
 			},
 		},
 		config = function()
-			require("telescope").load_extension("live_grep_args")
+			SetupTelescopePlugin()
 		end
 	},
 	{
@@ -385,8 +391,8 @@ require('lazy').setup({
 			}
 		end
 	},
-	'nvim-telescope/telescope-ui-select.nvim',
-	'nvim-telescope/telescope-file-browser.nvim',
+	{ 'nvim-telescope/telescope-ui-select.nvim', lazy = true },
+	{ 'nvim-telescope/telescope-file-browser.nvim', lazy = true },
 	{
 		"ravitemer/mcphub.nvim",
 		dependencies = {
@@ -433,29 +439,6 @@ require('lazy').setup({
 vim.cmd([[
 let g:airline_section_c = '%F'
 ]])
-
-require("telescope").setup({
-	extensions = {
-		-- areal outline in telescope
-		aerial = {
-			-- Set the width of the first two columns (the second
-			-- is relevant only when show_columns is set to 'both')
-			col1_width = 4,
-			col2_width = 30,
-			-- How to format the symbols
-			format_symbol = function(symbol_path, filetype)
-				if filetype == "json" or filetype == "yaml" then
-					return table.concat(symbol_path, ".")
-				else
-					return symbol_path[#symbol_path]
-				end
-			end,
-			-- Available modes: symbols, lines, both
-			show_columns = "both",
-		}
-	},
-})
-require("telescope").load_extension("aerial")
 
 vim.opt.encoding    = 'utf-8'
 vim.opt.nu          = true
@@ -504,6 +487,20 @@ elseif vim.fn.has('gui_running') == 1 then
 	vim.keymap.set('n', '<C-ScrollWheelUp>', ':call AdjustFontSize(2)<CR>')
 	vim.keymap.set('n', '<C-ScrollWheelDown>', ':call AdjustFontSize(-2)<CR>')
 end
+
+--! @brief Configures the system clipboard statically to speed up Neovim startup on Windows.
+vim.g.clipboard = {
+	name = 'win32yank',
+	copy = {
+		['+'] = 'win32yank.exe -i --crlf',
+		['*'] = 'win32yank.exe -i --crlf',
+	},
+	paste = {
+		['+'] = 'win32yank.exe -o --lf',
+		['*'] = 'win32yank.exe -o --lf',
+	},
+	cache_enabled = 0,
+}
 vim.cmd('set clipboard+=unnamedplus')
 
 -- scrollbar -> this one seems better
@@ -583,43 +580,55 @@ vim.keymap.set('n', nleader .. 'ea', 'vip<Plug>(EasyAlign)<C-X>')
 -- vim.keymap.set('n', nleader .. 's', '<Plug>(easymotion-sn)')
 -- vim.keymap.set('i', ileader .. 's', '<Plug>(easymotion-sn)')
 
--- Telescope extensions
-local telescope = require('telescope')
-local pickers = require('telescope.pickers')
-local finders = require('telescope.finders')
-local actions = require('telescope.actions')
-local action_state = require('telescope.actions.state')
+--! @brief Configures Telescope settings and loads extensions lazily.
+function SetupTelescopePlugin()
+	local telescope = require('telescope')
+	telescope.setup({
+		defaults = {
+			layout_strategy = 'vertical',
+			layout_config = {
+				vertical = { width = 0.8 },
+			},
+		},
+		extensions = {
+			aerial = {
+				col1_width = 4,
+				col2_width = 30,
+				format_symbol = function(symbol_path, filetype)
+					if filetype == "json" or filetype == "yaml" then
+						return table.concat(symbol_path, ".")
+					else
+						return symbol_path[#symbol_path]
+					end
+				end,
+				show_columns = "both",
+			}
+		},
+	})
+	telescope.load_extension("live_grep_args")
+	telescope.load_extension("aerial")
+	telescope.load_extension("ui-select")
+	telescope.load_extension("file_browser")
+	telescope.load_extension("bookmarks")
+end
+
 vim.keymap.set("n", "<C-k>", function() vim.cmd(':Telescope') end) -- Invoke Telescope with <C-K> in normal mode
 vim.keymap.set("i", "<C-k>", function() vim.cmd(':Telescope') end) -- Invoke Telescope with <C-K> in insert mode
 
 -- For bookmark
-local bm = require "bookmarks"
-telescope.load_extension('bookmarks')
 local map = vim.keymap.set
 function bmlist()
 	vim.cmd(':Telescope bookmarks list')
 end
-map("n", nleader .. "bb", bm.bookmark_toggle) -- add or remove bookmark at current line
-map("n", nleader .. "ba", bm.bookmark_ann) -- add or edit mark annotation at current line
+map("n", nleader .. "bb", function() require("bookmarks").bookmark_toggle() end) -- add or remove bookmark at current line
+map("n", nleader .. "ba", function() require("bookmarks").bookmark_ann() end) -- add or edit mark annotation at current line
 map("n", nleader .. "bs", function() bmlist() end) -- show marked file list in quickfix window
-map("i", ileader .. "bb", bm.bookmark_toggle) -- add or remove bookmark at current line
-map("i", ileader .. "ba", bm.bookmark_ann) -- add or edit mark annotation at current line
+map("i", ileader .. "bb", function() require("bookmarks").bookmark_toggle() end) -- add or remove bookmark at current line
+map("i", ileader .. "ba", function() require("bookmarks").bookmark_ann() end) -- add or edit mark annotation at current line
 map("i", ileader .. "bs", function() bmlist() end) -- show marked file list in quickfix window
 
 -- For Telescope
 vim.keymap.set('n', nleader .. 'ts', ':Telescope<CR>')
-telescope.load_extension("ui-select")
-telescope.load_extension "file_browser"
-telescope.setup{
-	defaults = {
-		layout_strategy='vertical',
-		layout_config = {
-			vertical = { width = 0.8 },
-			-- other layout configuration here
-		},
-		-- other defaults configuration here
-	}
-}
 
 function newCodeLinkByFileLnum(filename, lnum)
 	local lk = 'codelink://' .. filename .. ':' .. lnum
@@ -952,150 +961,151 @@ function DisableCopilot()
 	end
 end
 
--- setup avante
-local avante = require("avante")
-local opts = {silent = true, noremap = true, expr = true, replace_keycodes = false}
-local Plug_opts = {silent = true, noremap = false}
---! @brief Checks if the current operating system is Windows.
-local is_windows = vim.loop.os_uname().sysname == 'Windows_NT'
+--! @brief Wrapper function to perform lazy configuration of the Avante plugin.
+function SetupAvantePlugin()
+	local cfg = load_config()
+	local avante = require("avante")
+	local opts = {silent = true, noremap = true, expr = true, replace_keycodes = false}
+	local Plug_opts = {silent = true, noremap = false}
+	--! @brief Checks if the current operating system is Windows.
+	local is_windows = vim.loop.os_uname().sysname == 'Windows_NT'
 
---! @brief Configuration for ACP providers.
---! @details Appends '.cmd' to commands on Windows because Neovim's process spawn
---!          requires the full command file extension for batch/cmd scripts.
-local acp_providers_config = {
-	["gemini-acp"] = {
-		command = is_windows and "gemini.cmd" or "gemini",
-		args = { "--acp" },
-		env = { NODE_NO_WARNINGS = "1" },
-	},
-	["claude-code"] = {
-		command = is_windows and "claude-agent-acp.cmd" or "claude-agent-acp",
-		args = {},
-		env = { NODE_NO_WARNINGS = "1" },
-	},
-	["copilot-acp"] = {
-		command = is_windows and "copilot.cmd" or "copilot",
-		args = { "--acp" },
-	},
-	["codex-acp"] = {
-		command = is_windows and "codex-acp.cmd" or "codex-acp",
-		args = {},
-		env = { NODE_NO_WARNINGS = "1" },
-	},
-}
-
-if cfg.avante_provider == "copilot" then
-	avante.setup({
-		instructions_file = "avante.md",
-		provider = cfg.avante_provider,
-		behavior = {
-			auto_suggestions = false,
+	--! @brief Configuration for ACP providers.
+	--! @details Appends '.cmd' to commands on Windows because Neovim's process spawn
+	--!          requires the full command file extension for batch/cmd scripts.
+	local acp_providers_config = {
+		["gemini-acp"] = {
+			command = is_windows and "gemini.cmd" or "gemini",
+			args = { "--acp" },
+			env = { NODE_NO_WARNINGS = "1" },
 		},
-		acp_providers = acp_providers_config,
-		system_prompt = function()
-			local hub = require("mcphub").get_hub_instance()
-			return hub and hub:get_active_servers_prompt() or ""
-		end,
-		-- Using function prevents requiring mcphub before it's loaded
-		custom_tools = function()
-			return {
-				require("mcphub.extensions.avante").mcp_tool(),
-			}
-		end,
-	})
-	SetupCopilot()
-	-- For copilot
-	vim.keymap.set("i", '<M-\\>', function() avante.toggle() end, {silent = true})
-	vim.keymap.set("n", '<M-\\>', function() avante.toggle() end, {silent = true})
-	vim.keymap.set("i", '<M-r>', function() require("copilot.suggestion").next() end, {silent = true})
-	vim.keymap.set("i", '<M-R>', function() require("copilot.suggestion").next() end, {silent = true})
-	vim.keymap.set("i", '<M-x>', function() 
-		local has_copilot, copilot = pcall(require, "copilot.suggestion")
-		if has_copilot and copilot.is_visible() then
-			copilot.accept()
-		end
-	end, {silent = true})
-else
-	DisableCopilot()
-	--! @brief Load suggestion key into environment variables for the current provider.
-	local has_suggestion_key = cfg.suggestion_key and cfg.suggestion_key:match("%S") ~= nil
-	if has_suggestion_key then
-		if cfg.avante_provider == "gemini" then
-			vim.fn.setenv("GEMINI_API_KEY", cfg.suggestion_key)
-		elseif cfg.avante_provider == "openai" then
-			vim.fn.setenv("OPENAI_API_KEY", cfg.suggestion_key)
-		elseif cfg.avante_provider == "claude" then
-			vim.fn.setenv("ANTHROPIC_API_KEY", cfg.suggestion_key)
-		end
-	end
-
-	local is_acp = acp_providers_config[cfg.avante_provider] ~= nil
-
-	--! @brief Set up avante options with conditional auto suggestion support.
-	local avante_opts = {
-		instructions_file = "avante.md",
-		provider = cfg.avante_provider,
-		behavior = {
-			auto_suggestions = not is_acp and has_suggestion_key,
+		["claude-code"] = {
+			command = is_windows and "claude-agent-acp.cmd" or "claude-agent-acp",
+			args = {},
+			env = { NODE_NO_WARNINGS = "1" },
 		},
-		providers = {
-			ollama = {	
-				model = cfg.ollama_model,
-			}
+		["copilot-acp"] = {
+			command = is_windows and "copilot.cmd" or "copilot",
+			args = { "--acp" },
 		},
-		acp_providers = acp_providers_config,
-		system_prompt = function()
-			local hub = require("mcphub").get_hub_instance()
-			return hub and hub:get_active_servers_prompt() or ""
-		end,
-		--! @brief Custom tools loader function.
-		custom_tools = function()
-			return {
-				require("mcphub.extensions.avante").mcp_tool(),
-			}
-		end,
+		["codex-acp"] = {
+			command = is_windows and "codex-acp.cmd" or "codex-acp",
+			args = {},
+			env = { NODE_NO_WARNINGS = "1" },
+		},
 	}
 
-	if not is_acp and has_suggestion_key then
-		avante_opts.mappings = {
-			suggestion = {
-				accept = "<M-x>",
-				next = "<M-]>",
-				prev = "<M-[>",
-				dismiss = "<C-]>",
-				toggle_suggestion_display = "<M-\\>",
+	if cfg.avante_provider == "copilot" then
+		avante.setup({
+			instructions_file = "avante.md",
+			provider = cfg.avante_provider,
+			behavior = {
+				auto_suggestions = false,
 			},
-		}
-	end
-
-	avante.setup(avante_opts)
-
-	vim.keymap.set("i", '<M-\\>', function() require("avante").toggle() end, {silent = true})
-	vim.keymap.set("n", '<M-\\>', function() require("avante").toggle() end, {silent = true})
-
-	--! @brief Trigger auto suggestion manually if not in ACP mode.
-	local function trigger_suggest()
-		if is_acp then
-			print("[Avante] Suggestion is not available in ACP mode.")
-		else
-			if has_suggestion_key then
-				local ok, api = pcall(require, "avante.api")
-				if ok and api.get_suggestion then
-					local sugg_ok, suggestion = pcall(api.get_suggestion)
-					if sugg_ok and suggestion then
-						suggestion:suggest()
-					end
-				end
-			else
-				print("[Avante] No suggestion key configured, autocomplete is disabled.")
+			acp_providers = acp_providers_config,
+			system_prompt = function()
+				local hub = require("mcphub").get_hub_instance()
+				return hub and hub:get_active_servers_prompt() or ""
+			end,
+			-- Using function prevents requiring mcphub before it's loaded
+			custom_tools = function()
+				return {
+					require("mcphub.extensions.avante").mcp_tool(),
+				}
+			end,
+		})
+		SetupCopilot()
+		-- For copilot
+		vim.keymap.set("i", '<M-\\>', function() avante.toggle() end, {silent = true})
+		vim.keymap.set("n", '<M-\\>', function() avante.toggle() end, {silent = true})
+		vim.keymap.set("i", '<M-r>', function() require("copilot.suggestion").next() end, {silent = true})
+		vim.keymap.set("i", '<M-R>', function() require("copilot.suggestion").next() end, {silent = true})
+		vim.keymap.set("i", '<M-x>', function() 
+			local has_copilot, copilot = pcall(require, "copilot.suggestion")
+			if has_copilot and copilot.is_visible() then
+				copilot.accept()
+			end
+		end, {silent = true})
+	else
+		DisableCopilot()
+		--! @brief Load suggestion key into environment variables for the current provider.
+		local has_suggestion_key = cfg.suggestion_key and cfg.suggestion_key:match("%S") ~= nil
+		if has_suggestion_key then
+			if cfg.avante_provider == "gemini" then
+				vim.fn.setenv("GEMINI_API_KEY", cfg.suggestion_key)
+			elseif cfg.avante_provider == "openai" then
+				vim.fn.setenv("OPENAI_API_KEY", cfg.suggestion_key)
+			elseif cfg.avante_provider == "claude" then
+				vim.fn.setenv("ANTHROPIC_API_KEY", cfg.suggestion_key)
 			end
 		end
+
+		local is_acp = acp_providers_config[cfg.avante_provider] ~= nil
+
+		--! @brief Set up avante options with conditional auto suggestion support.
+		local avante_opts = {
+			instructions_file = "avante.md",
+			provider = cfg.avante_provider,
+			behavior = {
+				auto_suggestions = not is_acp and has_suggestion_key,
+			},
+			providers = {
+				ollama = {	
+					model = cfg.ollama_model,
+				}
+			},
+			acp_providers = acp_providers_config,
+			system_prompt = function()
+				local hub = require("mcphub").get_hub_instance()
+				return hub and hub:get_active_servers_prompt() or ""
+			end,
+			--! @brief Custom tools loader function.
+			custom_tools = function()
+				return {
+					require("mcphub.extensions.avante").mcp_tool(),
+				}
+			end,
+		}
+
+		if not is_acp and has_suggestion_key then
+			avante_opts.mappings = {
+				suggestion = {
+					accept = "<M-x>",
+					next = "<M-]>",
+					prev = "<M-[>",
+					dismiss = "<C-]>",
+					toggle_suggestion_display = "<M-\\>",
+				},
+			}
+		end
+
+		avante.setup(avante_opts)
+
+		vim.keymap.set("i", '<M-\\>', function() require("avante").toggle() end, {silent = true})
+		vim.keymap.set("n", '<M-\\>', function() require("avante").toggle() end, {silent = true})
+
+		--! @brief Trigger auto suggestion manually if not in ACP mode.
+		local function trigger_suggest()
+			if is_acp then
+				print("[Avante] Suggestion is not available in ACP mode.")
+			else
+				if has_suggestion_key then
+					local ok, api = pcall(require, "avante.api")
+					if ok and api.get_suggestion then
+						local sugg_ok, suggestion = pcall(api.get_suggestion)
+						if sugg_ok and suggestion then
+							suggestion:suggest()
+						end
+					end
+				else
+					print("[Avante] No suggestion key configured, autocomplete is disabled.")
+				end
+			end
+		end
+		vim.keymap.set("i", '<M-r>', trigger_suggest, {silent = true})
+		vim.keymap.set("i", '<M-R>', trigger_suggest, {silent = true})
 	end
-	vim.keymap.set("i", '<M-r>', trigger_suggest, {silent = true})
-	vim.keymap.set("i", '<M-R>', trigger_suggest, {silent = true})
 end
-
-
 
 function applyChangeTag(lnum, isBegin, line_indent)
 	local t = ''
@@ -1318,6 +1328,7 @@ function UtilityMenu()
 		'enable fold',
 		'install nerd font',
 		'key bindings help',
+		'dashboard',
 		'tips and help'
 	}, {
 		prompt = 'Utilities',
@@ -1335,6 +1346,8 @@ function UtilityMenu()
 		CleanShadaTmpFiles()
 	elseif sel == 'show bookmark files' then
 		os.execute('explorer \"' .. bookmarks_path .. '\"')
+	elseif sel == 'dashboard' then
+		vim.cmd('Dashboard')
 	elseif sel == 'config' then
 		vim.cmd('edit ' .. config_file)
 	elseif sel == 'config repair' then
