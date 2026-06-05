@@ -779,12 +779,14 @@ local config_file = config_file_path .. 'project_config.json'
 
 function RepairConfigJson()
 	local default_config = {
-		Tag_reason      = "new feature",
-		Tag_type        = "feature",
-		User_name       = "user name",
-		Clang_Index     = "",
-		avante_provider = "copilot",
-		tag_head        = "NONE"
+		Tag_reason          = "new feature",
+		Tag_type            = "feature",
+		User_name           = "user name",
+		Clang_Index         = "",
+		avante_provider     = "copilot",
+		tag_head            = "NONE",
+		suggestion_provider = "gemini",
+		suggestion_key      = ""
 	}
 	if vim.fn.isdirectory(config_file_path) == 0 then
 		vim.fn.mkdir(config_file_path)
@@ -811,11 +813,13 @@ function RepairConfigJson()
 end
 
 function load_config()
-	local Tag_reason      = ""
-	local Tag_type        = ""
-	local User_name       = ""
-	local avante_provider = ""
-	local Tag_head        = "NONE"
+	local Tag_reason          = ""
+	local Tag_type            = ""
+	local User_name           = ""
+	local avante_provider     = ""
+	local Tag_head            = "NONE"
+	local suggestion_provider = "gemini"
+	local suggestion_key      = ""
 	if vim.loop.os_uname().sysname == 'Windows_NT' then
 		-- detect and create config file
 		if vim.fn.isdirectory(config_file_path) == 0 then
@@ -823,32 +827,38 @@ function load_config()
 		end
 		if vim.fn.filereadable(config_file) == 0 then
 			local default_config = {
-				Tag_reason      = "new feature",
-				Tag_type        = "feature",
-				User_name       = "usere name",
-				Clang_Index     = "",
-				avante_provider = "copilot",
-				tag_head        = "NONE"
+				Tag_reason          = "new feature",
+				Tag_type            = "feature",
+				User_name           = "usere name",
+				Clang_Index         = "",
+				avante_provider     = "copilot",
+				tag_head            = "NONE",
+				suggestion_provider = "gemini",
+				suggestion_key      = ""
 			}
 			local f = io.open(config_file, "w")
 			f:write(vim.fn.json_encode(default_config))
 			f:close()
 		end
 		local project_config = vim.json.decode(io.open(config_file, "r"):read('*a'))
-		Tag_reason      = project_config.Tag_reason
-		Tag_type        = project_config.Tag_type
-		User_name       = project_config.User_name
-		Clang_Index     = project_config.Clang_Index
-		avante_provider = project_config.avante_provider
-		Tag_head        = project_config.tag_head
+		Tag_reason          = project_config.Tag_reason
+		Tag_type            = project_config.Tag_type
+		User_name           = project_config.User_name
+		Clang_Index         = project_config.Clang_Index
+		avante_provider     = project_config.avante_provider
+		Tag_head            = project_config.tag_head
+		suggestion_provider = project_config.suggestion_provider or "gemini"
+		suggestion_key      = project_config.suggestion_key or ""
 	end
 	return {
-		Tag_reason      = Tag_reason,
-		Tag_type        = Tag_type,
-		User_name       = User_name,
-		Clang_Index     = Clang_Index,
-		tag_head        = Tag_head,
-		avante_provider = avante_provider
+		Tag_reason          = Tag_reason,
+		Tag_type            = Tag_type,
+		User_name           = User_name,
+		Clang_Index         = Clang_Index,
+		tag_head            = Tag_head,
+		avante_provider     = avante_provider,
+		suggestion_provider = suggestion_provider,
+		suggestion_key      = suggestion_key
 	}
 end
 local cfg = load_config() -- test file if not exists
@@ -880,18 +890,9 @@ vim.keymap.set("n", "<leader>ol", "<cmd>Telescope aerial<CR>")
 -- nvim-cmp setup
 
 
--- Copilot Alt+x implementation
-vim.keymap.set("i", '<M-x>', function() 
-	local has_copilot, copilot = pcall(require, "copilot.suggestion")
-	if has_copilot and copilot.is_visible() then
-		copilot.accept()
-	end
-end, {silent = true})
 
--- Copilot config: disable auto trigger if you want manually Trigger with M-r? (User requested "only accepted by alt+x", implies auto-suggestion might be okay but accept is explicit)
--- For now we just map Alt+x.
 
--- setup copilot
+--! @brief Set up Copilot with suggestion/panel configurations.
 function SetupCopilot()
 	require('copilot').setup({
   panel = {
@@ -904,15 +905,6 @@ function SetupCopilot()
 	debounce               = 15,
 	trigger_on_accept      = true,
 	keymap                 = nil
-	-- {
-	--   accept = "<M-l>",
-	--   accept_word = false,
-	--   accept_line = false,
-	--   next = "<M-]>",
-	--   prev = "<M-[>",
-	--   dismiss = "<C-]>",
-	--   toggle_auto_trigger = false,
-	-- },
   },
   logger = {
 	file               = vim.fn.stdpath("log") .. "/copilot-lua.log",
@@ -942,6 +934,21 @@ function SetupCopilot()
   },
   server_opts_overrides = {},
 })
+end
+
+--! @brief Disables Copilot suggestions and panel.
+function DisableCopilot()
+	local has_copilot, copilot = pcall(require, "copilot")
+	if has_copilot then
+		copilot.setup({
+			panel = {
+				enabled = false,
+			},
+			suggestion = {
+				enabled = false,
+			},
+		})
+	end
 end
 
 -- setup avante
@@ -1000,26 +1007,50 @@ if cfg.avante_provider == "copilot" then
 	vim.keymap.set("i", '<M-\\>', function() avante.toggle() end, {silent = true})
 	vim.keymap.set("n", '<M-\\>', function() avante.toggle() end, {silent = true})
 	vim.keymap.set("i", '<M-r>', function() require("copilot.suggestion").next() end, {silent = true})
+	vim.keymap.set("i", '<M-R>', function() require("copilot.suggestion").next() end, {silent = true})
+	vim.keymap.set("i", '<M-x>', function() 
+		local has_copilot, copilot = pcall(require, "copilot.suggestion")
+		if has_copilot and copilot.is_visible() then
+			copilot.accept()
+		end
+	end, {silent = true})
 else
-	avante.setup({
+	DisableCopilot()
+	--! @brief Check if the suggestion key is configured and not empty.
+	local has_suggestion_key = cfg.suggestion_key and cfg.suggestion_key:match("%S") ~= nil
+	if has_suggestion_key then
+		if cfg.suggestion_provider == "gemini" then
+			vim.fn.setenv("GEMINI_API_KEY", cfg.suggestion_key)
+		elseif cfg.suggestion_provider == "openai" then
+			vim.fn.setenv("OPENAI_API_KEY", cfg.suggestion_key)
+		elseif cfg.suggestion_provider == "claude" then
+			vim.fn.setenv("ANTHROPIC_API_KEY", cfg.suggestion_key)
+		end
+	end
+
+	--! @brief Table to hold avante setup options.
+	local avante_opts = {
 		instructions_file = "avante.md",
-		auto_suggestions_provider = cfg.avante_provider,
 		provider = cfg.avante_provider,
 		behavior = {
-			auto_suggestions = true,
+			auto_suggestions = has_suggestion_key,
 		},
 		acp_providers = acp_providers_config,
 		system_prompt = function()
 			local hub = require("mcphub").get_hub_instance()
 			return hub and hub:get_active_servers_prompt() or ""
 		end,
-		-- Using function prevents requiring mcphub before it's loaded
+		--! @brief Custom tools loader function.
 		custom_tools = function()
 			return {
 				require("mcphub.extensions.avante").mcp_tool(),
 			}
 		end,
-		mappings = {
+	}
+
+	if has_suggestion_key then
+		avante_opts.auto_suggestions_provider = cfg.suggestion_provider or "gemini"
+		avante_opts.mappings = {
 			suggestion = {
 				accept = "<M-x>",
 				next = "<M-]>",
@@ -1028,10 +1059,23 @@ else
 				toggle_suggestion_display = "<M-\\>",
 			},
 		}
-	})
+	end
+
+	avante.setup(avante_opts)
+
 	vim.keymap.set("i", '<M-\\>', function() require("avante").toggle() end, {silent = true})
 	vim.keymap.set("n", '<M-\\>', function() require("avante").toggle() end, {silent = true})
-	vim.keymap.set("i", '<M-r>', function() require("avante").get_suggestion():suggest() end, {silent = true})
+
+	--! @brief Trigger auto suggestion manually if suggestion key is available.
+	local function trigger_suggest()
+		if has_suggestion_key then
+			require("avante").get_suggestion():suggest()
+		else
+			print("No suggestion key configured, autocomplete is disabled.")
+		end
+	end
+	vim.keymap.set("i", '<M-r>', trigger_suggest, {silent = true})
+	vim.keymap.set("i", '<M-R>', trigger_suggest, {silent = true})
 end
 
 
