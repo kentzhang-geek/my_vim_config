@@ -200,13 +200,6 @@ require('lazy').setup({
 				or "make",
 				event = "VeryLazy",
 				version = false, -- Never set this value to "*"! Never!
-				---@module 'avante'
-				---@type avante.Config
-				opts = {
-					-- add any opts here
-					-- this file can contain specific instructions for your project
-					instructions_file = "avante.md",
-				},
 				dependencies = {
 					"nvim-lua/plenary.nvim",
 					"MunifTanjim/nui.nvim",
@@ -955,23 +948,29 @@ end
 local avante = require("avante")
 local opts = {silent = true, noremap = true, expr = true, replace_keycodes = false}
 local Plug_opts = {silent = true, noremap = false}
+--! @brief Checks if the current operating system is Windows.
+local is_windows = vim.loop.os_uname().sysname == 'Windows_NT'
+
+--! @brief Configuration for ACP providers.
+--! @details Appends '.cmd' to commands on Windows because Neovim's process spawn
+--!          requires the full command file extension for batch/cmd scripts.
 local acp_providers_config = {
 	["gemini-acp"] = {
-		command = "gemini",
+		command = is_windows and "gemini.cmd" or "gemini",
 		args = { "--acp" },
 		env = { NODE_NO_WARNINGS = "1" },
 	},
 	["claude-code"] = {
-		command = "claude-agent-acp",
+		command = is_windows and "claude-agent-acp.cmd" or "claude-agent-acp",
 		args = {},
 		env = { NODE_NO_WARNINGS = "1" },
 	},
 	["copilot-acp"] = {
-		command = "copilot",
+		command = is_windows and "copilot.cmd" or "copilot",
 		args = { "--acp" },
 	},
 	["codex-acp"] = {
-		command = "codex-acp",
+		command = is_windows and "codex-acp.cmd" or "codex-acp",
 		args = {},
 		env = { NODE_NO_WARNINGS = "1" },
 	},
@@ -979,6 +978,7 @@ local acp_providers_config = {
 
 if cfg.avante_provider == "copilot" then
 	avante.setup({
+		instructions_file = "avante.md",
 		provider = cfg.avante_provider,
 		behavior = {
 			auto_suggestions = false,
@@ -1002,6 +1002,7 @@ if cfg.avante_provider == "copilot" then
 	vim.keymap.set("i", '<M-r>', function() require("copilot.suggestion").next() end, {silent = true})
 else
 	avante.setup({
+		instructions_file = "avante.md",
 		auto_suggestions_provider = cfg.avante_provider,
 		provider = cfg.avante_provider,
 		behavior = {
