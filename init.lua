@@ -115,6 +115,22 @@ require('lazy').setup({
 		'saghen/blink.cmp',
 		dependencies = {
 			'rafamadriz/friendly-snippets',
+			{
+				'saghen/blink.compat',
+				--! @brief Configure blink.compat to mock nvim-cmp.
+				opts = {},
+				config = function(_, opts)
+					require('blink.compat').setup(opts)
+					--! @brief Monkeypatch cmp.ConfirmBehavior to prevent errors with Avante
+					local ok, cmp = pcall(require, "cmp")
+					if ok then
+						cmp.ConfirmBehavior = {
+							Insert = "insert",
+							Replace = "replace",
+						}
+					end
+				end
+			},
 		},
 		version = '*',
 		opts = {
@@ -139,7 +155,7 @@ require('lazy').setup({
 				}
 			},
 			sources = {
-				default = { 'lsp', 'path', 'snippets', 'buffer', 'buffer_names' },
+				default = { 'lsp', 'path', 'snippets', 'buffer', 'buffer_names', 'avante_commands', 'avante_mentions', 'avante_files' },
 				providers = {
 					buffer = {
 						opts = {
@@ -152,7 +168,28 @@ require('lazy').setup({
 						name = 'BufferNames',
 						module = 'buffer_names',
 						score_offset = 100, -- Give it a boost if needed
-					}
+					},
+					--! @brief Configure Avante commands source provider using blink.compat
+					avante_commands = {
+						name = 'avante_commands',
+						module = 'blink.compat.source',
+						score_offset = 90,
+						opts = {}
+					},
+					--! @brief Configure Avante mentions source provider using blink.compat
+					avante_mentions = {
+						name = 'avante_mentions',
+						module = 'blink.compat.source',
+						score_offset = 90,
+						opts = {}
+					},
+					--! @brief Configure Avante files source provider using blink.compat
+					avante_files = {
+						name = 'avante_files',
+						module = 'blink.compat.source',
+						score_offset = 90,
+						opts = {}
+					},
 				}
 			},
 		},
@@ -212,7 +249,6 @@ require('lazy').setup({
 					--- The below dependencies are optional,
 					"nvim-mini/mini.pick", -- for file_selector provider mini.pick
 					"nvim-telescope/telescope.nvim", -- for file_selector provider telescope
-					"hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
 					"ibhagwan/fzf-lua", -- for file_selector provider fzf
 					"stevearc/dressing.nvim", -- for input provider dressing
 					"folke/snacks.nvim", -- for input provider snacks
@@ -423,6 +459,11 @@ require('lazy').setup({
 		keys = {
 			{ "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" }
 		}
+	},
+	{
+		"nvim-treesitter/nvim-treesitter",
+		build = ":TSUpdate",
+		branch = "main",
 	},
 	{
 		'stevearc/aerial.nvim',
