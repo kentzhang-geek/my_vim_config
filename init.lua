@@ -101,10 +101,10 @@ require('lazy').setup({
 		opts = {
 			keymap = {
 				preset = 'none',
-				['<Tab>'] = { 'accept', 'fallback' },
+				['<Tab>'] = { 'snippet_forward', 'accept', 'fallback' },
 				['<Down>'] = { 'select_next', 'fallback' },
 				['<Up>'] = { 'select_prev', 'fallback' },
-				['<S-Tab>'] = { 'select_prev', 'fallback' },
+				['<S-Tab>'] = { 'snippet_backward', 'select_prev', 'fallback' },
 				['<M-e>'] = { 'show', 'show_documentation', 'hide_documentation' },
 			},
 			appearance = {
@@ -775,6 +775,12 @@ function SetupAvantePlugin()
 			behavior = {
 				auto_suggestions = false,
 			},
+			mappings = {
+				sidebar = {
+					switch_windows = "<C-Tab>",
+					reverse_switch_windows = "<C-S-Tab>",
+				},
+			},
 			acp_providers = acp_providers_config,
 			system_prompt = function()
 				local hub = require("mcphub").get_hub_instance()
@@ -826,6 +832,12 @@ function SetupAvantePlugin()
 				ollama = {	
 					model = cfg.ollama_model,
 				}
+			},
+			mappings = {
+				sidebar = {
+					switch_windows = "<C-Tab>",
+					reverse_switch_windows = "<C-S-Tab>",
+				},
 			},
 			acp_providers = acp_providers_config,
 			system_prompt = function()
