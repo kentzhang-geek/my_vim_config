@@ -428,7 +428,7 @@ require('lazy').setup({
 	{
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
-		branch = "master",
+		branch = "main",
 	},
 	{
 		'stevearc/aerial.nvim',
