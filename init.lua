@@ -353,7 +353,7 @@ require('lazy').setup({
 	'williamboman/mason-lspconfig.nvim',
 	'nvim-lua/plenary.nvim',
 	{
-		'nvim-telescope/telescope.nvim', tag = '0.1.4',
+		'nvim-telescope/telescope.nvim', branch = 'master',
 		cmd = { "Telescope" },
 		dependencies = { 
 			'nvim-lua/plenary.nvim',
