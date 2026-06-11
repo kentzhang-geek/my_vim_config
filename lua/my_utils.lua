@@ -105,17 +105,23 @@ function CopyAbsolutePath()
 	vim.fn.setreg('+', filename)
 end
 
---! @brief Shows all active normal mode key mappings in a selection menu.
+--! @brief Shows key bindings in a Telescope selector loaded from keybindings.json.
 --! @return void
 function ShowKeyBindings()
-	local mappings = vim.api.nvim_get_keymap('n') -- Get normal mode mappings
-	local result = {}
-
-	for _, map in ipairs(mappings) do
-		table.insert(result, string.format("%s -> %s", map.lhs, map.rhs))
+	local keybindings_json = vim_home_path .. 'keybindings.json'
+	local f = io.open(keybindings_json, "r")
+	if f then
+		local content = f:read('*a')
+		f:close()
+		local ok, data = pcall(vim.json.decode, content)
+		if ok and data and data.keybindings then
+			vim.ui.select(data.keybindings, { prompt = "Key Bindings" }, function(_) end)
+		else
+			vim.notify("Failed to parse keybindings.json", vim.log.levels.ERROR)
+		end
+	else
+		vim.notify("Keybindings file not found: " .. keybindings_json, vim.log.levels.ERROR)
 	end
-
-	vim.ui.select(result, { prompt = "Key Bindings" }, function(_) end)
 end
 
 --! @brief Reads and displays helpful tips stored in the tips.json file.

@@ -17,17 +17,12 @@ vim.g.mapleader = ','
 -- no editor config
 vim.g.editorconfig = false
 
--- Highlighter
-vim.cmd([[
-" default key mappings
-let HiSet   = '<M-f>'
-let HiErase = '<M-e>'
-let HiClear = '<space>c'
-let HiFind  = '<space>f'
-
-" directory to store highlight files
-" let HiKeywords = '~/.vim/after/vim-highlighter'
-]])
+-- Highlighter (default key mappings)
+vim.g.HiSet   = '<M-f>'
+vim.g.HiErase = '<M-e>'
+vim.g.HiClear = '<space>c'
+vim.g.HiFind  = '<space>f'
+-- vim.g.HiKeywords = '~/.vim/after/vim-highlighter'
 
 -- configs
 vim.cmd([[
@@ -443,9 +438,38 @@ require('lazy').setup({
 		"folke/which-key.nvim",
 		event = "VeryLazy",
 		opts = {
-			-- your configuration comes here
-			-- or leave it empty to use the default settings
-			-- refer to the configuration section below
+			-- Spec for group labels and key descriptions
+			spec = {
+				-- Leader key groups
+				{ "<leader>b", group = "Bookmarks" },
+				{ "<leader>bb", desc = "Toggle bookmark" },
+				{ "<leader>ba", desc = "Annotate bookmark" },
+				{ "<leader>bs", desc = "Show bookmark list" },
+				{ "<leader>n", group = "NERDTree" },
+				{ "<leader>nt", desc = "Open NERDTree" },
+				{ "<leader>w", desc = "Save file" },
+				{ "<leader>q", desc = "Close buffer" },
+				{ "<leader>x", desc = "Quit all" },
+				{ "<leader>f", desc = "FZF files" },
+				{ "<leader>k", desc = "Half page up" },
+				{ "<leader>j", desc = "Half page down" },
+				{ "<leader>/", desc = "Toggle comment" },
+				{ "<leader>s", desc = "Flash jump" },
+				{ "<leader>a", desc = "Aerial toggle" },
+				{ "<leader>o", group = "Outline" },
+				{ "<leader>ol", desc = "Outline (Telescope aerial)" },
+				{ "<leader>ea", desc = "EasyAlign paragraph" },
+				{ "<leader>ts", desc = "Telescope" },
+				{ "<leader>url", desc = "Copy code link" },
+				{ "<leader>pt", desc = "Copy absolute path" },
+				{ "<leader>mm", desc = "Utility menu" },
+				{ "<leader>lg", desc = "LazyGit" },
+				{ "<leader>?", desc = "Buffer local keymaps" },
+
+				-- Space key group (vim-highlighter)
+				{ "<space>c", desc = "Highlight clear" },
+				{ "<space>f", desc = "Highlight find" },
+			},
 		},
 		keys = {
 			{
