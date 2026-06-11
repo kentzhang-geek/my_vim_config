@@ -810,8 +810,11 @@ function SetupAvantePlugin()
 		},
 	}
 
+	--! @brief Determine if a custom model is configured.
+	local has_custom_model = cfg.avante_model and cfg.avante_model:match("%S") ~= nil
+
 	if cfg.avante_provider == "copilot" then
-		avante.setup({
+		local copilot_opts = {
 			instructions_file = "avante.md",
 			provider = cfg.avante_provider,
 			behavior = {
@@ -834,7 +837,16 @@ function SetupAvantePlugin()
 					require("mcphub.extensions.avante").mcp_tool(),
 				}
 			end,
-		})
+		}
+		--! @brief Apply custom model to the copilot provider if configured.
+		if has_custom_model then
+			copilot_opts.providers = {
+				copilot = {
+					model = cfg.avante_model,
+				},
+			}
+		end
+		avante.setup(copilot_opts)
 		SetupCopilot()
 		-- For copilot
 		vim.keymap.set("i", '<M-\\>', function() avante.toggle() end, {silent = true})

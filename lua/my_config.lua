@@ -19,6 +19,7 @@ function RepairConfigJson()
 		User_name       = "user name",
 		Clang_Index     = "",
 		avante_provider = "copilot",
+		avante_model    = "",
 		tag_head        = "NONE",
 		suggestion_key  = "",
 		ollama_model    = ""
@@ -57,6 +58,7 @@ function load_config()
 	local Tag_type        = ""
 	local User_name       = ""
 	local avante_provider = ""
+	local avante_model    = ""
 	local Tag_head        = "NONE"
 	local suggestion_key  = ""
 	local ollama_model    = ""
@@ -72,6 +74,7 @@ function load_config()
 				User_name       = "usere name",
 				Clang_Index     = "",
 				avante_provider = "copilot",
+				avante_model    = "",
 				tag_head        = "NONE",
 				suggestion_key  = "",
 				ollama_model    = ""
@@ -93,6 +96,7 @@ function load_config()
 				User_name       = project_config.User_name
 				Clang_Index     = project_config.Clang_Index
 				avante_provider = project_config.avante_provider
+				avante_model    = project_config.avante_model or ""
 				Tag_head        = project_config.tag_head
 				suggestion_key  = project_config.suggestion_key or ""
 				ollama_model    = project_config.ollama_model or ""
@@ -106,6 +110,7 @@ function load_config()
 		Clang_Index     = Clang_Index,
 		tag_head        = Tag_head,
 		avante_provider = avante_provider,
+		avante_model    = avante_model,
 		suggestion_key  = suggestion_key,
 		ollama_model    = ollama_model
 	}
