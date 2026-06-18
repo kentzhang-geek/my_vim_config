@@ -689,15 +689,16 @@ local config_file = config_file_path .. 'project_config.json'
 local cfg = load_config() -- test file if not exists
 
 -- Setup language servers.
-vim.lsp.config['clangd'] = {
+vim.lsp.config('clangd', {
 	cmd = {
 		"clangd",
 		"--clang-tidy=false",
-		"-pretty",
-		"--background-index=0",
-		"-index-file=" .. cfg.Clang_Index
+		"--pretty",
+		"--background-index=true",
 	},
-}
+})
+vim.lsp.enable('clangd')
+
 
 -- for outline plugin
 require("aerial").setup({
@@ -779,6 +780,9 @@ end
 --! @brief Wrapper function to perform lazy configuration of the Avante plugin.
 function SetupAvantePlugin()
 	local cfg = load_config()
+	if not (cfg.avante_provider and cfg.avante_provider:match("%S")) then
+		cfg.avante_provider = "copilot"
+	end
 	local avante = require("avante")
 	local opts = {silent = true, noremap = true, expr = true, replace_keycodes = false}
 	local Plug_opts = {silent = true, noremap = false}

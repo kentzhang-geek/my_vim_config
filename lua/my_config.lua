@@ -25,7 +25,11 @@ function RepairConfigJson()
 		ollama_model    = ""
 	}
 	if vim.fn.isdirectory(config_file_path) == 0 then
-		vim.fn.mkdir(config_file_path)
+		local ok = pcall(vim.fn.mkdir, config_file_path, 'p')
+		if not ok then
+			print("Cannot access config directory: " .. config_file_path)
+			return
+		end
 	end
 	local existing = {}
 	if vim.fn.filereadable(config_file) == 1 then
@@ -57,15 +61,29 @@ function load_config()
 	local Tag_reason      = ""
 	local Tag_type        = ""
 	local User_name       = ""
-	local avante_provider = ""
+	local avante_provider = "copilot"
 	local avante_model    = ""
 	local Tag_head        = "NONE"
 	local suggestion_key  = ""
 	local ollama_model    = ""
+	local Clang_Index     = ""
 	if vim.loop.os_uname().sysname == 'Windows_NT' then
 		-- detect and create config file
 		if vim.fn.isdirectory(config_file_path) == 0 then
-			vim.fn.mkdir(config_file_path)
+			local ok = pcall(vim.fn.mkdir, config_file_path, 'p')
+			if not ok then
+				return {
+					Tag_reason      = Tag_reason,
+					Tag_type        = Tag_type,
+					User_name       = User_name,
+					Clang_Index     = Clang_Index,
+					tag_head        = Tag_head,
+					avante_provider = avante_provider,
+					avante_model    = avante_model,
+					suggestion_key  = suggestion_key,
+					ollama_model    = ollama_model
+				}
+			end
 		end
 		if vim.fn.filereadable(config_file) == 0 then
 			local default_config = {
@@ -95,7 +113,7 @@ function load_config()
 				Tag_type        = project_config.Tag_type
 				User_name       = project_config.User_name
 				Clang_Index     = project_config.Clang_Index
-				avante_provider = project_config.avante_provider
+				avante_provider = project_config.avante_provider or "copilot"
 				avante_model    = project_config.avante_model or ""
 				Tag_head        = project_config.tag_head
 				suggestion_key  = project_config.suggestion_key or ""

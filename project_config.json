@@ -1,5 +1,11 @@
 {
-"Tag_reason":"",
-"Tag_type":"",
-"User_name":""
+	"Tag_reason": "",
+	"Tag_type": "",
+	"User_name": "",
+	"Clang_Index": "",
+	"avante_provider": "copilot",
+	"avante_model": "",
+	"tag_head": "NONE",
+	"suggestion_key": "",
+	"ollama_model": ""
 }
