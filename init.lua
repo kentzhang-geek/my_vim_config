@@ -673,6 +673,7 @@ function SetupTelescopePlugin()
 	telescope.load_extension("ui-select")
 	telescope.load_extension("file_browser")
 	telescope.load_extension("bookmarks")
+	telescope.load_extension("noice")
 end
 
 vim.keymap.set("n", "<C-k>", function() vim.cmd(':Telescope') end) -- Invoke Telescope with <C-K> in normal mode
@@ -769,7 +770,6 @@ end
 
 SetupClangdConfig()
 
-
 -- for outline plugin
 require("aerial").setup({
   -- optionally use on_attach to set keymaps when aerial has attached to a buffer
@@ -783,10 +783,7 @@ require("aerial").setup({
 vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>")
 vim.keymap.set("n", "<leader>ol", "<cmd>Telescope aerial<CR>")
 
--- nvim-cmp setup
-
-
-
+vim.keymap.set("n", "<M-d>", vim.lsp.buf.hover, { desc = "doc" })
 
 --! @brief Set up Copilot with suggestion/panel configurations.
 function SetupCopilot()
@@ -1246,8 +1243,6 @@ vim.keymap.set("i", "<C-BS>", "<C-W>")
 vim.keymap.set('n', '<C-Tab>', ':bnext<CR>')
 vim.keymap.set('n', '<C-Pagedown>', ':bnext<CR>')
 vim.keymap.set('n', '<C-Pageup>', ':bprevious<CR>')
-
-
 
 -- Close all zoekt buffers
 vim.api.nvim_create_user_command('ZoektCloseAll', function()
