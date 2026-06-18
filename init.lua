@@ -245,6 +245,21 @@ require('lazy').setup({
 	'junegunn/vim-easy-align',
 	'frazrepo/vim-rainbow',
 	{
+		"folke/noice.nvim",
+		event = "VeryLazy",
+		opts = {
+			-- add any options here
+		},
+		dependencies = {
+			-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+			"MunifTanjim/nui.nvim",
+			-- OPTIONAL:
+			--   `nvim-notify` is only needed, if you want to use the notification view.
+			--   If not available, we use `mini` as the fallback
+			"rcarriga/nvim-notify",
+		}
+	},
+	{
 		'gelguy/wilder.nvim',
 		config = function()
 			-- config goes here
@@ -688,16 +703,71 @@ local config_file = config_file_path .. 'project_config.json'
 
 local cfg = load_config() -- test file if not exists
 
--- Setup language servers.
-vim.lsp.config('clangd', {
-	cmd = {
-		"clangd",
-		"--clang-tidy=false",
-		"--pretty",
-		"--background-index=true",
-	},
-})
-vim.lsp.enable('clangd')
+-- Setup language servers. clangd is registered here, but disabled by default.
+local clangd_background_index = true
+
+local function SetupClangdConfig()
+	vim.lsp.config('clangd', {
+		cmd = {
+			"clangd",
+			"--clang-tidy=false",
+			"--pretty",
+			"--background-index=" .. (clangd_background_index and "true" or "false"),
+		},
+	})
+end
+
+local function StopLspClients(name)
+	for _, client in ipairs(vim.lsp.get_clients({ name = name })) do
+		client:stop(true)
+	end
+end
+
+function LspMenu()
+	local clients = vim.lsp.get_clients({ name = "clangd" })
+	local status = (#clients > 0 and "running" or "stopped") .. ", background-index=" .. (clangd_background_index and "on" or "off")
+	vim.ui.select({
+		'enable clangd',
+		'enable clangd without background index',
+		'disable clangd',
+		'restart clangd',
+		'toggle background index',
+		'lsp status',
+	}, {
+		prompt = 'LSP (' .. status .. ')',
+	}, function(sel)
+		if sel == 'enable clangd' then
+			clangd_background_index = true
+			SetupClangdConfig()
+			vim.lsp.enable('clangd')
+			print("clangd enabled with background index.")
+		elseif sel == 'enable clangd without background index' then
+			clangd_background_index = false
+			SetupClangdConfig()
+			vim.lsp.enable('clangd')
+			print("clangd enabled without background index.")
+		elseif sel == 'disable clangd' then
+			vim.lsp.enable('clangd', false)
+			StopLspClients("clangd")
+			print("clangd disabled.")
+		elseif sel == 'restart clangd' then
+			SetupClangdConfig()
+			StopLspClients("clangd")
+			vim.lsp.enable('clangd')
+			print("clangd restarted.")
+		elseif sel == 'toggle background index' then
+			clangd_background_index = not clangd_background_index
+			SetupClangdConfig()
+			StopLspClients("clangd")
+			vim.lsp.enable('clangd')
+			print("clangd background index: " .. (clangd_background_index and "on" or "off"))
+		elseif sel == 'lsp status' then
+			vim.cmd('LspInfo')
+		end
+	end)
+end
+
+SetupClangdConfig()
 
 
 -- for outline plugin
@@ -1008,6 +1078,7 @@ function UtilityMenu()
 		'bookmarks reload',
 		'json beautify current line',
 		'session submenu',
+		'lsp submenu',
 		'avante submenu',
 		'avante snippets',
 		'file browser',
@@ -1073,6 +1144,8 @@ function UtilityMenu()
 		vim.cmd('%!jq .')
 	elseif sel == 'session submenu' then
 		SessionMenu()
+	elseif sel == 'lsp submenu' then
+		LspMenu()
 	elseif sel == 'avante submenu' then
 		AvanteMenu()
 	elseif sel == 'avante snippets' then
