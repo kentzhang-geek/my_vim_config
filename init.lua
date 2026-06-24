@@ -555,9 +555,28 @@ require('lazy').setup({
 })
 
 -- for airline statusline
-vim.cmd([[
-let g:airline_section_c = '%F'
-]])
+vim.g.airline_section_c = '%F'
+vim.g.airline_exclude_filetypes = { 'Avante', 'AvanteInput', 'AvanteSelectedFiles', 'notify', 'noice', 'NvimTree', 'neo-tree', 'dashboard', 'help', 'qf' }
+vim.g.airline_exclude_preview = 1
+
+local function disable_airline_for_special_windows()
+	local buftype = vim.bo.buftype
+	local filetype = vim.bo.filetype
+	if buftype == 'nofile' or buftype == 'prompt' or buftype == 'quickfix' or filetype == 'Avante' or filetype == 'notify' or filetype == 'noice' then
+		vim.w.airline_disable_statusline = 1
+		vim.wo.statusline = ' '
+	else
+		vim.w.airline_disable_statusline = nil
+		if vim.wo.statusline == ' ' then
+			vim.wo.statusline = ''
+		end
+	end
+end
+
+vim.api.nvim_create_autocmd({ 'BufWinEnter', 'WinEnter', 'FileType' }, {
+	group = vim.api.nvim_create_augroup('DisableAirlineSpecialWindows', { clear = true }),
+	callback = disable_airline_for_special_windows,
+})
 
 vim.opt.encoding    = 'utf-8'
 vim.opt.nu          = true
