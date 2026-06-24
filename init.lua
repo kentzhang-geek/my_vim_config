@@ -25,11 +25,9 @@ vim.g.HiFind  = '<space>f'
 -- vim.g.HiKeywords = '~/.vim/after/vim-highlighter'
 
 -- configs
-vim.cmd([[
-set backspace=indent,eol,start
-set autoread
-set ignorecase
-]])
+vim.opt.backspace = { 'indent', 'eol', 'start' }
+vim.opt.autoread = true
+vim.opt.ignorecase = true
 
 -- path configs
 path_spliter = '\\'
@@ -65,7 +63,7 @@ require('lazy').setup({
 		priority = 1000, -- make sure to load this before all the other start plugins
 		config = function()
 			-- load the colorscheme here
-			vim.cmd([[colorscheme tokyonight]])
+			vim.cmd.colorscheme('tokyonight')
 		end,
 	},
 	-- For NVim completion
@@ -602,13 +600,11 @@ vim.opt.listchars:append("space:·") -- Use "·" or another char for spaces
 vim.opt.fixendofline = false
 vim.opt.fixeol = false
 
-vim.cmd([[
-let s:fontsize = 16
-function! AdjustFontSize(amount)
-  let s:fontsize = s:fontsize+a:amount
-  :execute "set guifont=Consolas:h" . s:fontsize
-endfunction
-]])
+local gui_font_size = 16
+local function adjust_font_size(amount)
+	gui_font_size = gui_font_size + amount
+	vim.o.guifont = 'Consolas:h' .. gui_font_size
+end
 
 if vim.g.neovide then
 	vim.o.guifont = "JetBrainsMono Nerd Font:h14"
@@ -621,9 +617,13 @@ if vim.g.neovide then
 		vim.g.neovide_scale_factor = vim.g.neovide_scale_factor / 1.1
 	end)
 elseif vim.fn.has('gui_running') == 1 then
-	vim.cmd('set guifont=JetBrainsMono\\ Nerd\\ Font:h14')
-	vim.keymap.set('n', '<C-ScrollWheelUp>', ':call AdjustFontSize(2)<CR>')
-	vim.keymap.set('n', '<C-ScrollWheelDown>', ':call AdjustFontSize(-2)<CR>')
+	vim.o.guifont = 'JetBrainsMono Nerd Font:h14'
+	vim.keymap.set('n', '<C-ScrollWheelUp>', function()
+		adjust_font_size(2)
+	end)
+	vim.keymap.set('n', '<C-ScrollWheelDown>', function()
+		adjust_font_size(-2)
+	end)
 end
 
 --! @brief Configures the system clipboard statically to speed up Neovim startup on Windows.
