@@ -60,8 +60,8 @@ function DiffR2L1()
 	end
 end
 
--- Setup diff-mode specific keymaps if diff mode is active
-if vim.opt.diff:get() then
+--! @brief Sets up diff-mode specific keymaps.
+function SetupDiffKeymaps()
 	tag_faster()
 	vim.api.nvim_set_keymap('n', '<M-Down>', ':lua nextDiff()<CR>', {noremap = true, silent = true})
 	vim.api.nvim_set_keymap('n', '<M-Up>', ':lua prevDiff()<CR>', {noremap = true, silent = true})
@@ -76,4 +76,21 @@ if vim.opt.diff:get() then
 	vim.keymap.set("n", '<M-S-h>', function() DiffR2L1() end)
 	vim.keymap.set("n", '<M-S-l>', function() DiffL2R1() end)
 	vim.api.nvim_set_keymap('n', '<C-s>', ':w<CR>', {noremap = true, silent = true})
+end
+
+if vim.opt.diff:get() then
+	SetupDiffKeymaps()
+end
+
+-- git difftool passes files via env (see difftool.neovide in ~/.gitconfig); neovide drops -d/-O file args
+if vim.env.NVIM_DIFFTOOL and vim.env.LOCAL and vim.env.REMOTE then
+	vim.api.nvim_create_autocmd("VimEnter", {
+		once = true,
+		callback = function()
+			vim.cmd("edit " .. vim.fn.fnameescape(vim.env.LOCAL))
+			vim.cmd("diffthis")
+			vim.cmd("rightbelow vertical diffsplit " .. vim.fn.fnameescape(vim.env.REMOTE))
+			SetupDiffKeymaps()
+		end,
+	})
 end
