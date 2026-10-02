@@ -197,6 +197,8 @@ require('lazy').setup({
 				and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
 				or "make",
 				event = "VeryLazy",
+				-- skip in diff mode (git difftool / nvim -d)
+				cond = function() return not vim.tbl_contains(vim.v.argv, "-d") end,
 				version = false, -- Never set this value to "*"! Never!
 				config = function()
 					SetupAvantePlugin()
