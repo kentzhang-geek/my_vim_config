@@ -1,0 +1,8 @@
+customCommands:
+  # Side-by-side diff in Neovide (uses difftool.neovide from ~/.gitconfig); on a directory, opens each changed file in turn
+  - key: 'D'
+    context: 'files'
+    description: 'Neovide side-by-side diff of selected file/dir'
+    # SelectedFile is nil for directories; fully staged files need --cached to show index vs HEAD
+    command: 'git difftool --no-prompt --tool=neovide {{if .SelectedFile}}{{if not .SelectedFile.HasUnstagedChanges}}--cached {{end}}{{end}}-- {{.SelectedPath | quote}}'
+    output: terminal

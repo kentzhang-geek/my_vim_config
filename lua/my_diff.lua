@@ -82,6 +82,19 @@ if vim.opt.diff:get() then
 	SetupDiffKeymaps()
 end
 
+--! @brief Registers neovide as global git difftool "neovide" (does not change diff.tool).
+function RegisterNeovideDifftool()
+	-- list form bypasses shell quoting, so the inner quotes reach .gitconfig intact
+	local out = vim.fn.system({ 'git', 'config', '--global', 'difftool.neovide.cmd',
+		'LOCAL="$LOCAL" REMOTE="$REMOTE" NVIM_DIFFTOOL=1 neovide --no-fork' })
+	if vim.v.shell_error ~= 0 then
+		vim.notify('register difftool failed: ' .. out, vim.log.levels.ERROR)
+		return
+	end
+	vim.notify('difftool.neovide = ' .. vim.trim(vim.fn.system({ 'git', 'config', '--global', '--get', 'difftool.neovide.cmd' })) ..
+		'\nuse: git difftool --no-prompt --tool=neovide -- <file or dir>')
+end
+
 -- git difftool passes files via env (see difftool.neovide in ~/.gitconfig); neovide drops -d/-O file args
 if vim.env.NVIM_DIFFTOOL and vim.env.LOCAL and vim.env.REMOTE then
 	vim.api.nvim_create_autocmd("VimEnter", {

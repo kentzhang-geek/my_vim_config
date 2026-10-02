@@ -1179,6 +1179,7 @@ function UtilityMenu()
 		'git commit',
 		'codelink tools',
 		'diff with buffer',
+		'register neovide git difftool',
 		-- 'qgrep search',
 		-- 'qgrep files',
 		'quick zoekt search',
@@ -1282,6 +1283,8 @@ function UtilityMenu()
 	elseif sel == 'diff with buffer' then
 		vim.cmd('cd ' .. file_path)
 		DiffWithBuffer()
+	elseif sel == 'register neovide git difftool' then
+		RegisterNeovideDifftool()
 	elseif sel == 'qgrep search' then
 		vim.cmd('QgrepSearch')
 	elseif sel == 'qgrep files' then
