@@ -40,6 +40,22 @@ MyGui.Add("Text", "Section", "BC target:")
 Replace_target := MyGui.Add("Edit", "w460 r1")
 Target := MyGui.AddComboBox("vTarget", ["VisualStudio", "Understand", "Beyond Compare"])
 MyGui.Add("Button", "Default", "OK").OnEvent("Click", OK_Click)
+MyGui.Add("Button", "x+10 yp", "Kill Drones").OnEvent("Click", KillDrones_Click)
+
+KillDrones_Click(*)
+{
+	processes := ["CreatorHub.App.exe", "Drone.exe"]
+	for proc in processes
+	{
+		while pid := ProcessExist(proc)
+		{
+			ProcessClose(pid)
+			if !ProcessWaitClose(pid, 2)
+				RunWait('taskkill /F /PID ' pid, , "Hide")
+		}
+	}
+	MyGui.Hide()
+}
 
 OK_Click(*)
 {
